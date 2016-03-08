@@ -16,16 +16,6 @@ tags: java8
 昨天参加了Oracle的Java8宣讲活动，有幸目睹了Simon Ritter的风采，写个总结来分享下。
 
 **Java并发编程演变：**
-<style type="text/css">
-.mytable {
-    border-collapse: collapse;
-    border: none;
-}
-.mytable td {
-    border: solid #000 1px;
-    padding: 5px;
-}
-</style>
 
 <table class="mytable">
     <tbody>
