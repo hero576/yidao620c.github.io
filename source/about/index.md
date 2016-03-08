@@ -1,10 +1,8 @@
 ---
-title: "About Me"
+title: "关于我"
 date: 2015-03-06 17:09
 ---
 
-# 关于我
-<br />
 嗨，我叫熊能，毕业于武大数学系，由于记忆力很差，所以就习惯了做笔记和写博客。
 以后决定在Github上面写，它能用MarkDown语法，还有版本管理功能。
 分享知识是一种美德，予人玫瑰，手留余香。
@@ -22,10 +20,7 @@ date: 2015-03-06 17:09
 * 博客: <http://yidao620c.github.io>
 * GitHub: <https://github.com/yidao620c>
 
-<br />
-
 ----------
-<br />
 
 # About Me
 
