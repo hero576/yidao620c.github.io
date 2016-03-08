@@ -3,21 +3,22 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
-subtitle:
-description:
-author: John Doe
-language:
+title: 斜风细雨
+subtitle: Code is sexy and cool
+description: 熊能童鞋的技术博客
+author: 熊能
+language: zh-CN
 timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
+url: http://yidao620c.github.io
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 
 # Directory
+about_dir: about
 source_dir: source
 public_dir: public
 tag_dir: tags
@@ -63,7 +64,9 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: jacman
+stylus:
+  compress: true
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
