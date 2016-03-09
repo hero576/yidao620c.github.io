@@ -25,7 +25,6 @@ widgets:
   ## provide eight widgets:github-card,category,tag,rss,archive,tagcloud,links,weibo
 
 
-
 #### RSS 
 rss: /atom.xml ## RSS address.
 
@@ -59,7 +58,7 @@ creative_commons: none
 
 #### Author information
 author:
-  intro_line1:  "他跑啊跑啊，只为追上那个曾经的自己"    ## your introduction on the bottom of the page
+  intro_line1:  "他跑啊跑啊，只为追上那个曾经被寄予厚望的自己"    ## your introduction on the bottom of the page
   intro_line2:  "This is my blog, believe it or not."  ## the 2nd line
   weibo: 1565207710     ## e.g. wuchong1014 or 2176287895 for http://weibo.com/2176287895
   weibo_verifier:    ## e.g. b3593ceb Your weibo-show widget verifier ,if you use weibo-show it is needed.
