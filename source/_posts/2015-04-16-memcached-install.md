@@ -6,7 +6,7 @@ categories: 技术随笔
 tags: memcached
 ---
 
-**一 准备安装文件**
+### 一、准备安装文件
 
 下载memcached与libevent的安装文件：
 
@@ -14,7 +14,9 @@ memcached下载地址：[memcached-1.4.15.tar.gz](http://memcached.googlecode.co
 
 libevent下载地址：[libevent-2.0.21-stable.tar.gz](https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz)
 
-**二 具体安装步骤**
+### 二、具体安装步骤
+
+#### 安装libevent
 
 1. 由于memcached依赖于libevent，因此需要安装libevent。由于linux系统可能默认已经安装libevent，执行命令：
 ```
@@ -35,7 +37,8 @@ make install
 ```
 至此libevent安装完毕；
 
-1.  安装memcached命令：
+#### 安装memcached
+
 ```
 tar zxvf memcached-1.4.2.tar.gz
 cd memcached-memcached-1.4.2
@@ -46,11 +49,11 @@ make install
 ```
 至此memcached安装完毕；
 
-1. 可能存在的错误以及解决方案
+#### 可能存在的错误以及解决方案
 
 如果出现客户端连接不上memcached的情况，请将防火墙关闭或将防火墙中的memcached端口（11211端口）打开。
 
-1. 启动memcached
+#### 启动memcached
 
 打开一个终端，输入以下命令：
 ```
@@ -106,11 +109,11 @@ make install
 
 也可以启动多个守护进程，但是端口不能重复
 
-查看memcached启动命令：
+#### 查看memcached启动命令：
 ```
 ps aux|grep memcached
 ```
-1. 停止memcached
+#### 停止memcached
 
 打开一个终端，输入以下命令：
 ```

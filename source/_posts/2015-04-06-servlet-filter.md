@@ -6,15 +6,22 @@ categories: 技术随笔
 tags: [servlet]
 ---
 
-在写一个springmvc项目中想对用户的请求进行拦截，只有登录用户才能访问资源。这时候可以使用到SpringMVC的拦截器Intercepter，但是这个只能局限在SpringMVC中使用，如果想更加通用一点，最好使用Servlet Filter实现这个需求。
+### 简介
 
-本文将通过几个实际的例子展示下Servlet中的Filter的使用。
+在写一个springmvc项目中想对用户的请求进行拦截，只有登录用户才能访问资源。
+这时候可以使用到SpringMVC的拦截器Intercepter，但是这个只能局限在SpringMVC中使用，
+如果想更加通用一点，最好使用Servlet Filter实现这个需求。
 
-**1 我们为什么需要使用Filter？**
+本文将通过几个实际的例子展示下Servlet中的Filter的使用。<!--more-->
 
-通常我们会使用session来保存登录用户的信息，通过从session中取出保存的属性值来判断用户是否登录，但是如果我们有大量的请求方法，每个人方法中都这样去判断就会有很多重复代码，将来我们想改动下逻辑，那得改动所有的请求方法实现，所以这个是不可取的。
+### 我们为什么需要使用Filter？
 
-这时候就是使用Servlet Filter的时候了，它是可插拔的，对于普通的action方法来讲是透明的。它会在执行其他方法之前或将结果返回给客户端之前来执行其他逻辑。
+通常我们会使用session来保存登录用户的信息，通过从session中取出保存的属性值来判断用户是否登录，
+但是如果我们有大量的请求方法，每个人方法中都这样去判断就会有很多重复代码，将来我们想改动下逻辑，
+那得改动所有的请求方法实现，所以这个是不可取的。
+
+这时候就是使用Servlet Filter的时候了，它是可插拔的，对于普通的action方法来讲是透明的。
+它会在执行其他方法之前或将结果返回给客户端之前来执行其他逻辑。
 
 以下几种场景下我们会使用到Servlet Filter：
 
@@ -22,12 +29,12 @@ tags: [servlet]
 - 对于资源的访问进行统一的授权与验证
 - 在请求到达实际Servlet之前格式化请求内容或请求头
 - 压缩返回数据后发送给客户端
-- 修改返回内容，增加一些cookie、header等信息<!--more-->
+- 修改返回内容，增加一些cookie、header等信息
 
 前面提到过，Servlet是可插拔的，可以通过在web.xml中配置是否使用。如果我们定义了多个Filter，就会形成一个过滤器链。
 通过实现接口javax.servlet.Filter来创建一个过过滤器。
 
-**2. Filter接口**
+### Filter接口
 
 Filter接口包含了三个跟生命周期有关的方法，并且由Servlet容器来管理。它们分别是：
 ``` java
@@ -35,22 +42,25 @@ void init(FilterConfig paramFilterConfig)
 ```
 
 当容器初始化这个Filter的时候被调用，并且只会被调用一次。因此在这个方法里面我们可以初始化一些资源。
-FilterConfig会被容器用来给Filter提供初始化参数以及Servlet Context对象。我们可以在这个方法中抛出ServletException异常。
+FilterConfig会被容器用来给Filter提供初始化参数以及Servlet Context对象。
+我们可以在这个方法中抛出ServletException异常。
 ``` java
 doFilter(ServletRequest paramServletRequest, ServletResponse paramServletResponse, FilterChain paramFilterChain)
 ```
-这个方法在每次执行过滤的时候被调用，request和response被作为参数传递进来，FilterChain表示过滤器链，这是典型的责任链模式的实现例子。
+这个方法在每次执行过滤的时候被调用，request和response被作为参数传递进来，
+FilterChain表示过滤器链，这是典型的责任链模式的实现例子。
 ``` java
 void destroy()
 ```
 
 这个方法再容器卸载掉filter的时候被调用。因此我们可以在里面将filter使用到的一些资源给释放掉。
 
-**3. WebFilter注解**
+### WebFilter注解
 
-在Servlet3.0中引入了注解javax.servlet.annotation.WebFilter。无需配置，简单实用，不过如果你需要经常改动Filter逻辑的话，还是建议你在web.xml文件中配置，因为代码中修改后必须重写编译发布才能生效。
+在Servlet3.0中引入了注解javax.servlet.annotation.WebFilter。无需配置，简单实用，
+不过如果你需要经常改动Filter逻辑的话，还是建议你在web.xml文件中配置，因为代码中修改后必须重写编译发布才能生效。
 
-**4. web.xml中的Filter配置详解**
+### web.xml中的Filter配置详解
 
 像下面这样声明一个filter：
 
@@ -76,7 +86,7 @@ void destroy()
 </filter-mapping>
 ```
 
-**5. 日志和登录验证的filter示例**
+### 日志和登录验证的filter示例
 
 下面是login.html页面：
 

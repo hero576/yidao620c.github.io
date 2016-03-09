@@ -7,11 +7,13 @@ categories: linux
 tags: rabbitmq
 ---
 
+### 安装环境
+
 参考了RabbitMQ网站上提供的英文版本入门指南: <http://www.rabbitmq.com/getstarted.html>
 
 测试环境：CentOS 6.2
 
-**1，测试环境准备**
+### 测试环境准备
 
 安装python（一般系统都自带了python）
 
@@ -28,7 +30,7 @@ tags: rabbitmq
 $ curl https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py | python
 ```
 
-然后还可能出现：
+然后还可能出现：<!--more-->
 
 `pkg_resources.distributionnotfound pip==1.4.1`
 
@@ -38,7 +40,7 @@ sudo yum remove python-pip
 ```
 然后去下载最新的get-pip.py文件，执行`python get-pip.py`安装
 
-在`/etc/profile`里面将`/usr/local/python27/bin`加入PATH最前面<!--more-->
+在`/etc/profile`里面将`/usr/local/python27/bin`加入PATH最前面
 
 把rabbitmq server启动一下和准备好测试目录rabbitmq_app：
 ```
@@ -49,7 +51,7 @@ $ cd test /rabbitmq_app
 $ mkdir tut1 tut2 tut3 tut4 tut5 tut6
 ```
 
-**2，实例一：来个hello world程序**
+### 实例一：来个hello world程序
 ```
 $ cd tut1
 $ vim send.py (代码如下)
@@ -115,7 +117,7 @@ $ python receive.py
     Hello World!
     你好刀哥
 
-**3，实例二：工作队列（work queue / task queue）**
+### 实例二：工作队列（work queue / task queue）
 
 一般应用于把比较耗时的任务从主线任务分离出来。比如一个http页面请求，
 里面需要发送带大附件的邮件、或者是要处理一张头像图片等。这类型工作队列的处理端一般有多个worker进程，
@@ -185,7 +187,7 @@ $ python manager.py task4….
 而在worker那边，可以看到每个worker都处理了两个任务。
 这种分配机制就是所谓的循环调度（Round-robin dispatching）
 
-**4，实例三：发布和订阅**
+### 实例三：发布和订阅
 
 发布订阅模式，简单来说就像是广播，一个消息发布出来以后，所有订阅者都能听到，
 至于接收到这个信息以后大家做什么就看具体个人了。
@@ -251,7 +253,7 @@ channel.start_consuming()
 查看recelog是否都收到emitlog发送的消息。代码里面用 了一个fanout(意思是成扇形展开)类型的exchange，
 只要和exchange绑定的queue都能收到一份消息的 copy，routing_key会被忽略掉。
 
-**5，路由模式 （选择接收信息）**
+### 路由模式 （选择接收信息）
 ```
 $ cd tut4
 $ vim emitlog.py (代码如下)
@@ -315,12 +317,12 @@ channel.start_consuming()
 并且只要进程终止，队列就会终止。然后把队列和 exchange绑定，绑定时的routing_key是用户输入的，
 如果输入多个key，就做多次的绑定。注意这里的队列还是一个。如果你需要建立两个 队列，就得跑两次这个python脚本。
 
-**6，topic和rpc**
+### topic和rpc
 
 官方tutorial还有两个高级一点的实例，topic和rpc，这里就不作说明了，留着大家学学英文吧 :)
 
 RabbitMQ提供了很多消息队列客户端代码，比如python，java，c等等，大家可以根据产品或项目的实际情况选择。关键是原理必须搞懂。
 
-**其他资源：**
+### 其他资源
 
 中文入门篇：<http://adamlu.net/dev/2011/09/rabbitmq-get-started/>

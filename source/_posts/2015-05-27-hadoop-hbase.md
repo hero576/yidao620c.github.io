@@ -79,7 +79,10 @@ export PATH= $PATH:$JAVA_HOME/bin
 
 ### 安装配置Hadoop
 
-#### 下载Hadoophadoop2.6.0下载地址：<http://apache.fayea.com/hadoop/common/stable/hadoop-2.6.0.tar.gz>
+#### 下载Hadoophadoop2.6.0
+
+下载地址：<http://apache.fayea.com/hadoop/common/stable/hadoop-2.6.0.tar.gz>
+
 ```
 $ su
 password:

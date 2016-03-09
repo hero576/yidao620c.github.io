@@ -7,7 +7,7 @@ categories: 技术随笔
 tags: [yaml]
 ---
 
-**Wiki：**
+### Wiki
 
 YAML（IPA: /ˈjæməl/，尾音类似camel骆驼）是一个可读性高，用来表达资料序列的格式。
 YAML参考了其他多种语言，包括：XML、C语言、Python、Perl以及电子邮件格式RFC2822。
@@ -59,16 +59,16 @@ YAML是”YAML Ain’t a Markup Language”（YAML不是一种置标语言）的
         man behind the curtain.
     ...
 
-**基本技巧：**
+### 基本技巧
 
-1，列表
+#### 1，列表
 
 使用- 表示，也就是用短杠+空白字符作为起始。
 
 另外还有一种内置格式（inline format）可以选择──用方括号围住，并用逗号+空白区隔（类似JSON的语法）。
 比如：shopping: [milk, pumpkin pie, eggs, juice]
 
-2，映射
+#### 2，映射
 
     — # 區塊形式
     person:
@@ -77,7 +77,7 @@ YAML是”YAML Ain’t a Markup Language”（YAML不是一种置标语言）的
     — # 內置形式
     person: {name: John Smith, age: 33}
 
-3，重复元素
+#### 3，重复元素
 
 使用&id001先标记，然后后面用*id001指针引用
 
@@ -115,7 +115,7 @@ YAML是”YAML Ain’t a Markup Language”（YAML不是一种置标语言）的
                warn patient of
                audible pop
 
-4，需要换行书写的字符串，两种方式：
+#### 4，需要换行书写的字符串，两种方式：
 
 再次强调，字串不需要包在引号之内。
 
@@ -142,7 +142,7 @@ YAML是”YAML Ain’t a Markup Language”（YAML不是一种置标语言）的
 
 和保存新行不同的是，换行字元会被转换成空白字符，空行被转换成换行，而前导空白字符则会被自动消去。上面会变成两行。
 
-5，混合使用：
+#### 5，混合使用：
 
 在列表中使用映射
 
@@ -157,6 +157,6 @@ YAML是”YAML Ain’t a Markup Language”（YAML不是一种置标语言）的
       - Mary Smith
       - Susan Williams
 
-**更多资源：**
+### 更多资源
 
 <http://www.yaml.org/>

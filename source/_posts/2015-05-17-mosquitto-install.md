@@ -19,11 +19,13 @@ MQTT（MQ Telemetry Transport），消息队列遥测传输协议，轻量级的
 * “至少一次”：确保消息到达，但消息重复可能会发生。
 * “只有一次”：确保消息到达一次。这一级别可用于如下情况，在计费系统中，消息重复或丢失会导致不正确的结果。
 
-### 安装：(参考官网 <http://mosquitto.org/download/>)
+### 安装
+
+参考官网 <http://mosquitto.org/download/>
 
 服务器操作系统为CentOS6.4，使用最简单的yum安装
 
-1，先加入yum源：
+#### 1，先加入yum源：
 
 在`/etc/yum.repos.d/`目录中新建一个`mosquitto.repo`文件，里面写入：<!--more-->
 ```
@@ -36,13 +38,13 @@ gpgkey=http://download.opensuse.org/repositories/home:/oojah:/mqtt/CentOS_CentOS
 enabled=1
 ```
 
-2，开始安装
+#### 2，开始安装
 ``` bash
 sudo yum search all mosquitto
 sudo yum install mosquitto mosquitto-clients libmosquitto-devel libmosquittopp-devel python-mosquitto
 ```
 
-3，配置
+#### 3，配置
 
 安装完成之后，所有配置文件会被放置于/etc/mosquitto/目录下，
 其中最重要的就是Mosquitto的配置文件，即mosquitto.conf，以下是详细的配置参数说明。
@@ -225,7 +227,7 @@ log_dest none
 include_dir /etc/mosquitto/conf.d
 ```
 
-4，启动服务，两种方式
+#### 4，启动服务，两种方式
 
 ``` bash
 mosquitto -c /etc/mosquitto/mosquitto.conf -d
@@ -234,7 +236,7 @@ sudo /etc/init.d/mosquitto start
 
 ------------
 
-### 演示部分：
+### 演示部分
 前面已经开启了服务，如果没有请参考前面步骤。
 
 一、开启另一个终端窗口，运行订阅程序mosquitto_sub:

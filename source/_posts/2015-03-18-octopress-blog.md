@@ -14,7 +14,7 @@ description: windows7上面使用Octopress搭建GitHub博客
 荒废了两年的Blog大业再次东山再起，于是经过一天的配置，本博客终于展现在你的眼前。
 本博客基于Octopress+Github Pages搭建，可以搭建全免费、稳定运行的个人博客。
 本文将简述在Windows平台（Win7 64bit）上搭建这套系统的全流程和要点。
-在继续看本文之前，请先确定你具有折腾的精神。
+在继续看本文之前，请先确定你具有折腾的精神。<!--more-->
 
 ### 介绍
 [Octopress](https://github.com/imathis/octopress)是一个基于Ruby语言的开源静态网站框架，
@@ -24,7 +24,7 @@ description: windows7上面使用Octopress搭建GitHub博客
 [Github Pages](https://pages.github.com/)是Github上的一项服务，
 注册用户可以申请一个和自己账号关联的二级域名，
 在上面可以托管一个静态网站，网站内容本身就是Github的一个repository也就是项目，
-维护这个项目的代码就是在维护自己的网站。<!--more-->
+维护这个项目的代码就是在维护自己的网站。
 
 此外，用户撰写日志使用的是Markdown语法。这是一种极简化的语法，
 它的好处在于可以以纯文本形式表现文章，用户不用关心排版的问题。

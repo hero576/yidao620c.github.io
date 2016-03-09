@@ -19,7 +19,7 @@ yum install zlib-devel
 ```
 chmode +x python-7.5.tar.gz
 ```
-**3,解压tar文件**
+**3,解压tar文件**<!--more-->
 ```
 tar -xzvf python-2.7.5.tar.gz
 ```
@@ -28,7 +28,7 @@ tar -xzvf python-2.7.5.tar.gz
 cd python-2.7.5
 vim Python-2.7.5/Modules/Setup.dist
 ```
-找到<!--more-->
+找到
 
     #SSL=/usr/local/ssl
     #_ssl _ssl.c \

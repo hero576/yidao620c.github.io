@@ -8,13 +8,13 @@ tags: fastjson
 
 ### fastjson对日期的序列化方式
 
-一种方法是通过注解
+#### 一种方法是通过注解
 ``` java
 @JSONField (format="yyyy-MM-dd HH:mm:ss")
 public Date birthday;
 ```
 
-另一种是通过SerializeConfig：
+#### 另一种是通过SerializeConfig：
 ``` java
 private static SerializeConfig mapping = new SerializeConfig();
 private static String dateFormat;
@@ -58,7 +58,7 @@ String text = ...; // {"name":{"name":"ljw",age:18}}
 Map<String, User> userMap = JSON.parseObject(text, new TypeReference<Map<String, User>>() {});
 ```
 
-**自定义序列化代码示例:**
+### 自定义序列化代码示例
 
 ``` java
 public class JsonUtil {
@@ -92,7 +92,7 @@ public class JsonUtil {
 }
 ```
 
-**自定义日期格式反序列化示例**
+### 自定义日期格式反序列化示例
 
 先自定义一个日期解析类：
 ``` java
@@ -162,7 +162,7 @@ public static void main(String[] args) throws IOException, ParseException {
 }
 ```
 
-**总结：**
+### 总结
 
 对于JSONField注解，好像只对序列号的格式有影响，反序列化不管这个，不知道为什么，
 只能自己写个解析类了，不过这样就更灵活了，可以在里面写很多处理逻辑，

@@ -6,6 +6,7 @@ comments: true
 categories: 技术随笔
 tags: java8
 ---
+### 开篇
 
 2014年3月18日，Oracle终于发布Java8正式版。在新的版本里面加入了很多特性，
 总共增加了55个新特性，其中最最吸引人的就是Lambdas表达式和Stream函数式编程，本文详细讲解这两个特性。
@@ -13,48 +14,22 @@ tags: java8
 其他特性比如日期API，泛型，反射，注解，集合框架，并发，Nashorn引擎等等这里暂时就不详细介绍了。
 具体可以参考：<http://openjdk.java.net/projects/jdk8/features>
 
-昨天参加了Oracle的Java8宣讲活动，有幸目睹了Simon Ritter的风采，写个总结来分享下。
+昨天参加了Oracle的Java8宣讲活动，有幸目睹了Simon Ritter的风采，写个总结来分享下。**<!--more-->
 
-**Java并发编程演变：**
+####Java并发编程演变：
 
-<table class="mytable">
-    <tbody>
-    <tr>
-    <td>版本</td>
-    <td>发布年份</td>
-    <td>并发技术</td>
-    </tr>
-    <tr>
-    <td>1.4</td>
-    <td>2002</td>
-    <td>java.lang.Thread</td>
-    </tr>
-    <tr>
-    <td>5</td>
-    <td>2004</td>
-    <td>java.util.concurrent(jsr166)</td>
-    </tr>
-    <tr>
-    <td>6</td>
-    <td>2006</td>
-    <td>Phasers, etc(jsr166)</td>
-    </tr>
-    <tr>
-    <td>7</td>
-    <td>2011</td>
-    <td>Fork/Join Framework(jsr166y)</td>
-    </tr>
-    <tr>
-    <td>8</td>
-    <td>2014</td>
-    <td>Project Lambda</td>
-    </tr>
-    </tbody>
-</table>
+版本      |发布年份  |并发技术
+---------|---------|-----------------------------
+1.4      |2002     |java.lang.Thread
+5        |2004     |java.util.concurrent(jsr166)
+6        |2006     |Phasers, etc(jsr166)
+7        |2011     |Fork/Join Framework(jsr166y)
+8        |2014     |Project Lambda
 
-先来一个小例子见识下Java8的威力！<!--more-->
+先来一个小例子见识下Java8的威力！
 
-**一，传统的外部迭代处理代码：**
+#### 一，传统的外部迭代处理代码
+
 ``` java
 List<Student> students = ...
 double highestScore = 0.0;
@@ -73,7 +48,8 @@ for (Student s : students) {
 * 顺序执行：迭代从开始到结束一个一个的顺序迭代元素
 * 线程不安全，由于业务逻辑依靠可修改变量，容易产生竞态问题
 
-**二，基于Inner Classes的内部迭代：**
+#### 二，基于Inner Classes的内部迭代
+
 ``` java
 List<Student> students = ...
 double highestScore = students.
@@ -102,7 +78,8 @@ double highestScore = students.
 
 代码写的有点难看
 
-**三，基于Lambdas的内部迭代：**
+#### 三，基于Lambdas的内部迭代
+
 ``` java
 SomeList<Student> students = ...
 double highestScore = students.
@@ -144,7 +121,7 @@ interface ActionListener { void actionPerformed(…); }
 interface Callable<T> { T call(); }
 ```
 
-**局部变量捕获：**
+#### 局部变量捕获
 
 Lambda表达式可以引用上下文中的final等效局部变量。
 
@@ -155,7 +132,7 @@ void expire(File root, long before) {
 }
 ```
 
-**this关键字：**
+#### this关键字
 
 Lambda表达式中的this指的是包含这个Lambda的外部对象，而不是Lambda本身。
 永远记住，Lambda表达式类型其实就是一个函数式接口。
@@ -169,7 +146,7 @@ class SessionManager {
     boolean checkExpiry(long time, long expiry) { ... }
 }
 ```
-**类型推断：**
+#### 类型推断
 
 很多情况下，编译器都可以根据目标函数式接口的方法签名来推断参数类型。
 在Collections接口中有个sort接口：
@@ -186,7 +163,7 @@ Collections.sort(list, (String x, String y) -> x.length() - y.length());
 List<String> list = getList();
 Collections.sort(list, (x, y) -> x.length() - y.length());
 ```
-**方法引用：**
+#### 方法引用
 
 方法引用可以让我们将一个方法作为一个Lambda表达式重复利用。
 
@@ -218,7 +195,7 @@ FileFilter x = File::canRead;
 最后一种方式，等同于把lambda表达式的第一个参数当成instanceMethod的目标对象，
 其他剩余参数当成该方法的参数。比如`String::toLowerCase`等同于`x->x.toLowerCase()`。
 
-**构造器引用：**
+#### 构造器引用
 
 构造器引用语法如下：`ClassName::new`，把lambda表达式的参数当成ClassName构造器的参数 。
 例如`BigDecimal::new`等同于`x->new BigDecimal(x)`。
@@ -234,7 +211,7 @@ Factory<List<String>> f = () -> return new ArrayList<String>();
 Factory<List<String>> f = ArrayList<String>::new;
 ```
 
-**接口扩展：**
+#### 接口扩展
 
 在Java中，接口是不能随便新增方法的，因为接口中一旦增加方法，那么所以实现类都必须重写。
 可以在Interface中使用default关键字来增加一个新的接口方法，并提供一个默认实现。
@@ -251,6 +228,8 @@ interface Collection<E> {
 更甚至，在Java8中，在接口中也可以增加静态方法了。
 
 ### Stream篇
+
+#### 定义
 
 许多的业务逻辑都需要聚集操作，比如按地区分类获取最优价值产品，按币种分类获取交易量。
 之前版本的Java都是通过外部循环来完成这些操作，前面也说过了这种做法的很多弊端。
@@ -273,7 +252,7 @@ Java中对Stream的定义：
 具体这些操作如何应用到每个元素上，就给Stream就好了！（这个秘籍，一般人我不告诉他：））
 大家看完这些可能对Stream还没有一个直观的认识，莫急，容我慢慢道来！
 
-先解释下Stream管道：
+#### Stream管道
 
 Stream管道包含三部分，缺一不可：
 
@@ -310,13 +289,13 @@ nums.stream().filter(num -> num != null).count();
 蓝色框中的语句是丰收的地方，把Stream的里面包含的内容按照某种算法来汇聚成一个值，
 例子中是获取Stream中包含的元素个数。
 
-在此我们总结一下使用Stream的基本步骤：
+#### 使用Stream的基本步骤
 
 1. 创建Stream；
 1. 转换Stream，每次转换原有Stream对象不改变，返回一个新的Stream对象（**可以有多次转换**）；
 1. 对Stream进行聚合（Reduce）操作，获取想要的结果；
 
-**stream源**
+#### stream源
 
 有很多方式可以产生stream源：
 
@@ -364,7 +343,7 @@ Stream.iterate(1, item -> item + 1).limit(10).forEach(System.out::println);
 ```
 这段代码就是先获取一个无限长度的正整数集合的Stream，然后取出前10个打印。千万记住使用limit方法，不然会无限打印下去。
 
-**转换Stream：**
+#### 转换Stream
 
 转换Stream其实就是把一个Stream通过某些行为转换成一个新的Stream。Stream接口中定义了几个常用的转换方法，下面我们挑选几个常用的转换方法来解释。
 
@@ -379,7 +358,7 @@ Stream.iterate(1, item -> item + 1).limit(10).forEach(System.out::println);
 1. limit: 对一个Stream进行截断操作，获取其前N个元素，如果原Stream中包含的元素个数小于N，那就获取其所有的元素；
 1. skip: 返回一个丢弃原Stream的前N个元素后剩下元素组成的新Stream，如果原Stream中包含的元素个数小于N，那么返回空Stream；
 
-**性能问题**
+#### 性能问题
 
 有些细心的同学可能会有这样的疑问：在对于一个Stream进行多次转换操作，每次都对Stream的每个元素进行转换，
 而且是执行多次，这样时间复杂度就是一个for循环里把所有操作都做掉的N（转换的次数）倍啊。其实不是这样的，
@@ -387,7 +366,7 @@ Stream.iterate(1, item -> item + 1).limit(10).forEach(System.out::println);
 Stream里有个操作函数的集合，每次转换操作就是把转换函数放入这个集合中，
 在汇聚操作的时候循环Stream对应的集合，然后对每个元素执行所有的函数。
 
-**聚集（Reduce）Stream**
+#### 聚集（Reduce）Stream
 
 可变汇聚
 
@@ -411,7 +390,7 @@ List<Integer> numsWithoutNull = nums.stream().filter(num -> num != null).
        collect(Collectors.toList());
 ```
 
-**其他汇聚**
+#### 其他汇聚
 
 reduce方法：reduce方法非常的通用，后面介绍的count，sum等都可以使用其实现。
 reduce方法有三个override的方法，本文介绍两个最常用的，
@@ -474,7 +453,8 @@ String name = computer.map(Computer::getSoundcard)
         .orElse("UNKNOWN");
 ```
 
-关于Opational的更多信息，请参考[Oracle官网](http://www.oracle.com/technetwork/articles/java/java8-optional-2175753.html)
+关于Opational的更多信息，请参考[Oracle官网]
+(http://www.oracle.com/technetwork/articles/java/java8-optional-2175753.html)
 
 ### 结束语
 
