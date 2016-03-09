@@ -182,8 +182,6 @@ sudo vim /usr/local/tomcat/webapps/test/index.jsp
 ```
 写一个简单的JSP页面：
 
-{% raw %}
-
 ``` html
 <%@ page language="java" %>
 <%@ page import="java.util.*" %>
@@ -199,7 +197,7 @@ sudo vim /usr/local/tomcat/webapps/test/index.jsp
 </html>
 ```
 
-{% endraw %}
+
 
 然后启动tomcat
 
@@ -215,8 +213,6 @@ sudo vim /usr/local/tomcat/webapps/test/index.jsp
 ```
 写一个简单的JSP页面：
 
-{% raw %}
-
 ``` html
 <%@ page language="java" %>
 <%@ page import="java.util.*" %>
@@ -231,8 +227,6 @@ sudo vim /usr/local/tomcat/webapps/test/index.jsp
     </body>
 </html>
 ```
-
-{% endraw %}
 
 然后启动tomcat
 
