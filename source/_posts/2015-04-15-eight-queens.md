@@ -2,6 +2,7 @@
 layout: post
 title: "回溯法解决八皇后问题"
 date: 2015-04-15 17:11:42 +0800
+toc: true
 categories: 算法
 tags: 八皇后
 ---

@@ -2,6 +2,7 @@
 layout: post
 title: "使用xmemcached客户端"
 date: 2015-04-19 16:36:41 +0800
+toc: true
 categories: 技术随笔
 tags: memcached
 ---

@@ -2,7 +2,7 @@
 layout: post
 title: "归并排序中对小数组采用插入排序"
 date: 2015-04-24 10:47:35 +0800
-comments: true
+toc: true
 categories: 算法
 tags: [归并排序]
 ---

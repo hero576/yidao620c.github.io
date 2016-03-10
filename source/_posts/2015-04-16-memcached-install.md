@@ -2,6 +2,7 @@
 layout: post
 title: "linux上安装memcached"
 date: 2015-04-16 15:52:35 +0800
+toc: true
 categories: 技术随笔
 tags: memcached
 ---

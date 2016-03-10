@@ -3,10 +3,9 @@ layout: post
 title: "windows7上面使用Octopress搭建GitHub博客"
 date: 2015-03-18 17:41:21 +0800
 comments: true
+toc: true
 categories: 技术随笔
 tags: [octopress]
-keywords: blog, octopress, github, 博客, windows7
-description: windows7上面使用Octopress搭建GitHub博客
 ---
 
 ### 前言

@@ -2,6 +2,7 @@
 title: "python函数装饰器详解"
 date: 2015-05-01 10:06:22 +0800
 comments: true
+toc: true
 categories: python
 tags: [python]
 ---

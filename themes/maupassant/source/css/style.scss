@@ -21,7 +21,7 @@ body {
 }
 .content_container {
     padding-right: 50px;
-    padding-top: 20px;
+    padding-top: 10px;
 }
 a, button.submit {
     color: #6E7173;
@@ -237,20 +237,23 @@ a:focus {
         font-size: 15px;
         line-height: 1.77;
         color: #444;
-        padding-top: 15px;
+        padding-top: 1px;
         text-align: justify;
         text-justify: distribute;
         word-break: normal;
         h2 {
-            margin: 1.4em 0 1.1em;
+            margin: 0.5em 0 0.8em;
             border-bottom: 1px solid #eee;
             overflow: hidden;
         }
         h3 {
-            margin: 1.4em 0 1.1em;
+            margin: 0.5em 0 0.8em
         }
         pre code {
             padding: 0 2em;
+        }
+        p:first-child {
+            margin: 10px 0 1.234em;
         }
         p {
             margin: 0 0 1.234em;
