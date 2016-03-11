@@ -77,6 +77,10 @@ theme: maupassant
 stylus:
   compress: true
 
+marked:
+  gfm: true
+  breaks: false
+
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
