@@ -158,6 +158,8 @@ child::A/descendant-or-self::B/child::node()[1]
     * //td/preceding-sibling::td[1]
     * //td[starts-with(text(), "%s") and contains(text(), "disk:%sMB")]/following-sibling::td[2][contains(text(), "%s")]
     * //a/../following-sibling::td[8]/a[2]
+    * //a[@class="pushstate-link" and not(@rel)]
+    * //a[@rel="next" and not(contains(@class, "disabled"))]
 
 看完前面部分，这些的含义应该很容易可以看懂了。恭喜你，基本的XPath已经没问题了！
 
