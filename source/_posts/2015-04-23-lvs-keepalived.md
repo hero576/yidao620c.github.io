@@ -43,12 +43,13 @@ Keepalived原理与实战精讲： <http://zhumeng8337797.blog.163.com/blog/stat
 安装的是具体的服务，这里我们安装的是TOMCAT。
 
 主机环境如下：
-
-    192.168.203.107　 LVS_VIP（VIP：Virtual IP）
-    192.168.203.103　 LVS_Master　　
-    192.168.203.104　 LVS_Backup
-    192.168.203.93　  WEB1_RealServer
-    192.168.203.94　  WEB2_RealServer
+```
+192.168.203.107　 LVS_VIP（VIP：Virtual IP）
+192.168.203.103　 LVS_Master　　
+192.168.203.104　 LVS_Backup
+192.168.203.93　  WEB1_RealServer
+192.168.203.94　  WEB2_RealServer
+```
 
 克隆：我们先安装配置好一层的一个服务器，其他服务器使用克隆方式。
 
@@ -309,7 +310,7 @@ cd /usr/share/tomcat6/webapps/ROOT/
 cat /dev/null > index.html
 vim index.html
 ```
-将如下文本写入index.html，然后打开浏览器：http://192.168.203.93:8080，已经改变：
+将如下文本写入index.html，然后打开浏览器：<http://192.168.203.93:8080>，已经改变：
 ```
 web1 192.168.203.93
 ```
@@ -319,29 +320,30 @@ sh /etc/init.d/realserver.sh start
 ifconfig
 ```
 运行后会看到网络有一个虚拟IP：
+```
+[root@centos01 ROOT]# ifconfig
+eth0      Link encap:Ethernet  HWaddr 08:00:27:59:AB:1D
+          inet addr:192.168.203.93  Bcast:192.168.203.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fe59:ab1d/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:81006 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:12305 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:83023415 (79.1 MiB)  TX bytes:1645604 (1.5 MiB)
 
-    [root@centos01 ROOT]# ifconfig
-    eth0      Link encap:Ethernet  HWaddr 08:00:27:59:AB:1D
-              inet addr:192.168.203.93  Bcast:192.168.203.255  Mask:255.255.255.0
-              inet6 addr: fe80::a00:27ff:fe59:ab1d/64 Scope:Link
-              UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-              RX packets:81006 errors:0 dropped:0 overruns:0 frame:0
-              TX packets:12305 errors:0 dropped:0 overruns:0 carrier:0
-              collisions:0 txqueuelen:1000
-              RX bytes:83023415 (79.1 MiB)  TX bytes:1645604 (1.5 MiB)
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:46 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:46 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:3559 (3.4 KiB)  TX bytes:3559 (3.4 KiB)
 
-    lo        Link encap:Local Loopback
-              inet addr:127.0.0.1  Mask:255.0.0.0
-              inet6 addr: ::1/128 Scope:Host
-              UP LOOPBACK RUNNING  MTU:16436  Metric:1
-              RX packets:46 errors:0 dropped:0 overruns:0 frame:0
-              TX packets:46 errors:0 dropped:0 overruns:0 carrier:0
-              collisions:0 txqueuelen:0
-              RX bytes:3559 (3.4 KiB)  TX bytes:3559 (3.4 KiB)
-
-    lo:0      Link encap:Local Loopback
-              inet addr:192.168.203.107  Mask:255.255.255.255
-              UP LOOPBACK RUNNING  MTU:16436  Metric:1
+lo:0      Link encap:Local Loopback
+          inet addr:192.168.203.107  Mask:255.255.255.255
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+```
 
 4\. 去LVS_MASTER服务器的终端查看下ipvsadm，查看已经连接上了WEB1服务器，运行命令
 ```
@@ -349,17 +351,18 @@ ipvsadm -ln
 ```
 
 结果如下：
-
-    [root@centos03 keepalived-1.2.7]# ipvsadm -ln
-    IP Virtual Server version 1.2.1 (size=4096)
-    Prot LocalAddress:Port Scheduler Flags
-      -> RemoteAddress:Port           Forward Weight ActiveConn InActConn
-    TCP  192.168.203.107:8080 rr persistent 50
-      -> 192.168.203.93:8080          Route   1      0          0
+```
+[root@centos03 keepalived-1.2.7]# ipvsadm -ln
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port Scheduler Flags
+  -> RemoteAddress:Port           Forward Weight ActiveConn InActConn
+TCP  192.168.203.107:8080 rr persistent 50
+  -> 192.168.203.93:8080          Route   1      0          0
+```
 
 
 已经可以看到有服务器加入进来了。
-此时我们访问网页http://192.168.203.107:8080，出现界面显示web1 192.168.203.93；
+此时我们访问网页<http://192.168.203.107:8080>，出现界面显示web1 192.168.203.93；
 OK，至此已经能实现负载均衡了，接下来我们通过克隆实现多个主机的试验。
 
 5\. 服务器克隆
@@ -438,17 +441,18 @@ virtual_server 192.168.203.107 8080 {
 测试LVS层
 
 1）首先执行ip a命令，主服务器会存在一个虚拟IP，从服务器不会存在这个虚拟IP。现在浏览网页显示正常。虚拟IP如图所示：
-
-    显示集群中服务器ip信息：ipvsadm -ln
-    查看日志：tail -f /var/log/messages
-    查看请求转发情况：ipvsadm -lcn | grep 虚拟IP
+```
+显示集群中服务器ip信息：ipvsadm -ln
+查看日志：tail -f /var/log/messages
+查看请求转发情况：ipvsadm -lcn | grep 虚拟IP
+```
 
 2）现在停掉LVS_MASTER的keepAlived服务，看LVS_BACKUP是否可以自动加上虚拟IP地址，并且开始转发请求。
 
 （注意keepAlived的配置文件中有一个网卡设备，虚拟机的网卡设备可能是不一样的，有的是eth0，
 有的是eth1，所以也是要改动的，否则从服务器的服务器很有可能服务不正常）
 之后你通过命令：ip a去分别查看LVS_MASTER和LVS_BACKUP机器，结果正如预料一样，BACKUP立即接管了MASTER的工作。
-切换很快，访问网页：http://192.168.203.107:8080也能正常显示。
+切换很快，访问网页：<http://192.168.203.107:8080> 也能正常显示。
 
 3）恢复主服务器的keepAlived服务后，主服务器立刻接替了从服务器的工作，就不做截图了。和第1）个正常效果是一样的。
 

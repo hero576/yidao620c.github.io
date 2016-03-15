@@ -163,16 +163,18 @@ sudo chkconfig --add tomcat
 
 修改下面这句：
 
-    <Engine name="Catalina" defaultHost="localhost" jvmRoute="TomcatA">
-
+```
+<Engine name="Catalina" defaultHost="localhost" jvmRoute="TomcatA">
+```
 
 在第二台机子上面：
 
 `sudo vim /usr/local/tomcat/conf/server.xml`
 
 修改下面这句：
-
-    <Engine name="Catalina" defaultHost="localhost" jvmRoute="TomcatB">
+```
+<Engine name="Catalina" defaultHost="localhost" jvmRoute="TomcatB">
+```
 
 6.提供测试页面
 
@@ -198,10 +200,7 @@ sudo vim /usr/local/tomcat/webapps/test/index.jsp
 </html>
 ```
 
-
-
 然后启动tomcat
-
 ```
 sudo service tomcat start
 ```
@@ -230,7 +229,6 @@ sudo vim /usr/local/tomcat/webapps/test/index.jsp
 ```
 
 然后启动tomcat
-
 ```
 sudo service tomcat start
 ```
@@ -251,44 +249,46 @@ yum -y install httpd httpd-devel
 2.安装mod_jk.so模块：
 
 ``` bash
-
 wget http://mirrors.cnnic.cn/apache/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.41-src.tar.gz
 tar xf tomcat-connectors-1.2.41-src.tar.gz
 cd tomcat-connectors-1.2.41-src/native/
 ./configure --with-apxs=/usr/sbin/apxs
 sudo make && sudo make install
-
 ```
 
 3.提供额外的httpd模块配置文件：
 
 `vim /etc/httpd/conf.d/httpd-jk.conf`
 
-    # Load the mod_jk
-    LoadModule  jk_module  modules/mod_jk.so
-    JkWorkersFile  /etc/httpd/conf.d/workers.properties
-    JkLogFile  logs/mod_jk.log
-    JkLogLevel  debug
-    JkMount  /*  lb1
-    JkMount  /status/  stat1
+```
+# Load the mod_jk
+LoadModule  jk_module  modules/mod_jk.so
+JkWorkersFile  /etc/httpd/conf.d/workers.properties
+JkLogFile  logs/mod_jk.log
+JkLogLevel  debug
+JkMount  /*  lb1
+JkMount  /status/  stat1
+```
 
 4.配置mod_jk模块的配置文件workers.properties：
 
 `vim /etc/httpd/conf.d/workers.properties`
 
-    worker.list = lb1,stat1
-    worker.TomcatA.type = ajp13
-    worker.TomcatA.host = 192.168.203.103
-    worker.TomcatA.port = 8009
-    worker.TomcatA.lbfactor = 1
-    worker.TomcatB.type = ajp13
-    worker.TomcatB.host = 192.168.203.104
-    worker.TomcatB.port = 8009
-    worker.TomcatB.lbfactor = 1
-    worker.lb1.type = lb
-    worker.lb1.sticky_session = 0
-    worker.lb1.balance_workers = TomcatA, TomcatB
-    worker.stat1.type = status
+```
+worker.list = lb1,stat1
+worker.TomcatA.type = ajp13
+worker.TomcatA.host = 192.168.203.103
+worker.TomcatA.port = 8009
+worker.TomcatA.lbfactor = 1
+worker.TomcatB.type = ajp13
+worker.TomcatB.host = 192.168.203.104
+worker.TomcatB.port = 8009
+worker.TomcatB.lbfactor = 1
+worker.lb1.type = lb
+worker.lb1.sticky_session = 0
+worker.lb1.balance_workers = TomcatA, TomcatB
+worker.stat1.type = status
+```
 
 5.启动httpd测试：
 我们先去修改下hostname，还有httpd的domainname，`sudo vim /etc/hosts`
@@ -298,8 +298,9 @@ sudo make && sudo make install
 然后修改httpd的配置文件，`sudo vim /etc/httpd/conf/httpd.conf`
 修改这一行：
 
-    ServerName localhost:80
-
+```
+ServerName localhost:80
+```
 
 最后我们启动httpd服务：
 ```
@@ -314,15 +315,17 @@ sudo service httpd start
 
 修改两个地方
 
-    #Listen 12.34.56.78:80
-    Listen 80
-    #把80改为你设置的端口，我设置端口为8088
+```
+#Listen 12.34.56.78:80
+Listen 80
+#把80改为你设置的端口，我设置端口为8088
 
-    Listen 8088
+Listen 8088
 
-    NameVirtualHost *:80
-    #把80改为你设置的端口，我设置端口为8088
-    NameVirtualHost *:8088
+NameVirtualHost *:80
+#把80改为你设置的端口，我设置端口为8088
+NameVirtualHost *:8088
+```
 
 保存修改，退出，重启httpd服务。
 

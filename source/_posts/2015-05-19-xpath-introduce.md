@@ -36,31 +36,33 @@ W3C网址： <http://www.w3schools.com/XPath/>
 ### 三种表示法
 
 1. 最简单的XPath如下：
-
-`/A/B/C`
+```
+/A/B/C
+```
 
 在这里选择所有符合规矩的C节点：C节点必须是B的子节点（B/C），
 同时B节点必须是A的子节点（A/B），而A是这个XML文档的根节点（/A）。
 此时的这种描述法类似于磁盘中文件的路径（URI），从盘符开始顺着一级一级的目录最终找到文件。
 
 2. 这里还有一个复杂一些的例子，包含了全部构成成分（请详细的看）：
-
-`A//B/*[1]`
-
+```
+A//B/*[1]
+```
 此时选择的元素是：在B节点下的第一个节点（B/*[1]），不论节点的名称如何（*）；
 而B节点必须出现在A节点内，不论和A节点之间相隔几层节点（//B）；
 与此同时A节点还必须是当前节点的子节点（A，前边没有/）。
 
 3. 最后一个常用的例子，在所有节点下查找：
-
-`//A/B/C/*[2]`
+```
+//A/B/C/*[2]
+```
 
 ### 轴语法
 在未缩写语法里，两个上述范例可以写为：
-`
+```
 /child::A/child::B/child::C
 child::A/descendant-or-self::B/child::node()[1]
-`
+```
 在XPath的每个步骤里，通过完整的轴描述（例如：child或descendant-or-self）进行明确的指定，
 然后使用::，它的后面跟着节点测试的内容，例如上面范例所示的A以及node()。
 
@@ -117,49 +119,51 @@ child::A/descendant-or-self::B/child::node()[1]
 
 有关数值的函数
 
-    ----------------------------------------------------------------------------------------------
-    |fn:number(arg)         |返回参数的数值。参数可以是布尔值、字符串或节点集。例子：number(‘100′)结果：100
-    |fn:abs(num)            |返回参数的绝对值。例子：abs(3.14)   结果：3.14例子：abs(-3.14)   结果：3.14
-    |fn:ceiling(num)        |返回大于 num 参数的最小整数。例子：ceiling(3.14)  结果：4
-    |fn:floor(num)          |返回不大于 num 参数的最大整数。例子：floor(3.14)  结果：3
-    |fn:round(num)          |把 num 参数舍入为最接近的整数。例子：round(3.14)  结果：3
-    ----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+|fn:number(arg)         |返回参数的数值。参数可以是布尔值、字符串或节点集。例子：number(‘100′)结果：100
+|fn:abs(num)            |返回参数的绝对值。例子：abs(3.14)   结果：3.14例子：abs(-3.14)   结果：3.14
+|fn:ceiling(num)        |返回大于 num 参数的最小整数。例子：ceiling(3.14)  结果：4
+|fn:floor(num)          |返回不大于 num 参数的最大整数。例子：floor(3.14)  结果：3
+|fn:round(num)          |把 num 参数舍入为最接近的整数。例子：round(3.14)  结果：3
+----------------------------------------------------------------------------------------------
 
 有关字符串的函数
 
-    ------------------------------------------------------------------------------------------------------------------------------------------------
-    |fn:string(arg)                         |返回参数的字符串值。参数可以是数字、逻辑值或节点集。例子：string(314) 结果：”314″
-    |fn:compare(comp1,comp2,collation)      |如果 comp1 小于 comp2，则返回 -1。类推例子：compare(‘ghi’, ‘ghi’) 结果：0
-    |fn:concat(string,string,…)             |返回字符串的拼接。例子：concat(‘XPath ‘,’is ‘,’FUN!’) 结果：’XPath is FUN!’
-    |fn:substring(string,start,len)         |返回从start位置开始的指定长度的子字符串。第一个字符的下标是 1。例子：substring(‘Beatles’,1,4) 结果：’Beat’
-    |fn:string-length(string)               |返回指定字符串的长度。如果没有 string 参数，则返回当前节点的字符串值的长度。例子：string-length(‘Beatles’) 结果：7
-    |fn:normalize-space(string)             |删除开头和结尾空白，并把内部所有空白序列替换为一个，然后返回结果。例子：normalize-space(‘ The XML ‘) 结果：’The XML’
-    |fn:upper-case(string)                  |把 string 参数转换为大写。例子：upper-case(‘The XML’) 结果：’THE XML’
-    |fn:lower-case(string)                  |把 string 参数转换为小写。例子：lower-case(‘The XML’) 结果：’the xml’
-    |fn:contains(string1,string2)           |如果 string1 包含 string2，则返回 true，否则返回 false。例子：contains(‘XML’,’XM’) 结果：true
-    |fn:starts-with(string1,string2)        |如果 string1 以 string2 开始，则返回 true，否则返回 false。例子：starts-with(‘XML’,’X’) 结果：true
-    |fn:ends-with(string1,string2)          |如果 string1 以 string2 结尾，则返回 true，否则返回 false。例子：ends-with(‘XML’,’X’) 结果：false
-    |fn:substring-before(string1,string2)   |返回 string2 在 string1 中出现之前的子字符串。例子：substring-before(’12/10′,’/’) 结果：’12’
-    |fn:substring-after(string1,string2)    |返回 string2 在 string1 中出现之后的子字符串。例子：substring-after(’12/10′,’/’) 结果：’10’
-    |fn:matches(string,pattern)             |如果 string 参数匹配指定的模式，则返回 true，否则返回 false。例子：matches(“Merano”, “ran”) 结果：true
-    ------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------
+|fn:string(arg)                         |返回参数的字符串值。参数可以是数字、逻辑值或节点集。例子：string(314) 结果：”314″
+|fn:compare(comp1,comp2,collation)      |如果 comp1 小于 comp2，则返回 -1。类推例子：compare(‘ghi’, ‘ghi’) 结果：0
+|fn:concat(string,string,…)             |返回字符串的拼接。例子：concat(‘XPath ‘,’is ‘,’FUN!’) 结果：’XPath is FUN!’
+|fn:substring(string,start,len)         |返回从start位置开始的指定长度的子字符串。第一个字符的下标是 1。例子：substring(‘Beatles’,1,4) 结果：’Beat’
+|fn:string-length(string)               |返回指定字符串的长度。如果没有 string 参数，则返回当前节点的字符串值的长度。例子：string-length(‘Beatles’) 结果：7
+|fn:normalize-space(string)             |删除开头和结尾空白，并把内部所有空白序列替换为一个，然后返回结果。例子：normalize-space(‘ The XML ‘) 结果：’The XML’
+|fn:upper-case(string)                  |把 string 参数转换为大写。例子：upper-case(‘The XML’) 结果：’THE XML’
+|fn:lower-case(string)                  |把 string 参数转换为小写。例子：lower-case(‘The XML’) 结果：’the xml’
+|fn:contains(string1,string2)           |如果 string1 包含 string2，则返回 true，否则返回 false。例子：contains(‘XML’,’XM’) 结果：true
+|fn:starts-with(string1,string2)        |如果 string1 以 string2 开始，则返回 true，否则返回 false。例子：starts-with(‘XML’,’X’) 结果：true
+|fn:ends-with(string1,string2)          |如果 string1 以 string2 结尾，则返回 true，否则返回 false。例子：ends-with(‘XML’,’X’) 结果：false
+|fn:substring-before(string1,string2)   |返回 string2 在 string1 中出现之前的子字符串。例子：substring-before(’12/10′,’/’) 结果：’12’
+|fn:substring-after(string1,string2)    |返回 string2 在 string1 中出现之后的子字符串。例子：substring-after(’12/10′,’/’) 结果：’10’
+|fn:matches(string,pattern)             |如果 string 参数匹配指定的模式，则返回 true，否则返回 false。例子：matches(“Merano”, “ran”) 结果：true
+------------------------------------------------------------------------------------------------------------------------------------------------
 
 更多函数请参考： <http://www.w3school.com.cn/xpath/xpath_functions.asp>
 
 ### 我自己实际工作中使用过的XPath实例：
 
-    * //span/../.././span
-    * //bookstore/book[last()]
-    * /DocText/WithQuads/Page/Word
-    * record[field[@id='220' and @value='Red'] and field[@id='221' and @value='Large']]
-    * /Root//Person[contains(Blog,'cn') and contains(@ID,'01')]
-    * //tr[td[1] and td[2][contains(text(), "512M")]]
-    * //td/following-sibling::td[1]
-    * //td/preceding-sibling::td[1]
-    * //td[starts-with(text(), "%s") and contains(text(), "disk:%sMB")]/following-sibling::td[2][contains(text(), "%s")]
-    * //a/../following-sibling::td[8]/a[2]
-    * //a[@class="pushstate-link" and not(@rel)]
-    * //a[@rel="next" and not(contains(@class, "disabled"))]
+```
+* //span/../.././span
+* //bookstore/book[last()]
+* /DocText/WithQuads/Page/Word
+* record[field[@id='220' and @value='Red'] and field[@id='221' and @value='Large']]
+* /Root//Person[contains(Blog,'cn') and contains(@ID,'01')]
+* //tr[td[1] and td[2][contains(text(), "512M")]]
+* //td/following-sibling::td[1]
+* //td/preceding-sibling::td[1]
+* //td[starts-with(text(), "%s") and contains(text(), "disk:%sMB")]/following-sibling::td[2][contains(text(), "%s")]
+* //a/../following-sibling::td[8]/a[2]
+* //a[@class="pushstate-link" and not(@rel)]
+* //a[@rel="next" and not(contains(@class, "disabled"))]
+```
 
 看完前面部分，这些的含义应该很容易可以看懂了。恭喜你，基本的XPath已经没问题了！
 

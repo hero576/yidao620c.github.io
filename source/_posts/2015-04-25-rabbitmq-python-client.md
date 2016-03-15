@@ -23,8 +23,9 @@ tags: rabbitmq
 安装pika
 
 使用pip安装的时候可能会报错：
-
-`importerror no module named pkg_resources`
+```
+importerror no module named pkg_resources
+```
 
 请用下面命令解决这个问题：
 ```
@@ -32,8 +33,9 @@ $ curl https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py | python
 ```
 
 然后还可能出现：<!--more-->
-
-`pkg_resources.distributionnotfound pip==1.4.1`
+```
+pkg_resources.distributionnotfound pip==1.4.1
+```
 
 这时候先把pip卸载掉，执行：
 ```
@@ -83,10 +85,11 @@ $ python send.py ‘你好刀哥’
 $ /usr/local/rabbitmq/sbin/rabbitmqctl list_queues
 ```
 结果如下面：
-
-    Listing queues …
-    hello 2
-    … done .
+```
+Listing queues …
+hello 2
+… done .
+```
 
 如果你也看到hello队列里面有一个消息的话，就证明可以发消息了。
 
@@ -113,10 +116,11 @@ channel.start_consuming()
 $ python receive.py
 ```
 结果：
-
-    [*] Waiting for messages. To exit press CTRL+C
-    Hello World!
-    你好刀哥
+```
+[*] Waiting for messages. To exit press CTRL+C
+Hello World!
+你好刀哥
+```
 
 ### 实例二：工作队列（work queue / task queue）
 

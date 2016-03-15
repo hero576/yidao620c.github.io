@@ -30,13 +30,14 @@ cd python-2.7.5
 vim Python-2.7.5/Modules/Setup.dist
 ```
 找到
-
-    #SSL=/usr/local/ssl
-    #_ssl _ssl.c \
-    #       -DUSE_SSL -I$(SSL)/include -I$(SSL)/include/openssl \
-    #       -L$(SSL)/lib -lssl -lcrypto
-    ......
-    #zlib zlibmodule.c -I$(prefix)/include -L$(exec_prefix)/lib -lz
+```
+#SSL=/usr/local/ssl
+#_ssl _ssl.c \
+#       -DUSE_SSL -I$(SSL)/include -I$(SSL)/include/openssl \
+#       -L$(SSL)/lib -lssl -lcrypto
+......
+#zlib zlibmodule.c -I$(prefix)/include -L$(exec_prefix)/lib -lz
+```
 
 把注释去掉后开始执行安装
 ```
@@ -144,9 +145,10 @@ rabbitmq-plugins enable rabbitmq_management
 我运行的时候报错了，ERROR: epmd error for host “springzoo”: timeout (timed out)
 
 更改下/etc/hosts:
-
-    127.0.0.1   localhost springzoo
-    ::1         localhost springzoo
+```
+127.0.0.1   localhost springzoo
+::1         localhost springzoo
+```
 
 接下来我们查看下端口
 ```
@@ -154,10 +156,11 @@ ps aux | grep rabbitmq #查看端口，默认就是5672
 netstat -tnlp | grep 5672
 ```
 应该是下面的结果
-
-    tcp        0      0 0.0.0.0:15672               0.0.0.0:*                   LISTEN      30435/beam.smp
-    tcp        0      0 0.0.0.0:55672               0.0.0.0:*                   LISTEN      30435/beam.smp
-    tcp        0      0 :::5672                     :::*                        LISTEN      30435/beam.smp
+```
+tcp        0      0 0.0.0.0:15672               0.0.0.0:*                   LISTEN      30435/beam.smp
+tcp        0      0 0.0.0.0:55672               0.0.0.0:*                   LISTEN      30435/beam.smp
+tcp        0      0 :::5672                     :::*                        LISTEN      30435/beam.smp
+```
 
 如果看到下面的信息就表明已经启动成功了！
 省略截图….
@@ -167,6 +170,5 @@ netstat -tnlp | grep 5672
 使用登录的名户名和密码默认都算guest，登录后的页面如下：
 
 截图再次省略…
-
 
 [python-2.7.5.tar.gz]: https://www.python.org/ftp/python/2.7.5/Python-2.7.5.tgz

@@ -108,7 +108,7 @@ exe = EXE(pyz,
 注意：我在a.datas下面添加了那行配置，具体的路径自己去修改下。
 
 上面是添加单个文件，如果有多个文件，可以一个个的添加。不过如果文件多了话，那么就使用下面的方法：
-```
+``` python
 # -*- mode: python -*-
 a = Analysis(['main.py'],
              pathex=['d:\\tmp\\core-wxpython'],

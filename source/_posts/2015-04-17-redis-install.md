@@ -7,7 +7,7 @@ categories: 技术随笔
 tags: redis
 ---
 
-## 一、Redis介绍
+## Redis介绍
 
 Redis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。从2010年3月15日起，Redis的开发工作由VMware主持。
 
@@ -105,7 +105,7 @@ Redis的Pub/Sub系统可以构建实时的消息系统，比如很多用Pub/Sub�
 
 这个不必说了，性能优于Memcached，数据结构更多样化。
 
-## 二、安装及使用 ##
+## 安装及使用 ##
 
 **步骤一: 下载Redis**
 ``` bash
@@ -123,14 +123,17 @@ make test
 ```
 
 最后测试结果为：
-	\o/ All tests passed without errors!
-	Cleanup: may take some time… OK
+```
+\o/ All tests passed without errors!
+Cleanup: may take some time… OK
+```
 那么，恭喜你，成功安装了。
 安装完成后，会在src目录下生成几个可执行文件：
-
-    redis-server：Redis服务器的daemon启动程序
-    redis-cli：Redis命令行操作工具。当然，你也可以用telnet根据其纯文本协议来操作
-    redis-benchmark：Redis性能测试工具，测试Redis在你的系统及你的配置下的读写性能
+```
+redis-server：Redis服务器的daemon启动程序
+redis-cli：Redis命令行操作工具。当然，你也可以用telnet根据其纯文本协议来操作
+redis-benchmark：Redis性能测试工具，测试Redis在你的系统及你的配置下的读写性能
+```
 
 **步骤三： 生产环境下的Redis的安装与启动**
 
@@ -147,10 +150,12 @@ source /etc/profile
 3，新建/var/redis/端口号/，用来存放每个redis实例的持久化文件
 
 4，修改配置文件，首先将配置文件模板复制到/etc/redis 目录中，以端口号命名，比如6379.conf，然后至少修改以下四个配置项：
-	daemonize yes  以redis守护进程模式运行
-	pidfile /var/run/redis_端口号.pid  设置redis的PID文件位置
-	port  端口号  设置redis实例监听的端口号
-	dir  /var/redis/端口号  设置持久化文件存放的位置
+```
+daemonize yes  以redis守护进程模式运行
+pidfile /var/run/redis_端口号.pid  设置redis的PID文件位置
+port  端口号  设置redis实例监听的端口号
+dir  /var/redis/端口号  设置持久化文件存放的位置
+```
 5，配置初始化脚本
 
 首先将初始化脚本$REDIS_HOME/utils/目录中的redis_init_script复制到/etc/init.d/目录中，修改名字为redis_端口号，其中端口号表示要让redis监听的端口号，
@@ -159,9 +164,11 @@ source /etc/profile
 cp utils/redis_init_script /etc/init.d/redis_6379
 ```
 打开redis_6379，修改如下：
-    REDISPORT=6379
-    EXEC=/usr/local/redis/src/redis-server
-    CLIEXEC=/usr/local/redis/src/redis-cli
+```
+REDISPORT=6379
+EXEC=/usr/local/redis/src/redis-server
+CLIEXEC=/usr/local/redis/src/redis-cli
+```
 6，执行/etc/init.d/redis_端口号 start  启动
 
 7，执行/etc/init.d/redis_端口号 stop  停止，或者是用  $ redis-cli SHUTDOWN，
@@ -202,7 +209,7 @@ redis 127.0.0.1:6379 >
 src/redis-cli shutdown
 ```
 
-## 三、配置Redis ##
+## 配置Redis
 使用配置文件启动：
 ``` bash
 src/redis-server redis.conf
@@ -210,70 +217,71 @@ src/redis-server redis.conf
 主要配置项：
 
 Redis支持很多的参数，但都有默认值。
-
-	●daemonize:
-	默认情况下，redis不是在后台运行的，如果需要在后台运行，把该项的值更改为yes。
-	●pidfile
-	当Redis在后台运行的时候，Redis默认会把pid文件放在/var/run/redis.pid，
-	你可以配置到其他地址。当运行多个redis服务时，需要指定不同的pid文件和端口。
-	●bind
-	指定Redis只接收来自于该IP地址的请求，如果不进行设置，那么将处理所有请求，在生产环境中最好设置该项。
-	●port
-	监听端口，默认为6379。
-	●timeout
-	设置客户端连接时的超时时间，单位为秒。当客户端在这段时间内没有发出任何指令，那么关闭该连接。
-	●loglevel
-	log等级分为4级，debug, verbose, notice, 和warning。生产环境下一般开启notice。
-	●logfile
-	配置log文件地址，默认使用标准输出，即打印在命令行终端的窗口上。
-	●databases
-	设置数据库的个数，可以使用SELECT 命令来切换数据库。默认使用的数据库是0。
-	●save
-	设置Redis进行数据库镜像的频率。
-		if(在60秒之内有10000个keys发生变化时){
-		    进行镜像备份
-		}else if(在300秒之内有10个keys发生了变化){
-		    进行镜像备份
-		}else if(在900秒之内有1个keys发生了变化){
-		    进行镜像备份
-		}
-	●rdbcompression
-	在进行镜像备份时，是否进行压缩。
-	●dbfilename
-	镜像备份文件的文件名。
-	●dir
-	数据库镜像备份的文件放置的路径。这里的路径跟文件名要分开配置是因为Redis在进行备份时，
-	先会将当前数据库的状态写入到一个临时文件中，等备份完成时，
-	再把该该临时文件替换为上面所指定的文件，而这里的临时文件和上面所配置的备份文件都会放在这个指定的路径当中。
-	●slaveof
-	设置该数据库为其他数据库的从数据库。
-	●masterauth
-	当主数据库连接需要密码验证时，在这里指定。
-	●requirepass
-	设置客户端连接后进行任何其他指定前需要使用的密码。警告：因为redis速度相当快，所以在一台比较好的服务器下，
-	一个外部的用户可以在一秒钟进行150K次的密码尝试，这意味着你需要指定非常非常强大的密码来防止暴力破解。
-	●maxclients
-	限制同时连接的客户数量。当连接数超过这个值时，redis将不再接收其他连接请求，客户端尝试连接时将收到error信息。
-	●maxmemory
-	设置redis能够使用的最大内存。当内存满了的时候，如果还接收到set命令，redis将先尝试剔除设置过expire信息的key，
-	而不管该key的过期时间还没有到达。在删除时，将按照过期时间进行删除，
-	最早将要被过期的key将最先被删除。如果带有expire信息的key都删光了，
-	那么将返回错误。这样，redis将不再接收写请求，只接收get请求。
-	maxmemory的设置比较适合于把redis当作于类似memcached的缓存来使用。
-	●appendonly
-	默认情况下，redis会在后台异步的把数据库镜像备份到磁盘，但是该备份是非常耗时的，
-	而且备份也不能很频繁，如果发生诸如拉闸限电、拔插头等状况，
-	那么将造成比较大范围的数据丢失。所以redis提供了另外一种更加高效的数据库备份及灾难恢复方式。开启append only模式之后，
-	redis会把所接收到的每一次写操作请求都追加到appendonly.aof文件中，当redis重新启动时，会从该文件恢复出之前的状态。
-	但是这样会造成appendonly.aof文件过大，所以redis还支持了BGREWRITEAOF指令，对appendonly.aof进行重新整理。
-	所以我认为推荐生产环境下的做法为关闭镜像，开启appendonly.aof，同时可以选择在访问较少的时间每天对appendonly.aof进行重写一次。
-	●appendfsync
-	设置对appendonly.aof文件进行同步的频率。always表示每次有写操作都进行同步，everysec表示对写操作进行累积，
-	每秒同步一次。这个需要根据实际业务场景进行配置。
-	●activerehashing
-	开启之后，redis将在每100毫秒时使用1毫秒的CPU时间来对redis的hash表进行重新hash，可以降低内存的使用。当你的使用场景中，
-	有非常严格的实时性需要，不能够接受Redis时不时的对请求有2毫秒的延迟的话，把这项配置为no。
-	如果没有这么严格的实时性要求，可以设置为yes，以便能够尽可能快的释放内存。
+```
+●daemonize:
+默认情况下，redis不是在后台运行的，如果需要在后台运行，把该项的值更改为yes。
+●pidfile
+当Redis在后台运行的时候，Redis默认会把pid文件放在/var/run/redis.pid，
+你可以配置到其他地址。当运行多个redis服务时，需要指定不同的pid文件和端口。
+●bind
+指定Redis只接收来自于该IP地址的请求，如果不进行设置，那么将处理所有请求，在生产环境中最好设置该项。
+●port
+监听端口，默认为6379。
+●timeout
+设置客户端连接时的超时时间，单位为秒。当客户端在这段时间内没有发出任何指令，那么关闭该连接。
+●loglevel
+log等级分为4级，debug, verbose, notice, 和warning。生产环境下一般开启notice。
+●logfile
+配置log文件地址，默认使用标准输出，即打印在命令行终端的窗口上。
+●databases
+设置数据库的个数，可以使用SELECT 命令来切换数据库。默认使用的数据库是0。
+●save
+设置Redis进行数据库镜像的频率。
+    if(在60秒之内有10000个keys发生变化时){
+        进行镜像备份
+    }else if(在300秒之内有10个keys发生了变化){
+        进行镜像备份
+    }else if(在900秒之内有1个keys发生了变化){
+        进行镜像备份
+    }
+●rdbcompression
+在进行镜像备份时，是否进行压缩。
+●dbfilename
+镜像备份文件的文件名。
+●dir
+数据库镜像备份的文件放置的路径。这里的路径跟文件名要分开配置是因为Redis在进行备份时，
+先会将当前数据库的状态写入到一个临时文件中，等备份完成时，
+再把该该临时文件替换为上面所指定的文件，而这里的临时文件和上面所配置的备份文件都会放在这个指定的路径当中。
+●slaveof
+设置该数据库为其他数据库的从数据库。
+●masterauth
+当主数据库连接需要密码验证时，在这里指定。
+●requirepass
+设置客户端连接后进行任何其他指定前需要使用的密码。警告：因为redis速度相当快，所以在一台比较好的服务器下，
+一个外部的用户可以在一秒钟进行150K次的密码尝试，这意味着你需要指定非常非常强大的密码来防止暴力破解。
+●maxclients
+限制同时连接的客户数量。当连接数超过这个值时，redis将不再接收其他连接请求，客户端尝试连接时将收到error信息。
+●maxmemory
+设置redis能够使用的最大内存。当内存满了的时候，如果还接收到set命令，redis将先尝试剔除设置过expire信息的key，
+而不管该key的过期时间还没有到达。在删除时，将按照过期时间进行删除，
+最早将要被过期的key将最先被删除。如果带有expire信息的key都删光了，
+那么将返回错误。这样，redis将不再接收写请求，只接收get请求。
+maxmemory的设置比较适合于把redis当作于类似memcached的缓存来使用。
+●appendonly
+默认情况下，redis会在后台异步的把数据库镜像备份到磁盘，但是该备份是非常耗时的，
+而且备份也不能很频繁，如果发生诸如拉闸限电、拔插头等状况，
+那么将造成比较大范围的数据丢失。所以redis提供了另外一种更加高效的数据库备份及灾难恢复方式。开启append only模式之后，
+redis会把所接收到的每一次写操作请求都追加到appendonly.aof文件中，当redis重新启动时，会从该文件恢复出之前的状态。
+但是这样会造成appendonly.aof文件过大，所以redis还支持了BGREWRITEAOF指令，对appendonly.aof进行重新整理。
+所以我认为推荐生产环境下的做法为关闭镜像，开启appendonly.aof，同时可以选择在访问较少的时间每天对appendonly.aof进行重写一次。
+●appendfsync
+设置对appendonly.aof文件进行同步的频率。always表示每次有写操作都进行同步，everysec表示对写操作进行累积，
+每秒同步一次。这个需要根据实际业务场景进行配置。
+●activerehashing
+开启之后，redis将在每100毫秒时使用1毫秒的CPU时间来对redis的hash表进行重新hash，可以降低内存的使用。当你的使用场景中，
+有非常严格的实时性需要，不能够接受Redis时不时的对请求有2毫秒的延迟的话，把这项配置为no。
+如果没有这么严格的实时性要求，可以设置为yes，以便能够尽可能快的释放内存。
+```
 
 ## 四、操作Redis ##
 1、插入数据

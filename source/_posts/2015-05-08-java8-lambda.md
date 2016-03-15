@@ -17,7 +17,7 @@ tags: java8
 
 昨天参加了Oracle的Java8宣讲活动，有幸目睹了Simon Ritter的风采，写个总结来分享下。**<!--more-->
 
-####Java并发编程演变：
+#### Java并发编程演变：
 
 版本      |发布年份  |并发技术
 ---------|---------|-----------------------------
@@ -29,7 +29,7 @@ tags: java8
 
 先来一个小例子见识下Java8的威力！
 
-#### 一，传统的外部迭代处理代码
+#### 传统的外部迭代处理代码
 
 ``` java
 List<Student> students = ...
@@ -49,7 +49,7 @@ for (Student s : students) {
 * 顺序执行：迭代从开始到结束一个一个的顺序迭代元素
 * 线程不安全，由于业务逻辑依靠可修改变量，容易产生竞态问题
 
-#### 二，基于Inner Classes的内部迭代
+#### 基于Inner Classes的内部迭代
 
 ``` java
 List<Student> students = ...
@@ -79,7 +79,7 @@ double highestScore = students.
 
 代码写的有点难看
 
-#### 三，基于Lambdas的内部迭代
+#### 基于Lambdas的内部迭代
 
 ``` java
 SomeList<Student> students = ...
@@ -183,10 +183,11 @@ FileFilter x = File::canRead;
 ```
 
 方法引用语法格式有以下三种：
-
-    objectName::instanceMethod
-    ClassName::staticMethod
-    ClassName::instanceMethod
+```
+objectName::instanceMethod
+ClassName::staticMethod
+ClassName::instanceMethod
+```
 
 前两种方式类似，等同于把lambda表达式的参数直接当成instanceMethod\|staticMethod的参数来调用。
 
@@ -238,13 +239,15 @@ interface Collection<E> {
 Java8给出完美解决方案：Lambda表达式+Stream API
 
 Java中对Stream的定义：
-
-    A sequence of elements supporting sequential and parallel aggregate operations.
+```
+A sequence of elements supporting sequential and parallel aggregate operations.
+```
 
 我们来解读一下上面的那句话：
-
-    - Stream是元素的集合，这点让Stream看起来用些类似Iterator；
-    – 可以支持顺序和并行的对原Stream进行汇聚的操作；
+```
+- Stream是元素的集合，这点让Stream看起来用些类似Iterator；
+– 可以支持顺序和并行的对原Stream进行汇聚的操作；
+```
 
 大家可以把Stream当成一个高级版本的Iterator。原始版本的Iterator，
 用户只能一个一个的遍历元素并对其执行某些操作；高级版本的Stream，

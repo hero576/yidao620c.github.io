@@ -117,14 +117,15 @@ rake preview
 我会把我改动过的部分列出来，其余的部分略过，可以自己研究。
 
 **1) 主配置Main Configs**
-
-    url: http://yidao620c.github.io
-    title: 笨跑的一刀
-    subtitle: Code is sexy, like Amy
-    author: 熊能
-    simple_search: https://www.google.com.hk/search
-    description:
-    date_format: "%Y年%m月%d日"
+```
+url: http://yidao620c.github.io
+title: 笨跑的一刀
+subtitle: Code is sexy, like Amy
+author: 熊能
+simple_search: https://www.google.com.hk/search
+description:
+date_format: "%Y年%m月%d日"
+```
 
 **2) 第三方插件 3rd Party Settings**
 
@@ -239,14 +240,15 @@ rake new_post["mypost"]
 之后在source/_posts里就可以找到这个文件形如2015-03-10-mypost.markdown，打开编辑就可以写日志内容了。
 
 文件里已经默认有一段基本属性的说明：
-
-    ---
-    layout: post
-    title: "mypost"
-    date: 2015-03-10 03:02:43 +0800
-    comments: true
-    categories: octopress
-    ---
+```
+---
+layout: post
+title: "mypost"
+date: 2015-03-10 03:02:43 +0800
+comments: true
+categories: octopress
+---
+```
 
 title默认和你新建文章时的名字相同，这里可以修改。comments表示是否允许评论。categories是自己分类用的目录。
 之后文章正文的语法就用Markdown来写。语法参考可见[这里](http://wowubuntu.com/markdown)。
@@ -401,8 +403,9 @@ description: windows7上面使用Octopress搭建GitHub博客
 
 ### 结语
 正如octopress的标语所说的那样：
-
-    A blogging framework for hackers.
+```
+A blogging framework for hackers.
+```
 
 这是一个生来就给人折腾的博客……
 
@@ -412,7 +415,6 @@ description: windows7上面使用Octopress搭建GitHub博客
 * 在引用代码的时候，如果代码中有`{ %`的标签，需要使用`{ % raw % } { % endraw % }`包围
 * 在在代码片段的前后都应该有一个空号
 * 引用html代码的时候，<html>标签还得有</html>闭合
-
 
 [Ruby 1.93]: http://dl.bintray.com/oneclick/rubyinstaller/rubyinstaller-1.9.3-p551.exe?direct
 [DevKit]: https://github.com/oneclick/rubyinstaller/wiki/Development-Kit

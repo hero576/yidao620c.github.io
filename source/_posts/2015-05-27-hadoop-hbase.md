@@ -211,41 +211,44 @@ $ cd ~
 $ hdfs namenode -format
 ```
 结果应该类似下面
-
-    STARTUP_MSG: Starting NameNode
-    STARTUP_MSG:   host = centos00/127.0.0.1
-    STARTUP_MSG:   args = [-format]
-    STARTUP_MSG:   version = 2.6.0
-    ...
-    /************************************************************
-    SHUTDOWN_MSG: Shutting down NameNode at centos00/127.0.0.1
-    ************************************************************/
+```
+STARTUP_MSG: Starting NameNode
+STARTUP_MSG:   host = centos00/127.0.0.1
+STARTUP_MSG:   args = [-format]
+STARTUP_MSG:   version = 2.6.0
+...
+/************************************************************
+SHUTDOWN_MSG: Shutting down NameNode at centos00/127.0.0.1
+************************************************************/
+```
 
 2\. Hadoop dfs确认
 ```
 $ start-dfs.sh
 ```
 结果应该类似下面
-
-    Starting namenodes on [localhost]
-    localhost: starting namenode, logging to ....out
-    localhost: starting datanode, logging to ....out
-    Starting secondary namenodes [0.0.0.0]
-    The authenticity of host '0.0.0.0 (0.0.0.0)' can't be established.
-    RSA key fingerprint is fd:01:fc:f2:53:a0:58:8e:96:9c:5f:f2:6e:5b:69:1a.
-    Are you sure you want to continue connecting (yes/no)? yes
-    0.0.0.0: Warning: Permanently added '0.0.0.0' (RSA) to the list of known hosts.
-    0.0.0.0: starting secondarynamenode, logging to ...
+```
+Starting namenodes on [localhost]
+localhost: starting namenode, logging to ....out
+localhost: starting datanode, logging to ....out
+Starting secondary namenodes [0.0.0.0]
+The authenticity of host '0.0.0.0 (0.0.0.0)' can't be established.
+RSA key fingerprint is fd:01:fc:f2:53:a0:58:8e:96:9c:5f:f2:6e:5b:69:1a.
+Are you sure you want to continue connecting (yes/no)? yes
+0.0.0.0: Warning: Permanently added '0.0.0.0' (RSA) to the list of known hosts.
+0.0.0.0: starting secondarynamenode, logging to ...
+```
 
 3\. Yarn Srcipt确认
 ```
 $ start-yarn.sh
 ```
 结果应该类似下面这样
-
-    starting yarn daemons
-    starting resourcemanager, logging to ....out
-    localhost: starting nodemanager, logging to ....out
+```
+starting yarn daemons
+starting resourcemanager, logging to ....out
+localhost: starting nodemanager, logging to ....out
+```
 
 4\. 浏览器访问Hadoop
 
@@ -313,16 +316,17 @@ $ cd /usr/local/hbase/bin
 $ ./start-hbase.sh
 ```
 然后执行`jps`命令应该可以看到HMaster和HRegionServer这两个进程。类似下面
-
-    10941 DataNode
-    13744 HQuorumPeer
-    14207 Jps
-    11126 SecondaryNameNode
-    11276 ResourceManager
-    10840 NameNode
-    13843 HMaster
-    10016 HRegionServer
-    11378 NodeManager
+```
+10941 DataNode
+13744 HQuorumPeer
+14207 Jps
+11126 SecondaryNameNode
+11276 ResourceManager
+10840 NameNode
+13843 HMaster
+10016 HRegionServer
+11378 NodeManager
+```
 
 如果没有看到，可以查看日志`/usr/local/hbase/logs/hbase-hadoop-master-xx.log`
 
@@ -332,12 +336,13 @@ HBase会在HDFS中创建自己的目录，在hadoop目录下面执行：
 $ ./bin/hadoop fs -ls /hbase
 ```
 显示如下
-
-    drwxr-xr-x   - hadoop supergroup          0 2015-04-24 16:06 /hbase/.tmp
-    drwxr-xr-x   - hadoop supergroup          0 2015-04-24 16:06 /hbase/WALs
-    drwxr-xr-x   - hadoop supergroup          0 2015-04-24 16:06 /hbase/data
-    -rw-r--r--   1 hadoop supergroup         42 2015-04-24 16:06 /hbase/hbase.id
-    -rw-r--r--   1 hadoop supergroup          7 2015-04-24 16:06 /hbase/hbase.version
-    drwxr-xr-x   - hadoop supergroup          0 2015-04-24 16:06 /hbase/oldWALs
+```
+drwxr-xr-x   - hadoop supergroup          0 2015-04-24 16:06 /hbase/.tmp
+drwxr-xr-x   - hadoop supergroup          0 2015-04-24 16:06 /hbase/WALs
+drwxr-xr-x   - hadoop supergroup          0 2015-04-24 16:06 /hbase/data
+-rw-r--r--   1 hadoop supergroup         42 2015-04-24 16:06 /hbase/hbase.id
+-rw-r--r--   1 hadoop supergroup          7 2015-04-24 16:06 /hbase/hbase.version
+drwxr-xr-x   - hadoop supergroup          0 2015-04-24 16:06 /hbase/oldWALs
+```
 
 那么恭喜你，配置成功了！
