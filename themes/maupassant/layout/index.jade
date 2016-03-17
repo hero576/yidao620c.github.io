@@ -13,7 +13,7 @@ block content
           +title(post)
       .post-meta= post.date.format(config.date_format)
       if theme.duoshuo
-        a.ds-thread-count(data-thread-key=post.path, href=url_for(post.path) + '#comments')
+        a.ds-thread-count(data-thread-key=post.path, href=url_for(post.path) + '#ds-thread')
       if theme.disqus
         a.disqus-comment-count(data-disqus-identifier=post.path, href=url_for(post.path) + '#disqus_thread')
       if post.description

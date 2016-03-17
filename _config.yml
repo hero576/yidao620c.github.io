@@ -4,8 +4,8 @@
 
 # Site
 title: 斜风细雨
-subtitle: Coding is sexy and cool
-description: 熊能童鞋的技术博客
+subtitle: Coding is sexy and cool→_→
+description: 奔跑的程序Go
 author: 熊能
 language: zh-CN
 timezone:
@@ -14,7 +14,7 @@ timezone:
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: http://yidao620c.github.io
 root: /
-permalink: :year/:month/:day/:title/
+permalink: :year/:month/:day/:title.html
 permalink_defaults:
 
 # Directory
