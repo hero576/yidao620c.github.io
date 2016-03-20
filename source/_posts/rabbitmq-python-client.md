@@ -28,7 +28,7 @@ importerror no module named pkg_resources
 ```
 
 请用下面命令解决这个问题：
-```
+``` bash
 $ curl https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py | python
 ```
 
@@ -46,7 +46,7 @@ sudo yum remove python-pip
 在`/etc/profile`里面将`/usr/local/python27/bin`加入PATH最前面
 
 把rabbitmq server启动一下和准备好测试目录rabbitmq_app：
-```
+``` bash
 $ /usr/local/rabbitmq/sbin/rabbitmq-server -detached
 $ cd ~
 $ mkdir -p test /rabbitmq_app
@@ -55,13 +55,13 @@ $ mkdir tut1 tut2 tut3 tut4 tut5 tut6
 ```
 
 ### 实例一：来个hello world程序
-```
+``` bash
 $ cd tut1
 $ vim send.py (代码如下)
 $ vim receive.py (代码如下)
 ```
 
-首先是消息发送程序: send.py
+首先是消息发送程序 send.py
 ``` python
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -79,7 +79,7 @@ print "[x] sent: '" + message + "'\n"
 connection.close()
 ```
 跑一下send.py发送一个消息
-```
+``` bash
 $ python send.py ‘Hello World!’
 $ python send.py ‘你好刀哥’
 $ /usr/local/rabbitmq/sbin/rabbitmqctl list_queues
@@ -93,7 +93,7 @@ hello 2
 
 如果你也看到hello队列里面有一个消息的话，就证明可以发消息了。
 
-然后写一个接收消息脚本：receive.py
+然后写一个接收消息脚本 receive.py
 ``` python
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -128,12 +128,12 @@ Hello World!
 里面需要发送带大附件的邮件、或者是要处理一张头像图片等。这类型工作队列的处理端一般有多个worker进程，
 分担队列里面的任务。这就有点负载均衡的策略在里面了。
 尽量做到每个进程的工作量比较平均，而且是完成了一个任务才接 第二个任务。看看我们的实现吧。
-```
+``` bash
 $ cd tut2
 $ vim manager.py (代码如下)
 $ vim worker.py (代码如下)
 ```
-首先是消息发送程序: manager.py
+首先是消息发送程序 manager.py
 ``` python
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -155,7 +155,7 @@ connection.close()
 ```
 其中第8行的 durable=True 声明了队列需要持久化，第14行的 delivery_mode = 2 声明了队列的消息需要持久化。
 
-然后写一个接收消息脚本：worker.py
+然后写一个接收消息脚本 worker.py
 ``` python
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -208,8 +208,9 @@ $ cd tut3
 $ vim emitlog.py (代码如下)
 $ vim recelog.py (代码如下)
 ```
-日志生产者
-``` python emitlog.py
+
+日志生产者 emitlog.py
+``` python
 #!/usr/bin/env python
 import pika
 import sys
@@ -228,8 +229,8 @@ channel.basic_publish(exchange = 'logs' ,
 print " [x] Sent %r" % (message,)
 connection.close()
 ```
-然后是日志消费者
-``` python recelog.py
+然后是日志消费者 recelog.py
+``` python
 #!/usr/bin/env python
 import pika
 
@@ -264,8 +265,8 @@ $ cd tut4
 $ vim emitlog.py (代码如下)
 $ vim recelog.py (代码如下)
 ```
-生产者
-``` python emitlog.py
+生产者 emitlog.py
+``` python
 #!/usr/bin/env python
 import pika
 import sys
@@ -286,8 +287,8 @@ connection.close()
 这里声明exchange时类型定义为direct（直接匹配），就是说只有当一个信息的routing_key和队列的binding_key一 致时，
 信息才会被放入到这个队列。消息发布给exchange时必须带上routing_key。其实在消息生产端，队列这个概念是透明的。
 
-消费者
-``` python recelog.py
+消费者 recelog.py
+``` python
 #!/usr/bin/env python
 import pika
 import sys

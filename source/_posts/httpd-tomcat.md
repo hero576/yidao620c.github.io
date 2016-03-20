@@ -64,9 +64,15 @@ sudo alternatives --set jar /opt/jdk1.8.0_51/bin/jar
 sudo alternatives --set javac /opt/jdk1.8.0_51/bin/javac
 ```
 
-查看下JDK版本 `java -version`
+查看下JDK版本
+```
+java -version
+```
 
-修改环境变量 `sudo vim /etc/profile`
+修改环境变量
+```
+sudo vim /etc/profile
+```
 
 输入以下内容
 ```
@@ -74,7 +80,10 @@ export JAVA_HOME=/opt/jdk1.8.0_51
 export JRE_HOME=/opt/jdk1.8.0_51/jre
 export PATH=$PATH:$JAVA_HOME/bin
 ```
-执行 `source /etc/profile`
+执行
+```
+source /etc/profile
+```
 
 ### 二、两台机器安装tomcat
 
@@ -159,7 +168,9 @@ sudo chkconfig --add tomcat
 
 在第一台机子上面：
 
-`sudo vim /usr/local/tomcat/conf/server.xml`
+``` bash
+sudo vim /usr/local/tomcat/conf/server.xml
+```
 
 修改下面这句：
 
@@ -169,7 +180,9 @@ sudo chkconfig --add tomcat
 
 在第二台机子上面：
 
-`sudo vim /usr/local/tomcat/conf/server.xml`
+``` bash
+sudo vim /usr/local/tomcat/conf/server.xml
+```
 
 修改下面这句：
 ```
@@ -201,7 +214,7 @@ sudo vim /usr/local/tomcat/webapps/test/index.jsp
 ```
 
 然后启动tomcat
-```
+``` bash
 sudo service tomcat start
 ```
 这时候可以通过访问 `http://192.168.203.103:8080/test` 访问到这个页面
@@ -229,7 +242,7 @@ sudo vim /usr/local/tomcat/webapps/test/index.jsp
 ```
 
 然后启动tomcat
-```
+``` bash
 sudo service tomcat start
 ```
 这时候可以通过访问`http://192.168.203.104:8080/test`访问到这个页面
@@ -258,7 +271,9 @@ sudo make && sudo make install
 
 3.提供额外的httpd模块配置文件：
 
-`vim /etc/httpd/conf.d/httpd-jk.conf`
+``` bash
+vim /etc/httpd/conf.d/httpd-jk.conf
+```
 
 ```
 # Load the mod_jk
@@ -272,7 +287,9 @@ JkMount  /status/  stat1
 
 4.配置mod_jk模块的配置文件workers.properties：
 
-`vim /etc/httpd/conf.d/workers.properties`
+``` bash
+vim /etc/httpd/conf.d/workers.properties
+```
 
 ```
 worker.list = lb1,stat1
@@ -295,15 +312,15 @@ worker.stat1.type = status
 ```
 127.0.0.1	localhost centos03
 ```
+
 然后修改httpd的配置文件，`sudo vim /etc/httpd/conf/httpd.conf`
 修改这一行：
-
 ```
 ServerName localhost:80
 ```
 
 最后我们启动httpd服务：
-```
+``` bash
 sudo service httpd start
 ```
 
@@ -311,7 +328,9 @@ sudo service httpd start
 
 6.修改httpd默认端口号方法
 
-`sudo vim /etc/httpd/conf/httpd.conf`
+``` bash
+sudo vim /etc/httpd/conf/httpd.conf
+```
 
 修改两个地方
 

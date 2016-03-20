@@ -42,11 +42,12 @@ pyinstaller -F -w -i d:\tmp\main.ico main.py
 pyinstaller -F -w -p D:\tmp\core-python\libs -i d:\tmp\main.ico main.py
 ```
 参数说明：
-
-    -F 表示生成单个可执行文件
-    -w 表示去掉控制台窗口，这在GUI界面时非常有用。不过如果是命令行程序的话那就把这个选项删除吧！
-    -p 表示你自己自定义需要加载的类路径，一般情况下用不到
-    -i 表示可执行文件的图标
+```
+-F 表示生成单个可执行文件
+-w 表示去掉控制台窗口，这在GUI界面时非常有用。不过如果是命令行程序的话那就把这个选项删除吧！
+-p 表示你自己自定义需要加载的类路径，一般情况下用不到
+-i 表示可执行文件的图标
+```
 
 *注意的事情*
 
@@ -85,7 +86,7 @@ img = wx.Image(resource_path('resources/me.jpg'), wx.BITMAP_TYPE_JPEG)
 第三步，先运行第6步生成一个main.spec文件
 
 第四步，修改main.spec文件：
-```
+``` python
 # -*- mode: python -*-
 a = Analysis(['main.py'],
              pathex=['d:\\tmp\\core-wxpython'],
@@ -158,11 +159,12 @@ exe = EXE(pyz,
 
 ### 其他问题记录
 1\. 找不到pkg_resources
-
-    ImportError: No module named pkg_resources
+```
+ImportError: No module named pkg_resources
+```
 
 解决办法是在安装pycrypto之前，先安装distribute库
-```
+``` bash
 curl https://svn.apache.org/repos/asf/oodt/tools/oodtsite.publisher/trunk/distribute_setup.py | python
 ```
 然后再安装windows下面对应的pycrypto库
@@ -221,7 +223,7 @@ exresult = subprocess_call(exe_command, shell=True)
 
 4\. 打包后不能放到中文路径下执行
 解决办法是下载安装PyInstaller的中文支持库，安装后再重新执行pyinstaller打包命令：
-```
+``` bash
 git clone https://github.com/dkw72n/pyinstaller.git
 python setup.py install
 pyinstaller -F -w -i d:\tmp\main.ico main.py

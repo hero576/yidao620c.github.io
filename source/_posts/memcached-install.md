@@ -20,16 +20,16 @@ libevent下载地址：[libevent-2.0.21-stable.tar.gz](https://github.com/downlo
 #### 安装libevent
 
 1. 由于memcached依赖于libevent，因此需要安装libevent。由于linux系统可能默认已经安装libevent，执行命令：
-```
+``` bash
 rpm -qa|grep libevent 
 ```
 1. 查看系统是否带有该安装软件，如果有执行命令:
-```
+``` bash
 # 由于系统自带的版本旧，忽略依赖删除
 rpm -e libevent-1.4.13-4.el6.x86_64 –nodeps
 ```
 1. 安装libevent命令：<!--more-->
-```
+``` bash
 tar zxvf libevent-2.0.21-stable.tar.gz
 cd libevent-2.0.21-stable
 ./configure --prefix=/usr/local/libevent
@@ -40,7 +40,7 @@ make install
 
 #### 安装memcached
 
-```
+``` bash
 tar zxvf memcached-1.4.2.tar.gz
 cd memcached-memcached-1.4.2
 ./configure --prefix=/usr/local/memcached --with-libevent=
@@ -57,7 +57,7 @@ make install
 #### 启动memcached
 
 打开一个终端，输入以下命令：
-```
+``` bash
 /usr/local/memcached/bin/memcached -d -m 256 -u root -p 11211 -c 1024 –P /tmp/memcached.pid
 ```
 启动参数说明：
@@ -113,16 +113,16 @@ memcached 1.4.2
 也可以启动多个守护进程，但是端口不能重复
 
 #### 查看memcached启动命令：
-```
+``` bash
 ps aux|grep memcached
 ```
 #### 停止memcached
 
 打开一个终端，输入以下命令：
-```
+``` bash
 ps -ef | grep memcached或者上面的ps命令也行，第二个字段为PID，比如10068
 ```
 输入一下命令终止memcached服务：
-```
+``` bash
 kill -9 10068
 ```

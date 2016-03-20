@@ -169,9 +169,9 @@ REDISPORT=6379
 EXEC=/usr/local/redis/src/redis-server
 CLIEXEC=/usr/local/redis/src/redis-cli
 ```
-6，执行/etc/init.d/redis_端口号 start  启动
+6，执行/etc/init.d/redis_端口号 start 启动
 
-7，执行/etc/init.d/redis_端口号 stop  停止，或者是用  $ redis-cli SHUTDOWN，
+7，执行/etc/init.d/redis_端口号 stop 停止，或者是用 $ redis-cli SHUTDOWN，
 使用kill redis进程PID也可以正常结束redis，但不要用kill -9，谢谢。
 
 8，配置redis服务随系统启动而启动

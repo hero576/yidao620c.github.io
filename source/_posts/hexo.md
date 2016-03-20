@@ -22,14 +22,20 @@ hexo：是一个台湾人做的基于Node.js的静态博客程序，优势是生
 
 ### 安装hexo
 利用 npm 命令即可安装。打开窗口控制台，输入安装hexo命令：
-`npm install -g hexo`
+```
+npm install -g hexo
+```
 
 ### 初始化
 安装完成后，在你喜爱的文件夹下（如D:\hexo），控制台执行以下指令，hexo会自动在目标文件夹建立网站所需要的所有文件。
-`hexo init`
+```
+hexo init
+```
 
 安装依赖包：
-`npm install`
+```
+npm install
+```
 
 一切准备就绪让我们试验下，在D:\hexo内执行以下命令：
 ```
@@ -61,27 +67,37 @@ deploy:
 
 如果你是第一次使用Github或者是已经使用过，但没有配置过SSH，则可能需要配置一下SSH。
 在Git Bash输入以下指令（任意位置点击鼠标右键），检查是否已经存在了SSH keys。
-`ls -al ~/.ssh`
+```
+ls -al ~/.ssh
+```
 
 如果不存在就没有关系，如果存在的话，直接删除.ssh文件夹里面所有文件：
 
 输入以下指令（邮箱就是你注册Github时候的邮箱）后回车，出现提示让你输入的时候一直按回车：
-`ssh-keygen -t rsa -C "yidao620@gmail.com"`
+```
+ssh-keygen -t rsa -C "yidao620@gmail.com"
+```
 
 然后键入以下指令：
-```
+``` bash
 eval `ssh-agent -s`
 ssh-add
 ```
 到了这一步，就可以添加SSH key到你的Github账户了。键入以下指令，拷贝Key（先拷贝了，等一下可以直接粘贴，不放心的在执行下面命令后，先黏贴在记事本上）：
-`clip < ~/.ssh/id_rsa.pub`
+```
+clip < ~/.ssh/id_rsa.pub
+```
 然后到Github里面，点击右上角的设置图标Settings,找到SSH keys,Ttile随便你命名，Key就黏贴上你刚才复制的key,然后点Add SSH key，最后会让你重新输入下gitHub的密码
 最后还是测试一下吧，键入以下命令：
-`ssh -T git@github.com`
+```
+ssh -T git@github.com
+```
 你可能会看到有警告，输入“yes”就好
 
 还要安装hexo-deployer-git这个模块:
-`npm install hexo-deployer-git --save`
+```
+npm install hexo-deployer-git --save
+```
 
 以上就表示SSH配置好了，执行以下命令部署到Github上。
 ```
@@ -92,7 +108,10 @@ hexo d
 
 ## 发表一篇文章
 在你的D:\hexo目录下面，控制台执行命令：
-`hexo new "Hello World"`
+```
+hexo new "Hello World"
+```
+
 会自动在D:\hexo\source\_posts文件夹生成一个hello-world.md文件，用编辑器打开，在里面写文章。
 记住hexo中写文章使用的是Markdown语法，自己去google下这个语法吧，很方便很强大。里面的初始内容
 ```
@@ -114,7 +133,9 @@ tags: [文章, 测试] #文章标签，多于一项时用这种格式，只有�
 
 ### 安装主题
 
-`$ git clone https://github.com/wuchong/jacman.git themes/jacman`
+```
+$ git clone https://github.com/wuchong/jacman.git themes/jacman
+```
 
 ### 启用主题
 修改你的博客根目录下的config.yml配置文件中的theme属性，将其设置为jacman
@@ -125,7 +146,9 @@ cd themes/jacman
 git pull
 ```
 更新好后，本地启动起来效果
-`hexo server -g  #生成加预览`
+```
+hexo server -g  #生成加预览
+```
 
 ### 主题的_config.yml配置
 具体配置请直接参考[如何使用 Jacman 主题](http://wuchong.me/blog/2014/11/20/how-to-use-jacman/)
@@ -217,9 +240,11 @@ feed:
 
 * 遇到有大括号的代码块，如果多行的不用管，如果单行的就单个反引号，并且在里面加raw标签
 * 关闭hexo的将回车当换行做法是用正常的markdown两个回车当换行，在全局_config.yml中添加配置
-> marked:
+```
+  marked:
     gfm: true
     breaks: false
+```
 
 ## 参考
 

@@ -69,26 +69,27 @@ nginx大部分常用模块，编译时查看帮助`./configure --help`，以`--w
 * --add-module=PATH ： 添加第三方外部模块，如nginx-sticky-module-ng或缓存模块。每次添加新的模块都要重新编译（Tengine可以在新加入module时无需重新编译）
 
 再提供一种编译方案：
-
-    ./configure \
-    > --prefix=/usr \
-    > --sbin-path=/usr/sbin/nginx \
-    > --conf-path=/etc/nginx/nginx.conf \
-    > --error-log-path=/var/log/nginx/error.log \
-    > --http-log-path=/var/log/nginx/access.log \
-    > --pid-path=/var/run/nginx/nginx.pid  \
-    > --lock-path=/var/lock/nginx.lock \
-    > --user=nginx \
-    > --group=nginx \
-    > --with-http_ssl_module \
-    > --with-http_stub_status_module \
-    > --with-http_gzip_static_module \
-    > --http-client-body-temp-path=/var/tmp/nginx/client/ \
-    > --http-proxy-temp-path=/var/tmp/nginx/proxy/ \
-    > --http-fastcgi-temp-path=/var/tmp/nginx/fcgi/ \
-    > --http-uwsgi-temp-path=/var/tmp/nginx/uwsgi \
-    > --with-pcre=../pcre-7.8
-    > --with-zlib=../zlib-1.2.3
+``` bash
+./configure \
+> --prefix=/usr \
+> --sbin-path=/usr/sbin/nginx \
+> --conf-path=/etc/nginx/nginx.conf \
+> --error-log-path=/var/log/nginx/error.log \
+> --http-log-path=/var/log/nginx/access.log \
+> --pid-path=/var/run/nginx/nginx.pid  \
+> --lock-path=/var/lock/nginx.lock \
+> --user=nginx \
+> --group=nginx \
+> --with-http_ssl_module \
+> --with-http_stub_status_module \
+> --with-http_gzip_static_module \
+> --http-client-body-temp-path=/var/tmp/nginx/client/ \
+> --http-proxy-temp-path=/var/tmp/nginx/proxy/ \
+> --http-fastcgi-temp-path=/var/tmp/nginx/fcgi/ \
+> --http-uwsgi-temp-path=/var/tmp/nginx/uwsgi \
+> --with-pcre=../pcre-7.8
+> --with-zlib=../zlib-1.2.3
+```
 
 
 ### 启动关闭nginx
@@ -340,38 +341,41 @@ http {
 
 #### 配置文件备注
 
-    = 开头：表示精确匹配
-    ^~ 开头：表示uri以某个常规字符串开头，不是正则匹配
-    ~ 开头：表示区分大小写的正则匹配;
-    ~* 开头：表示不区分大小写的正则匹配
-    / 通用匹配, 如果没有其它匹配,任何请求都会匹配到
+```
+= 开头：表示精确匹配
+^~ 开头：表示uri以某个常规字符串开头，不是正则匹配
+~ 开头：表示区分大小写的正则匹配;
+~* 开头：表示不区分大小写的正则匹配
+/ 通用匹配, 如果没有其它匹配,任何请求都会匹配到
 
-    顺序 no优先级：
-    (location =) > (location 完整路径) > (location ^~ 路径) > (location ~,~* 正则顺序) > (location 部分起始路径) > (/)
+顺序 no优先级：
+(location =) > (location 完整路径) > (location ^~ 路径) > (location ~,~* 正则顺序) > (location 部分起始路径) > (/)
+```
 
 #### 实际使用建议
-
-    所以实际使用中，个人觉得至少有三个匹配规则定义，如下：
-    #直接匹配网站根，通过域名访问网站首页比较频繁，使用这个会加速处理，官网如是说。
-    #这里是直接转发给后端应用服务器了，也可以是一个静态首页
-    # 第一个必选规则
-    location = / {
-        proxy_pass http://tomcat:8080/index.html
-    }
-    # 第二个必选规则是处理静态文件请求，这是nginx作为http服务器的强项
-    # 有两种配置模式，目录匹配或后缀匹配,任选其一或搭配使用
-    location ^~ /static/ {
-        root /webroot/static/;
-    }
-    location ~* \.(gif|jpg|jpeg|png|css|js|ico)$ {
-        root /webroot/static/;
-    }
-    # 第三个规则就是通用规则，用来转发动态请求到后端应用服务器
-    # 非静态文件请求就默认是动态请求，自己根据实际把握
-    # 毕竟目前的一些框架的流行，带.php,.jsp后缀的情况很少了
-    location / {
-        proxy_pass http://tomcat:8080/
-    }
+```
+所以实际使用中，个人觉得至少有三个匹配规则定义，如下：
+#直接匹配网站根，通过域名访问网站首页比较频繁，使用这个会加速处理，官网如是说。
+#这里是直接转发给后端应用服务器了，也可以是一个静态首页
+# 第一个必选规则
+location = / {
+    proxy_pass http://tomcat:8080/index.html
+}
+# 第二个必选规则是处理静态文件请求，这是nginx作为http服务器的强项
+# 有两种配置模式，目录匹配或后缀匹配,任选其一或搭配使用
+location ^~ /static/ {
+    root /webroot/static/;
+}
+location ~* \.(gif|jpg|jpeg|png|css|js|ico)$ {
+    root /webroot/static/;
+}
+# 第三个规则就是通用规则，用来转发动态请求到后端应用服务器
+# 非静态文件请求就默认是动态请求，自己根据实际把握
+# 毕竟目前的一些框架的流行，带.php,.jsp后缀的情况很少了
+location / {
+    proxy_pass http://tomcat:8080/
+}
+```
 
 ### 常用配置说明
 
@@ -529,27 +533,29 @@ http服务中，某些特定的URL对应的一系列配置项。
 #### 访问控制 allow/deny
 
 Nginx 的访问控制模块默认就会安装，而且写法也非常简单，可以分别有多个allow,deny，允许或禁止某个ip或ip段访问，依次满足任何一个规则就停止往下匹配。如：
+```
+location /nginx-status {
+  stub_status on;
+  access_log off;
+#  auth_basic   "NginxStatus";
+#  auth_basic_user_file   /usr/local/nginx-1.6/htpasswd;
 
-    location /nginx-status {
-      stub_status on;
-      access_log off;
-    #  auth_basic   "NginxStatus";
-    #  auth_basic_user_file   /usr/local/nginx-1.6/htpasswd;
-
-      allow 192.168.10.100;
-      allow 172.29.73.0/24;
-      deny all;
-    }
+  allow 192.168.10.100;
+  allow 172.29.73.0/24;
+  deny all;
+}
+```
 
 我们也常用 httpd-devel 工具的 htpasswd 来为访问的路径设置登录密码：
+```
+# htpasswd -c htpasswd admin
+New passwd:
+Re-type new password:
+Adding password for user admin
 
-    # htpasswd -c htpasswd admin
-    New passwd:
-    Re-type new password:
-    Adding password for user admin
-
-    # htpasswd htpasswd admin    //修改admin密码
-    # htpasswd htpasswd sean    //多添加一个认证用户
+# htpasswd htpasswd admin    //修改admin密码
+# htpasswd htpasswd sean    //多添加一个认证用户
+```
 
 这样就生成了默认使用CRYPT加密的密码文件。打开上面nginx-status的两行注释，重启nginx生效。
 
@@ -560,13 +566,14 @@ Nginx默认是不允许列出整个目录的。如需此功能，打开nginx.con
 *   autoindex_exact_size off; 默认为on，显示出文件的确切大小，单位是bytes。改为off后，显示出文件的大概大小，单位是kB或者MB或者GB
 
 *   autoindex_localtime on; 默认为off，显示的文件时间为GMT时间。改为on后，显示的文件时间为文件的服务器时间
-
-    location /images {
-      root   /var/www/nginx-default/images;
-      autoindex on;
-      autoindex_exact_size off;
-      autoindex_localtime on;
-    }
+```
+location /images {
+  root   /var/www/nginx-default/images;
+  autoindex on;
+  autoindex_exact_size off;
+  autoindex_localtime on;
+}
+```
 
 ### 参考
 

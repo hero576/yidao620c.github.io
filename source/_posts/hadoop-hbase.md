@@ -16,7 +16,7 @@ tags: [hadoop, hbase]
 
 #### 安装SSH
 先切换到root用户，执行下列步骤
-```
+``` bash
 rpm -qa |grep ssh  #检查是否装了SSH包
 yum install openssh-server  #安装ssh
 chkconfig --list sshd #检查SSHD是否设置为开机启动
@@ -25,7 +25,7 @@ service sshd restart  #重新启动
 ```
 
 #### 创建hadoop用户<!--more-->
-```
+``` bash
 $ su
 password:
 # useradd hadoop
@@ -36,13 +36,13 @@ Retype new passwd
 
 #### 生成pub-key
 切换到hadoop用户后，执行
-```
+``` bash
 $ ssh-keygen -t rsa
 $ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 $ chmod 0600 ~/.ssh/authorized_keys
 ```
 然后确认下是否能正常使用ssh连接
-```
+``` bash
 ssh localhost
 ```
 
@@ -51,7 +51,7 @@ ssh localhost
 进入oracle官网<http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html>
 
 下载jdk-7u79-linux-x64.gz，然后执行：
-```
+``` bash
 $ tar zxf jdk-7u79-linux-x64.gz
 $ ls
 jdk1.7.0_79 jdk-7u79-linux-x64.gz
@@ -61,7 +61,7 @@ password:
 # exit
 ```
 打开~/.bashrc文件，写入JAVA_HOME环境变量
-```
+``` bash
 export JAVA_HOME=/usr/local/jdk1.7.0_79
 export PATH= $PATH:$JAVA_HOME/bin
 ```
@@ -99,7 +99,7 @@ hadoop有很多种模式，本篇我们演示的是伪分布式模式，包括�
 第一步，配置环境变量
 
 打开~/.bashrc文件，写入如下内容
-```
+``` bash
 export HADOOP_HOME=/usr/local/hadoop
 export HADOOP_MAPRED_HOME=$HADOOP_HOME
 export HADOOP_COMMON_HOME=$HADOOP_HOME
@@ -110,7 +110,7 @@ export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
 export HADOOP_INSTALL=$HADOOP_HOME
 ```
 然后应用设置
-```
+``` bash
 $ source ~/.bashrc
 ```
 第二步，hadoop配置文件
@@ -119,17 +119,17 @@ hadoop的配置文件都放在"$HADOOP_HOME/etc/hadoop"目录中，
 你可以根据自己的需要来修改它们。
 
 在此之前，还需要修改下hadoop-env.sh，更改其中的JAVA_HOME变量
-```
+``` bash
 vim /usr/local/hadoop/etc/hadoop/hadoop-env.sh
 ```
 然后修改JAVA_HOME为真实的目录
-```
+``` bash
 export JAVA_HOME=/usr/local/jdk1.7.0_79
 ```
 接下来我们去到hadoop的配置文件目录
 ```
 $ cd $HADOOP_HOME/etc/hadoop
-```
+``` bash
 1\. 首先打开core-site.xml，写入如下配置
 
 ``` xml
@@ -169,7 +169,7 @@ $ cd $HADOOP_HOME/etc/hadoop
 ```
 
 上面的文件夹需要我们手动来创建，那么我们创建下就行了
-```
+``` bash
 $ mkdir -p /home/hadoop/hadoopinfra/hdfs/namenode
 $ mkdir -p /home/hadoop/hadoopinfra/hdfs/datanode
 ```
@@ -190,7 +190,7 @@ $ mkdir -p /home/hadoop/hadoopinfra/hdfs/datanode
 ```
 
 4\. 配置mapred-site.xml，先重命名
-```
+``` bash
 $ cp mapred-site.xml.template mapred-site.xml
 ```
 打开mapred-site.xml文件，写入如下配置

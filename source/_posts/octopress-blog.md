@@ -206,11 +206,11 @@ footer: false
 
 1) 修改jQuery的源
 打开source/_includes/head.html，找到如下字串
-```
+``` html
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 ```
 改为
-```
+``` html
 <script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
 ```
 2）修改字体源

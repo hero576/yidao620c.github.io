@@ -52,24 +52,24 @@ centos6.5上面默认没有安装python3，那么需要先安装python3。
 
 2， 安装virtualenv
 
-```
+``` bash
 pip3 install virtualenv
 ```
 关于virtualenv的详细说明，请参考文档：[virtualenv][]
 
 3，创建一个文件夹叫djangogirls
-```
+``` bash
 mkdir djangogirls
 cd djangogirls
 ```
 
 4，创建虚拟环境myenv
-```
+``` bash
 python3 -m venv myvenv
 ```
 
 5，激活虚拟环境
-```
+``` bash
 source myvenv/bin/activate
 ```
 

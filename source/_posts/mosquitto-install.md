@@ -255,7 +255,9 @@ mosquitto_sub -t mqtt
 
 指定消息推送的主题，发布端用户名和消息：
 
-`mosquitto_pub -t 主题 -i 发布端 -h 主机 -m 你好`
+```
+mosquitto_pub -t 主题 -i 发布端 -h 主机 -m 你好
+```
 
 *注意：如果消息中间有空格则消息要用引号括起来。
 ```

@@ -272,7 +272,7 @@ package com.journaldev.servlet.filters;
 
 import java.io.IOException;
 import java.util.Enumeration;
-  
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -349,7 +349,7 @@ public class AuthenticationFilter implements Filter {
         this.context = fConfig.getServletContext();
         this.context.log("AuthenticationFilter initialized");
     }
-      
+
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
   
         HttpServletRequest req = (HttpServletRequest) request;
