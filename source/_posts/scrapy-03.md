@@ -15,10 +15,7 @@ Spider是爬虫框架的核心，爬取流程如下：
    初次请求URL通过`start_urls`指定，调用`start_requests()`产生`Request`对象，然后注册`parse`方法作为回调
 1. 在parse回调中解析response并返回字典,`Item`对象,`Request`对象或它们的迭代对象。`Request`对象还会包含回调函数，之后Scrapy下载完后会被这里注册的回调函数处理。
 1. 在回调函数里面，你通过使用选择器（同样可以使用BeautifulSoup,lxml或其他工具）解析页面内容，并生成解析后的结果Item。
-1. 最后返回的这些Item通常会被持久化到数据库中（
-使用[Item Pipeline](http://doc.scrapy.org/en/latest/topics/item-pipeline.html#topics-item-pipeline)）
-或者使用[Feed exports](http://doc.scrapy.org/en/latest/topics/feed-exports.html#topics-feed-exports)
-将其保存到文件中。
+1. 最后返回的这些Item通常会被持久化到数据库中(使用[Item Pipeline](http://doc.scrapy.org/en/latest/topics/item-pipeline.html#topics-item-pipeline))或者使用[Feed exports](http://doc.scrapy.org/en/latest/topics/feed-exports.html#topics-feed-exports)将其保存到文件中。
 
 尽管这个流程适合于所有的蜘蛛，但是Scrapy里面为不同的使用目的实现了一些常见的Spider。下面我们把它们列出来。<!--more-->
 
