@@ -1,5 +1,5 @@
 ---
-title: "Scrapy笔记（1）——入门篇"
+title: "Scrapy笔记（1）- 入门篇"
 date: 2016-03-08 10:59:15 +0800
 comments: true
 toc: true
@@ -27,12 +27,12 @@ Scrapy也能帮你实现高阶的爬虫框架，比如爬取时的网站认证�
 
 安装python-devel
 ```
-yuminstall python-devel
+yum install python-devel
 ```
 
 安装 libffi-devel：
 ```
-yuminstall libffi-devel
+yum install libffi-devel
 ```
 
 安装openssl
@@ -42,8 +42,8 @@ pip install pyopenssl
 
 安装xlml
 ```
-yuminstall python-lxml
-yuminstall libxml2-devel
+yum install python-lxml
+yum install libxml2-devel
 yum install libxslt-devel
 ```
 

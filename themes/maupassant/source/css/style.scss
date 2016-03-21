@@ -258,11 +258,16 @@ a:focus {
         p {
             margin: 0 0 0.8em;
             code {
+                color: #E74C3C;
+                background: #fff;
+                font-size: 75%;
+                overflow-x: auto;
+                white-space: nowrap;
+                max-width: 100%;
                 display: inline;
                 margin: 0 5px;
                 padding: 1px 5px;
-                border: 1px solid #ccc;
-                background: #eee;
+                border: solid 1px #e1e4e5;
             }
             a {
                 color: #01579f;
@@ -300,11 +305,16 @@ a:focus {
                 margin: 0;
             }
             code {
+                color: #E74C3C;
+                background: #fff;
+                font-size: 75%;
+                overflow-x: auto;
+                white-space: nowrap;
+                max-width: 100%;
                 display: inline;
                 margin: 0 5px;
                 padding: 1px 5px;
-                border: 1px solid #ccc;
-                background: #eee;
+                border: solid 1px #e1e4e5;
             }
             a {
                 color: #01579f;
@@ -1591,3 +1601,5 @@ em.search-keyword {
   font-style: normal;
   color: #01579f;
 }
+
+
