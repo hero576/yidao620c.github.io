@@ -1,5 +1,5 @@
 ---
-title: "Scrapy笔记（4）- Selector详解"
+title: "Scrapy笔记（4）- Selector"
 date: 2016-03-14 02:00:15 +0800
 comments: true
 toc: true
@@ -13,7 +13,7 @@ tags: [scrapy]
 1. [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/)是python中一个非常流行的抓取库,
 它还能合理的处理错误格式的标签，但是有一个唯一缺点就是：它运行很慢。
 2. [lxml](http://lxml.de/)是一个基于[ElementTree](https://docs.python.org/2/library/xml.etree.elementtree.html)的XML解析库(同时还能解析HTML),
-不过lxml并不是Python标准库
+不过lxml并不是Python标准库<!--more-->
 
 而Scrapy实现了自己的数据提取机制，它们被称为选择器，通过[XPath](http://www.w3.org/TR/xpath)或[CSS](http://www.w3.org/TR/selectors)表达式在HTML文档中来选择特定的部分。
 
@@ -175,8 +175,9 @@ u'My image 1'
 ```
 
 ### //node[1]和(//node)[1]区别
-//node[1]：选择所有位于第一个子节点位置的node节点
-(//node)[1]：选择所有的node节点，然后返回结果中的第一个node节点
+
+* //node[1]: 选择所有位于第一个子节点位置的node节点
+* (//node)[1]: 选择所有的node节点，然后返回结果中的第一个node节点
 
 ### 通过class查找时优先考虑CSS
 ```
