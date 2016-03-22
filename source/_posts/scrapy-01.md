@@ -124,6 +124,10 @@ scrapy runspider stackoverflow_spider.py -o top-stackoverflow-questions.json
 我们在`parse`回调方法中通过使用css选择器提取每个提问页面链接的href属性值，然后`yield`另外一个请求，
 并注册`parse_question`回调方法，在这个请求完成后被执行。
 
+处理流程图：
+
+![scrapy架构图](http://7qn9a8.com1.z0.glb.clouddn.com/scrapy.png)
+
 Scrapy的一个好处是所有请求都是被调度并异步处理，就算某个请求出错也不影响其他请求继续被处理。
 
 我们的示例中将解析结果生成json格式，你还可以导出为其他格式（比如XML、CSV），或者是将其存储到FTP、Amazon S3上。

@@ -1,5 +1,5 @@
 ---
-title: "Scrapy笔记（4）- Selector"
+title: "Scrapy笔记（4）- Selector详解"
 date: 2016-03-14 02:00:15 +0800
 comments: true
 toc: true

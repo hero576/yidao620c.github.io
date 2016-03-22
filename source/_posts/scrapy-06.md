@@ -16,12 +16,12 @@ tags: [scrapy]
 * 清理HTML数据
 * 验证被抓取的数据(检查item是否包含某些字段)
 * 重复性检查(然后丢弃)
-* 将抓取的数据存储到数据库中
+* 将抓取的数据存储到数据库中<!--more-->
 
 ## 编写自己的Pipeline
 定义一个Python类，然后实现方法`process_item(self, item, spider)`即可，返回一个字典或Item，或者抛出`DropItem`异常丢弃这个Item。
 
-或者还可以实现下面几个方法：<!--more-->
+或者还可以实现下面几个方法：
 
 * `open_spider(self, spider)` 蜘蛛打开的时执行
 * `close_spider(self, spider)` 蜘蛛关闭时执行
@@ -124,3 +124,67 @@ ITEM_PIPELINES = {
 ```
 后面的数字表示它的执行顺序，从低到高执行，范围0-1000
 
+## Feed exports
+这里顺便提下Feed exports，一般有的爬虫直接将爬取结果序列化到文件中，并保存到某个存储介质中。只需要在settings里面设置几个即可：
+
+* FEED_FORMAT= json # json|jsonlines|csv|xml|pickle|marshal
+* FEED_URI= file:///tmp/export.csv|ftp://user:pass@ftp.example.com/path/to/export.csv|s3://aws_key:aws_secret@mybucket/path/to/export.csv|stdout:
+* FEED_EXPORT_FIELDS = ["foo", "bar", "baz"] # 这个在导出csv的时候有用
+
+## 请求和响应
+Scrapy使用`Request`和`Response`对象来爬取网站。`Request`对象被蜘蛛生成，然后被传递给下载器，之后下载器处理这个`Request`后返回`Response`对象，然后返回给生成`Request`的这个蜘蛛。
+
+### 给回调函数传递额外的参数
+`Request`对象生成的时候会通过关键字参数`callback`指定回调函数，`Response`对象被当做第一个参数传入，有时候我们想传递额外的参数，比如我们构建某个Item的时候，需要两步，第一步是链接属性，第二步是详情属性，可以指定`Request.meta`<!--more-->
+``` python
+def parse_page1(self, response):
+    item = MyItem()
+    item['main_url'] = response.url
+    request = scrapy.Request("http://www.example.com/some_page.html",
+                             callback=self.parse_page2)
+    request.meta['item'] = item
+    return request
+
+def parse_page2(self, response):
+    item = response.meta['item']
+    item['other_url'] = response.url
+    return item
+
+```
+
+### Request子类
+Scrapy为各种不同的场景内置了很多Request子类，你还可以继承它自定义自己的请求类。
+
+`FormRequest`这个专门为form表单设计，模拟表单提交的示例
+``` python
+return [FormRequest(url="http://www.example.com/post/action",
+                    formdata={'name': 'John Doe', 'age': '27'},
+                    callback=self.after_post)]
+```
+
+我们再来一个例子模拟用户登录，使用了`FormRequest.from_response()`
+``` python
+import scrapy
+
+class LoginSpider(scrapy.Spider):
+    name = 'example.com'
+    start_urls = ['http://www.example.com/users/login.php']
+
+    def parse(self, response):
+        return scrapy.FormRequest.from_response(
+            response,
+            formdata={'username': 'john', 'password': 'secret'},
+            callback=self.after_login
+        )
+
+    def after_login(self, response):
+        # check login succeed before going on
+        if "authentication failed" in response.body:
+            self.logger.error("Login failed")
+            return
+
+        # continue scraping with authenticated session...
+```
+
+### Response子类
+TextResponse |HtmlResponse |XmlResponse

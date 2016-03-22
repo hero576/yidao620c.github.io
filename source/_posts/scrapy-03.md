@@ -1,5 +1,5 @@
 ---
-title: "Scrapy笔记（3）- Spider"
+title: "Scrapy笔记（3）- Spider详解"
 date: 2016-03-12 01:19:15 +0800
 comments: true
 toc: true
@@ -65,6 +65,7 @@ class LinkSpider(CrawlSpider):
 XML订阅蜘蛛，用来爬取XML形式的订阅内容，通过某个指定的节点来遍历。
 可使用`iternodes`, `xml`, 和`html`三种形式的迭代器，不过当内容比较多的时候推荐使用`iternodes`，
 默认也是它，可以节省内存提升性能，不需要将整个DOM加载到内存中再解析。而使用`html`可以处理XML有格式错误的内容。
+处理XML的时候最好先[Removing namespaces](http://doc.scrapy.org/en/1.0/topics/selectors.html#removing-namespaces)
 
 接下来我通过爬取我的博客订阅XML来展示它的使用方法。
 ``` python

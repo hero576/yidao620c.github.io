@@ -1,5 +1,5 @@
 ---
-title: "Scrapy笔记（5）- Item"
+title: "Scrapy笔记（5）- Item详解"
 date: 2016-03-16 01:00:15 +0800
 comments: true
 toc: true
@@ -10,7 +10,7 @@ tags: [scrapy]
 ## Item是什么
 Item是保存结构数据的地方，Scrapy可以将解析结果以字典形式返回，但是Python中字典缺少结构，在大型爬虫系统中很不方便。
 
-Item提供了类字典的API，并且可以很方便的声明字段，很多Scrapy组件可以利用Item的其他信息。
+Item提供了类字典的API，并且可以很方便的声明字段，很多Scrapy组件可以利用Item的其他信息。<!--more-->
 
 ## 定义Item
 定义Item非常简单，只需要继承`scrapy.Item`类，并将所有字段都定义为`scrapy.Field`类型即可
@@ -24,7 +24,7 @@ class Product(scrapy.Item):
     last_updated = scrapy.Field(serializer=str)
 ```
 ## Item Fields
-`Field`对象可用来对每个字段指定元数据。例如上面`last_updated`的序列化函数指定为`str`，可任意指定元数据，不过每种元数据对于不同的组件意义不一样。<!--more-->
+`Field`对象可用来对每个字段指定元数据。例如上面`last_updated`的序列化函数指定为`str`，可任意指定元数据，不过每种元数据对于不同的组件意义不一样。
 
 ## Item使用示例
 你会看到Item的使用跟Python中的字典API非常类似
