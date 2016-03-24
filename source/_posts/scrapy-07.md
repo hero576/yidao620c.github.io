@@ -19,7 +19,7 @@ LOG_STDOUT = True
 LOG_FORMAT = "%(asctime)s [%(name)s] %(levelname)s: %(message)s"
 LOG_DATEFORMAT = "%Y-%m-%d %H:%M:%S"
 ```
-使用也很简单
+使用也很简单<!--more-->
 ``` python
 import logging
 logger = logging.getLogger(__name__)
