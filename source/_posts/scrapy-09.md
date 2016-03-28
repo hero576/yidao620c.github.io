@@ -7,14 +7,13 @@ categories: python
 tags: [scrapy]
 ---
 
-## 两种方案
 本篇主要介绍两种部署爬虫的方案。如果仅仅在开发调试的时候在本地部署跑起来是很容易的，不过要是生产环境，爬虫任务量大，并且持续时间长，那么还是建议使用专业的部署方法。主要是两种方案：
 
 * [Scrapyd](http://doc.scrapy.org/en/1.0/topics/deploy.html#deploy-scrapyd) 开源方案
 * [Scrapy Cloud](http://doc.scrapy.org/en/1.0/topics/deploy.html#deploy-scrapy-cloud) 云方案
-
+<!--more-->
 ## 部署到Scrapyd
-[Scrapyd](http://doc.scrapy.org/en/1.0/topics/deploy.html#deploy-scrapyd)是一个开源软件，用来运行蜘蛛爬虫。它提供了HTTP API的服务器，还能运行和监控Scrapy的蜘蛛<!--more-->
+[Scrapyd](http://doc.scrapy.org/en/1.0/topics/deploy.html#deploy-scrapyd)是一个开源软件，用来运行蜘蛛爬虫。它提供了HTTP API的服务器，还能运行和监控Scrapy的蜘蛛
 
 要部署爬虫到Scrapyd，需要使用到[scrapyd-client](https://github.com/scrapy/scrapyd-client)部署工具集，下面我演示下部署的步骤
 

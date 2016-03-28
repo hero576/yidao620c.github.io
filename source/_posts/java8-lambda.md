@@ -7,7 +7,6 @@ toc: true
 categories: 技术随笔
 tags: java8
 ---
-### 开篇
 
 2014年3月18日，Oracle终于发布Java8正式版。在新的版本里面加入了很多特性，
 总共增加了55个新特性，其中最最吸引人的就是Lambdas表达式和Stream函数式编程，本文详细讲解这两个特性。

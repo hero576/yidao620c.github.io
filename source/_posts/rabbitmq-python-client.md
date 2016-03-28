@@ -8,19 +8,14 @@ categories: linux
 tags: rabbitmq
 ---
 
-### 安装环境
+测试环境：CentOS 6.2，参考了RabbitMQ网站上提供的英文版本入门指南: <http://www.rabbitmq.com/getstarted.html>
 
-参考了RabbitMQ网站上提供的英文版本入门指南: <http://www.rabbitmq.com/getstarted.html>
+测试环境准备
 
-测试环境：CentOS 6.2
-
-### 测试环境准备
-
-安装python（一般系统都自带了python）
-
-安装RabbitMQ server可以参考前面的文章。
-
-安装pika
+* 安装python（一般系统都自带了python）
+* 安装RabbitMQ server可以参考前面的文章。
+* 安装pika
+<!--more-->
 
 使用pip安装的时候可能会报错：
 ```
@@ -32,7 +27,7 @@ importerror no module named pkg_resources
 $ curl https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py | python
 ```
 
-然后还可能出现：<!--more-->
+然后还可能出现：
 ```
 pkg_resources.distributionnotfound pip==1.4.1
 ```

@@ -7,8 +7,6 @@ categories: 技术随笔
 tags: memcached
 ---
 
-### 介绍
-
 Xmemcached是基于java nio实现的高性能可扩展的memcached客户端。它的主要特点：
 
 1. 高性能，稳定可靠，已经在众多公司的众多项目里得到应用。

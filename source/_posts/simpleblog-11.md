@@ -7,7 +7,6 @@ categories: python
 tags: django
 ---
 
-## TinyMCE介绍
 TinyMCE是一个轻量级的基于浏览器的所见即所得编辑器，支持目前流行的各种浏览器，由JavaScript写成。
 功能配置灵活简单（两行代码就可以将编辑器嵌入网页中），支持AJAX。另一特点是加载速度非常快。
 
@@ -18,11 +17,11 @@ TinyMCE的官方网站是：<http://www.tinymce.com/>
 
 下载地址：<http://download.moxiecode.com/tinymce/tinymce_4.1.9.zip>
 
-TinyMCE的最新版本是4.1.9，下面是官网截屏：
+TinyMCE的最新版本是4.1.9，下面是官网截屏：<!--more-->
 
 ![](http://yidaospace.qiniudn.com/tinymce.png)
 
-下载下来后，我们把它解压到工程的static/目录下面，如下图所示：<!--more-->
+下载下来后，我们把它解压到工程的static/目录下面，如下图所示：
 
 ![](http://yidaospace.qiniudn.com/dj101.png)
 

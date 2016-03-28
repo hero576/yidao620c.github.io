@@ -7,13 +7,13 @@ categories: python
 tags: [pyinstaller]
 ---
 
-### PyInstaller介绍：
 PyInstaller是一个能将Python程序转换成单个可执行文件的程序，
 操作系统支持Windows, Linux, Mac OS X, Solaris和AIX。并且很多包都支持开箱即用，不依赖环境。
 
 环境为windows7操作系统，python2.7.8 virtual environment
 
 官网：<https://github.com/pyinstaller/pyinstaller>
+<!--more-->
 
 ### 详细步骤：
 1\. win7下面先安装这个依赖：pywin32，下载下来后切换到venv2.7，然后使用easy_install xxx.exe安装
@@ -25,7 +25,7 @@ pip install pyinstaller
 
 3\. 打包过程中可能会出现msvcp90.dll找不到的问题，
 去<http://cn.dll-files.com/msvcp90.dll.html>下载第三个zip文件，
-解压后放到C:\Windows\System32，如果是64位的还要放到C:\Windows\SysWOW64目录下。<!--more-->
+解压后放到C:\Windows\System32，如果是64位的还要放到C:\Windows\SysWOW64目录下。
 
 4\. 再次运行报MSVCR90.dll找不到，同理去<http://cn.dll-files.com/MSVCR90.dll.html>下载MSVCR90.dll，
 放到C:\Windows\System32和C:\Windows\SysWOW64中。

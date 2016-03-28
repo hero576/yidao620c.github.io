@@ -7,7 +7,6 @@ categories: python
 tags: django
 ---
 
-### Xadmin介绍
 xadmin是一个django的管理后台实现，使用了更加灵活的架构设计及Bootstrap UI框架，
 目的是替换现有的admin，国人开发，有许多新的特性：
 
@@ -21,11 +20,11 @@ xadmin是一个django的管理后台实现，使用了更加灵活的架构设�
 
 项目主页：<http://sshwsfc.github.io/django-xadmin/>
 
-在线demo: <http://demo.xadmin.io/>
+在线demo: <http://demo.xadmin.io/><!--more-->
 
 ### 与django的集成
 
-本篇以simpleblog项目为例，介绍下怎样在django中集成xadmin<!--more-->
+本篇以simpleblog项目为例，介绍下怎样在django中集成xadmin
 
 #### python2.7环境切换
 

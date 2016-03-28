@@ -7,9 +7,7 @@ categories: python
 tags: django
 ---
 
-## 安全问题
-你应该注意到了一点，当你去新建、修改和删除文章的时候并不需要登录，
-这样的话任何浏览网站的用户都能随时修改和删除我的文章。这个可不是我想要的！
+你应该注意到了一点，当你去新建、修改和删除文章的时候并不需要登录，这样的话任何浏览网站的用户都能随时修改和删除我的文章。这个可不是我想要的！<!--more-->
 
 ## 编辑和删除的认证
 我们需要保护post_new, post_edit和post_publish这三个视图，只有登录用户才有权去执行。
@@ -22,7 +20,7 @@ from django.contrib.auth.decorators import login_required
 ```
 
 然后在post_new, post_edit和post_publish这三个函数上添加@login_required，
-类似下面<!--more-->
+类似下面
 ``` python
 @login_required
 def post_new(request):

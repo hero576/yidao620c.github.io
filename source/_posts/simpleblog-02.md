@@ -7,10 +7,9 @@ categories: python
 tags: django
 ---
 
-### 什么是模型？
 django的模型就是用于在数据库中存储的某种类型的对象。在我们的博客系统中，
 发表的文章就是一个模型，需要存储在数据库中。
-这里我们使用django默认的sqlite3库，对于我们的这个小系统而言已经足够了。
+这里我们使用django默认的sqlite3库，对于我们的这个小系统而言已经足够了。<!--more-->
 
 ### 创建一个应用
 在django中有两个概念需要弄清楚。一个是工程（project）的概念，一个是应用（application）的概念。
@@ -21,7 +20,7 @@ django的模型就是用于在数据库中存储的某种类型的对象。在�
 ```
 (myvenv) [mango@centos00 mysite]$ python manage.py startapp blog
 ```
-你会看到一个新的blog文件夹被创建，并且下面多了许多文件，目前结构如下：<!--more-->
+你会看到一个新的blog文件夹被创建，并且下面多了许多文件，目前结构如下：
 ```
 mysite
 ├── mysite

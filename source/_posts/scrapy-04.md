@@ -7,15 +7,14 @@ categories: python
 tags: [scrapy]
 ---
 
-## 开篇
 在你爬取网页的时候，最普遍的事情就是在页面源码中提取需要的数据，我们有几个库可以帮你完成这个任务：
 
 1. [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/)是python中一个非常流行的抓取库,
 它还能合理的处理错误格式的标签，但是有一个唯一缺点就是：它运行很慢。
 2. [lxml](http://lxml.de/)是一个基于[ElementTree](https://docs.python.org/2/library/xml.etree.elementtree.html)的XML解析库(同时还能解析HTML),
-不过lxml并不是Python标准库<!--more-->
+不过lxml并不是Python标准库
 
-而Scrapy实现了自己的数据提取机制，它们被称为选择器，通过[XPath](http://www.w3.org/TR/xpath)或[CSS](http://www.w3.org/TR/selectors)表达式在HTML文档中来选择特定的部分。
+而Scrapy实现了自己的数据提取机制，它们被称为选择器，通过[XPath](http://www.w3.org/TR/xpath)或[CSS](http://www.w3.org/TR/selectors)表达式在HTML文档中来选择特定的部分<!--more-->
 
 [XPath](http://www.w3.org/TR/xpath)是一用来在XML中选择节点的语言，同时可以用在HTML上面。
 [CSS](http://www.w3.org/TR/selectors)是一种HTML文档上面的样式语言。

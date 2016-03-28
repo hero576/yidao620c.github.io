@@ -8,7 +8,6 @@ categories: 技术随笔
 tags: [sitemesh]
 ---
 
-### 简介
 SiteMesh的介绍就不多说了，主要是用来统一页面风格，减少重复编码的。
 
 它定义了一个过滤器，然后把页面都加上统一的头部和底部。
@@ -22,8 +21,9 @@ SiteMesh的介绍就不多说了，主要是用来统一页面风格，减少重
     <version>2.4.2</version>
 </dependency>
 ```
+<!--more-->
 
-### 过滤器定义：<!--more-->
+### 过滤器定义：
 在web.xml中：
 
 ``` xml

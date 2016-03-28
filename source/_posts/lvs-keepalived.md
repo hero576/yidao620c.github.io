@@ -7,7 +7,6 @@ categories: linux
 tags: [lvs, keepalived]
 ---
 
-## 一、理论知识（原理）
 我们不仅要知其然，而且要知其所以然，所以先给大家准备一些理论知识课，这样对以后的应用将会事半功倍。
 
 **1、什么是LVS？**
@@ -18,6 +17,7 @@ tags: [lvs, keepalived]
 + LVS集群的体系结构：<http://www.linuxvirtualserver.org/zh/lvs2.html>
 + LVS集群中的IP负载均衡技术：<http://www.linuxvirtualserver.org/zh/lvs3.html>
 + LVS集群的负载调度：<http://www.linuxvirtualserver.org/zh/lvs4.html>
+<!--more-->
 
 **2、什么是KeepAlived?**
 
@@ -29,13 +29,13 @@ Keepalived原理与实战精讲： <http://zhumeng8337797.blog.163.com/blog/stat
 
 **4、小结**
 
-相信读了以上的理论知识后，已经对集群的实现原理有了大概的了解，那接下来我们就开始动手吧。<!--more-->
+相信读了以上的理论知识后，已经对集群的实现原理有了大概的了解，那接下来我们就开始动手吧。
 
 系统架构图：
 
 ![](http://yidaospace.qiniudn.com/0002.png)
 
-## 二、服务器的安装
+## 服务器的安装
 我们会用到4个服务器，横向分2层：
 
 第1层是LVS服务器（1个主，1个从；从可以多个）用来转发请求，需要安装ipvsadm和keepAlived；
@@ -138,7 +138,7 @@ OK，KeepAlived安装完毕，然后进行配置。
 
 #### 4) KeepAlivde的配置
 
-**一步：打开IP Forward 功能**
+**第一步：打开IP Forward 功能**
 
 （LVS现有三种负载均衡规则都需要打开此功能，如果不打开此功能，下面的配置配得再好都无济于事）
 ``` bash
@@ -436,7 +436,7 @@ virtual_server 192.168.203.107 8080 {
 3) OK，至此我们已经虚拟出2个LVS服务器，一对主从；2个WEB服务器，web1和web2。
 接下来我们进行测试，看能否满足我们的初始需求。
 
-## 三、负载和可用性测试
+## 负载和可用性测试
 
 开启每个服务器的相关服务，关闭防火墙，我们开始进行测试。
 
@@ -464,7 +464,7 @@ ipvsadm中的服务器列表，已经去掉了WEB1服务器，访问网页也只
 
 5）开启WEB1，关掉WEB2。测试正常。
 
-## 四、总结
+## 总结
 
 经过不断的测试，终于完成了这篇稿子，望大家能够指正。还有一点就是很多时候都是配置文件中的一些小毛病造成的，比如：
 

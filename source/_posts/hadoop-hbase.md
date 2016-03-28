@@ -7,12 +7,11 @@ categories: 技术随笔
 tags: [hadoop, hbase]
 ---
 
-### 安装前的准备
 操作系统：CentOS 6.5 64位
 
 在linux环境安装Hadoop之前，我们需要使用到ssh，所以要先安装ssh，并且创建一个hadoop用户
 
-**备注：** 下面所有的命令中，以#开头的表示是root用户，以$开头的是普通用户
+**备注：** 下面所有的命令中，以#开头的表示是root用户，以$开头的是普通用户<!--more-->
 
 #### 安装SSH
 先切换到root用户，执行下列步骤
@@ -24,7 +23,7 @@ chkconfig --level 2345 sshd on  #如果没设置启动就设置下.
 service sshd restart  #重新启动
 ```
 
-#### 创建hadoop用户<!--more-->
+#### 创建hadoop用户
 ``` bash
 $ su
 password:

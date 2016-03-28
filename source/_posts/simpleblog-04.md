@@ -7,7 +7,6 @@ categories: python
 tags: django
 ---
 
-### 什么是三部曲？
 其实在django中实现一个功能只需要三个步骤即可，这里我姑且叫它三部曲。
 
 这三部曲就是：
@@ -15,13 +14,14 @@ tags: django
 1. 定义urls映射
 1. 定义views
 1. 定义templates
+<!--more-->
 
 ### 什么是URL？
 URL就算一个WEB地址，你在浏览器输入这个地址，然后浏览器返回相应的网页给你。
 比如http://djangogirls.com是一个URL，而127.0.0.1:8000同样也是个URL，默认就是http协议的。
 
 ### Django中的URL工作原理
-我们打开mysite/urls.py文件，会发现类似下面这样：<!--more-->
+我们打开mysite/urls.py文件，会发现类似下面这样：
 
 ``` python
 from django.conf.urls import patterns, include, url

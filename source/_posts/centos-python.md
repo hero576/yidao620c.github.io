@@ -7,8 +7,7 @@ categories: python
 tags: [python,centos]
 ---
 
-## 更新系统和开发工具集
-下面所有的指令都在root用户下完成
+更新系统和开发工具集，下面所有的指令都在root用户下完成
 ``` bash
 yum -y update
 yum groupinstall -y 'development tools'
@@ -18,6 +17,7 @@ yum groupinstall -y 'development tools'
 ``` bash
 yum install -y zlib-devel bzip2-devel openssl-devel xz-libs wget
 ```
+<!--more-->
 
 ## 源码安装Python 2.7.x
 ``` bash

@@ -7,13 +7,13 @@ categories: linux
 tags: [linux]
 ---
 
-#### 先备份
+先备份
 
 ``` bash
 mv /etc/yum.repos.d/CentOS-Base.repo{,.bak}
 ```
 
-#### 修改CentOS-Base.repo
+修改CentOS-Base.repo<!--more-->
 ```
 # CentOS-Base.repo
 #
@@ -69,7 +69,7 @@ enabled=0
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
 ```
 
-接下来我们来更新下yum：<!--more-->
+接下来我们来更新下yum：
 ```
     yum clean all
     yum makecache  # 将服务器上的软件包信息缓存到本地,以提高搜索安装软件的速度

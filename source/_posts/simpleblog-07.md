@@ -10,7 +10,7 @@ tags: django
 到目前为止我们已经完成了一个django应用的所有基础部分。
 包括url配置、视图、模型和模板。接下来开始继续完善我们的博客系统了。
 
-首先我们需要一个显示每篇文章的详细页面，对不？
+首先我们需要一个显示每篇文章的详细页面，对不？<!--more-->
 
 ## 文章详情
 对于首页每一篇文章，我们希望点击标题后可以进入该文章的阅读页面。修改post_list.html中的标题href如下：
@@ -19,7 +19,7 @@ tags: django
 ```
 我来详细解释下这个{% raw %}{% url ‘blog.views.post_detail’ pk=post.pk %}，{% %}{% endraw %}
 表示使用django模板标签而不是普通的HTML文字，这里我们使用了url标签来生成真正的url链接。
-blog.views.post_detail是视图的全路径。<!--more-->
+blog.views.post_detail是视图的全路径。
 
 ### url配置
 我们希望文章详细页面的链接类似这样：http://127.0.0.1:8000/post/1/

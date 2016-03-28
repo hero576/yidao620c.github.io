@@ -8,10 +8,9 @@ categories: linux
 tags: rabbitmq
 ---
 
-### 在 CentOS 6.4上安装python
-自己手动安装python2.7.5，不要动系统上面其他的版本
+先自己手动安装python2.7.5，不要动系统上面其他的版本
 
-**1,先安装GCC，用如下命令yum install gcc gcc-c++**
+**1,安装GCC，用如下命令yum install gcc gcc-c++**
 ``` bash
 yum install zlib
 yum install zlib-devel

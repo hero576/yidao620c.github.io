@@ -8,21 +8,19 @@ categories: 技术随笔
 tags: [xpath]
 ---
 
-### Wiki
-
 XPath即为XML路径语言（XML Path Language），它是一种用来确定XML文档中某部分位置的语言。
 XPath基于XML的树状结构，提供在数据结构树中找寻节点的能力。
 起初XPath的提出的初衷是将其作为一个通用的、介于XPointer与XSL间的语法模型。
 但是XPath很快的被开发者采用来当作小型查询语言。
 
-W3C网址： <http://www.w3schools.com/XPath/>
+W3C网址： <http://www.w3schools.com/XPath/><!--more-->
 
 ### 表示法
 
 最常见的XPath表达式是路径表达式（XPath这一名称的另一来源）。
 
 路径表达式是从一个XML节点（当前的上下文节点）到另一个节点、或一组节点的书面步骤顺序。
-这些步骤以“／”字符分开，每一步有三个构成成分：<!--more-->
+这些步骤以“／”字符分开，每一步有三个构成成分：
 
 ### 轴描述
 

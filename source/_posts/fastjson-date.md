@@ -7,15 +7,15 @@ categories: 技术随笔
 tags: fastjson
 ---
 
-### fastjson对日期的序列化方式
+fastjson对日期的序列化方式
 
-#### 一种方法是通过注解
+一种方法是通过注解
 ``` java
 @JSONField (format="yyyy-MM-dd HH:mm:ss")
 public Date birthday;
 ```
 
-#### 另一种是通过SerializeConfig：
+另一种是通过SerializeConfig：<!--more-->
 ``` java
 private static SerializeConfig mapping = new SerializeConfig();
 private static String dateFormat;
@@ -29,7 +29,7 @@ json字符串中使用单引号：
 ``` java
 String text = JSON.toJSONString(object, SerializerFeature.UseSingleQuotes);
 ```
-<!--more-->
+
 字段显示不同的key：
 ``` java
 public class User {

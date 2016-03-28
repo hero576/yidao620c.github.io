@@ -7,14 +7,13 @@ categories: linux
 tags: [nginx]
 ---
 
-### 介绍
-
 nginx在工作中已经有好几个环境在使用了，
 今天自己也整理一份安装文档和nginx.conf配置选项的说明，留作以后参考。
 
 负载均衡配置（包括健康检查）、缓存（包括清空缓存）配置实例，请参考：<http://seanlook.com/2015/06/02/nginx-cache-check/>
 
 ssl加密请参考：<http://seanlook.com/2015/05/28/nginx-ssl/>
+<!--more-->
 
 ### 安装nginx
 操作系统：CentOS 6.5_x86_64
@@ -27,8 +26,7 @@ ssl加密请参考：<http://seanlook.com/2015/05/28/nginx-ssl/>
 sudo yum -y install gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-devel pcre pcre-devel
 ```
 
-这些软件包如果yum上没有的话可以下载源码来编译安装，只是要注意编译时默认安装的目录，<!--more-->
-确保下面在安装nginx时能够找到这些动态库文件（ldconfig）。
+这些软件包如果yum上没有的话可以下载源码来编译安装，只是要注意编译时默认安装的目录，确保下面在安装nginx时能够找到这些动态库文件（ldconfig）。
 
 从 <http://nginx.org/en/download.html> 下载稳定版nginx-1.8.0.tar.gz到/usr/local/src下解压。
 
@@ -37,7 +35,6 @@ sudo yum -y install gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-dev
 —— 检查后端服务器的状态，
 <https://bitbucket.org/nginx-goodies/nginx-sticky-module-ng/get/c78b7dd79d0d.zip>
 （建议在/usr/local/src下解压后将目录重命名为nginx-sticky-module-ng-1.2.6） —— 后端做负载均衡解决session sticky问题。
-
 
 ``` bash
 [root@cachets nginx-1.8.0]# pwd

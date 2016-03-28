@@ -7,8 +7,6 @@ categories: python
 tags: [scrapy]
 ---
 
-## 开篇
-
 这篇文章我们通过一个比较完整的例子来教你使用Scrapy，我选择爬取[虎嗅网首页](http://www.huxiu.com/)的新闻列表。
 
 这里我们将完成如下几个步骤：

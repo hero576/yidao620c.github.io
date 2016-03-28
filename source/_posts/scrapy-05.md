@@ -7,7 +7,6 @@ categories: python
 tags: [scrapy]
 ---
 
-## Item是什么
 Item是保存结构数据的地方，Scrapy可以将解析结果以字典形式返回，但是Python中字典缺少结构，在大型爬虫系统中很不方便。
 
 Item提供了类字典的API，并且可以很方便的声明字段，很多Scrapy组件可以利用Item的其他信息。<!--more-->

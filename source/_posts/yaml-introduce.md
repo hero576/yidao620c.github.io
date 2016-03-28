@@ -8,17 +8,7 @@ categories: 技术随笔
 tags: [yaml]
 ---
 
-### Wiki
-
-YAML（IPA: /ˈjæməl/，尾音类似camel骆驼）是一个可读性高，用来表达资料序列的格式。
-YAML参考了其他多种语言，包括：XML、C语言、Python、Perl以及电子邮件格式RFC2822。
-Clark Evans在2001年在首次发表了这种语言[1] ，
-另外Ingy döt Net与Oren Ben-Kiki也是这语言的共同设计者。
-目前已经有数种编程语言或脚本语言支援（或者说解析）这种语言。
-
-YAML是”YAML Ain’t a Markup Language”（YAML不是一种置标语言）的递回缩写。
-在开发的这种语言时，YAML 的意思其实是：”Yet Another Markup Language”（仍是一种置标语言），
-但为了强调这种语言以数据做为中心，而不是以置标语言为重点，而用返璞词重新命名。
+YAML是一个可读性高，用来表达资料序列的格式。YAML参考了其他多种语言，包括：XML、C语言、Python、Perl以及电子邮件格式RFC2822。目前已经有数种编程语言或脚本语言支援（或者说解析）这种语言。
 
 最新版本为1.2，官方说明地址： <http://www.yaml.org/spec/1.2/spec.html>
 

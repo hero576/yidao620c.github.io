@@ -7,7 +7,6 @@ categories: linux
 tags: [apache, tomcat, 负载均衡]
 ---
 
-### 环境说明
 操作系统：CentOS 6.5_x86_64
 
 前提：提前准备好编译环境，防火墙和selinux都关闭
@@ -15,6 +14,7 @@ tags: [apache, tomcat, 负载均衡]
 主机IP：两台机器，192.168.203.103、192.168.203.104
 
 安装软件：jdk-8u51-linux-x64, apache-tomcat-8.0.24, tomcat-connectors-1.2.41, httpd-2.2.15, httpd-devel-2.2.15
+<!--more-->
 
 ### 一、两台机器都安装JAVA8
 
@@ -30,7 +30,7 @@ sudo rpm -e jdk-1.7.0_45
 wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u60-b27/jdk-8u60-linux-x64.tar.gz"
 ```
 
-如果上述链接失效，请去官网下载最新的源码包。<!--more-->
+如果上述链接失效，请去官网下载最新的源码包。
 
 ``` bash
 cd /opt/

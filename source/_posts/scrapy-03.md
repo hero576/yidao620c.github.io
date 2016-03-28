@@ -7,8 +7,6 @@ categories: python
 tags: [scrapy]
 ---
 
-## 开篇
-
 Spider是爬虫框架的核心，爬取流程如下：
 
 1. 先初始化请求URL列表，并指定下载后处理response的回调函数

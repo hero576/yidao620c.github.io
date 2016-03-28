@@ -8,7 +8,6 @@ categories: 技术随笔
 tags: [octopress]
 ---
 
-### 前言
 经过iteye博客——WordPress——github的三重进化，时间来到了2015年，
 荒废了两年的Blog大业再次东山再起，于是经过一天的配置，本博客终于展现在你的眼前。
 本博客基于Octopress+Github Pages搭建，可以搭建全免费、稳定运行的个人博客。

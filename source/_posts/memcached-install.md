@@ -7,13 +7,12 @@ categories: 技术随笔
 tags: memcached
 ---
 
-### 准备安装文件
-
 下载memcached与libevent的安装文件：
 
 memcached下载地址：[memcached-1.4.15.tar.gz](http://memcached.googlecode.com/files/memcached-1.4.15.tar.gz)
 
 libevent下载地址：[libevent-2.0.21-stable.tar.gz](https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz)
+<!--more-->
 
 ### 具体安装步骤
 
@@ -28,7 +27,7 @@ rpm -qa|grep libevent
 # 由于系统自带的版本旧，忽略依赖删除
 rpm -e libevent-1.4.13-4.el6.x86_64 –nodeps
 ```
-1. 安装libevent命令：<!--more-->
+1. 安装libevent命令：
 ``` bash
 tar zxvf libevent-2.0.21-stable.tar.gz
 cd libevent-2.0.21-stable

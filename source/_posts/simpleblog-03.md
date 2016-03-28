@@ -9,18 +9,17 @@ tags: django
 
 到目前为止，你的网站只能在你自己的电脑上访问到。你需要将它发布到公网上去让地球上的人都能看到，那么要怎么做呢？
 
-### Heroku简介
 Heroku是一个主机托管平台，对于访问量不是很大的小应用是免费的，正好适用于我们的这个例子。
 
 Heroku官网上有一篇django的教程：
-[getting started with django](https://devcenter.heroku.com/articles/getting-started-with-django)
+[getting started with django](https://devcenter.heroku.com/articles/getting-started-with-django)<!--more-->
 
 这里我把它复制到这里来详细讲解一下。
 
 ### requirements.txt文件
 我们需要创建一个requirements.txt文件来告知Heroku需要在服务器上创建哪些python包。
 
-不过首先，Heroku需要我们在本地按照一些包。在python虚拟环境virtualenv下面执行：<!--more-->
+不过首先，Heroku需要我们在本地按照一些包。在python虚拟环境virtualenv下面执行：
 ```
 (myvenv) [mango@centos mysite]$ pip install dj-database-url gunicorn whitenoise
 ```

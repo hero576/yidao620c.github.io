@@ -7,16 +7,15 @@ categories: python
 tags: [scrapy]
 ---
 
-## 下载文件和图片
 Scrapy为我们提供了可重用的[item pipelines](http://doc.scrapy.org/en/1.0/topics/item-pipeline.html)为某个特定的Item去下载文件。
 通常来说你会选择使用Files Pipeline或Images Pipeline。
 
 这两个管道都实现了：
 
 * 避免重复下载
-* 可以指定下载后保存的地方(文件系统目录中,Amazon S3中)<!--more-->
+* 可以指定下载后保存的地方(文件系统目录中,Amazon S3中)
 
-Images Pipeline为处理图片提供了额外的功能：
+Images Pipeline为处理图片提供了额外的功能：<!--more-->
 
 * 将所有下载的图片格式转换成普通的JPG并使用RGB颜色模式
 * 生成缩略图

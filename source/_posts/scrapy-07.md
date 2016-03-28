@@ -7,7 +7,6 @@ categories: python
 tags: [scrapy]
 ---
 
-## 日志
 Scrapy使用Python内置的的日志系统来记录事件日志。
 日志配置
 ```
