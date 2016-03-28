@@ -234,6 +234,26 @@ feed:
 ## 新主题maupassant
 最近我又换成了另外一个更加简洁的主题叫[maupassant](https://github.com/tufu9441/maupassant-hexo)，非常简单的配置，喜欢的可以试试
 
+## 自定义分页
+安装三个插件：归档，标签，分类。然后将每个分页显示文章数都变大点
+``` bash
+npm install hexo-generator-archive --save
+npm install hexo-generator-tag --save
+npm install hexo-generator-category --save
+```
+三者各自的配置：
+```
+archive_generator:
+  per_page: 100
+  yearly: true
+  monthly: true
+  daily: false
+tag_generator:
+  per_page: 100
+category_generator:
+  per_page: 100
+```
+
 ## FAQ
 
 * 遇到有大括号的代码块，如果多行的不用管，如果单行的就单个反引号，并且在里面加raw标签
