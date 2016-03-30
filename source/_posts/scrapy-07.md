@@ -98,8 +98,8 @@ curl http://scrapy2.mycompany.com:6800/schedule.json -d project=myproject -d spi
 curl http://scrapy3.mycompany.com:6800/schedule.json -d project=myproject -d spider=spider1 -d part=3
 ```
 
-## 反正被封的策略
-一些网站实现了一些策略来禁止爬虫来爬取它们的网页。有的比较简单，有的相当复杂，如果你需要详细了解可以进行[商业帮助](http://scrapy.org/support/)
+## 防止被封的策略
+一些网站实现了一些策略来禁止爬虫来爬取它们的网页。有的比较简单，有的相当复杂，如果你需要详细了解可以咨询[商业支持](http://scrapy.org/support/)
 
 下面是对于这些网站的一些有用的建议：
 
@@ -110,5 +110,5 @@ curl http://scrapy3.mycompany.com:6800/schedule.json -d project=myproject -d spi
 * 使用一个轮转IP池，例如免费的[Tor project](https://www.torproject.org/)或者是付费的[ProxyMesh](http://proxymesh.com/)
 * 使用大型分布式下载器，这样就能完全避免被封了，只需要关注怎样解析页面就行。一个例子就是[Crawlera](http://scrapinghub.com/crawlera)
 
-如果这些还是无法避免被禁，可以考虑[商业帮助](http://scrapy.org/support/)
+如果这些还是无法避免被禁，可以考虑[商业支持](http://scrapy.org/support/)
 
