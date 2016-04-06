@@ -12,6 +12,7 @@ tags: [scrapy]
 * [Scrapyd](http://doc.scrapy.org/en/1.0/topics/deploy.html#deploy-scrapyd) 开源方案
 * [Scrapy Cloud](http://doc.scrapy.org/en/1.0/topics/deploy.html#deploy-scrapy-cloud) 云方案
 <!--more-->
+
 ## 部署到Scrapyd
 [Scrapyd](http://doc.scrapy.org/en/1.0/topics/deploy.html#deploy-scrapyd)是一个开源软件，用来运行蜘蛛爬虫。它提供了HTTP API的服务器，还能运行和监控Scrapy的蜘蛛
 
