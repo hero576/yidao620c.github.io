@@ -1613,3 +1613,17 @@ em.search-keyword {
     font-family: "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif;
 }
 
+.with-love {
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 2px;
+}
+.footera {
+  color: #555;
+  border-bottom: 1px solid #999;
+}
+
+.footera a:hover {
+    color: #222;
+    border-bottom-color: #222;
+}
