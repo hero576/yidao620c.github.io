@@ -25,6 +25,21 @@ Scrapy选择器构建在lxml基础之上，所以可以保证速度和准确性�
 
 完整的API请查看[Selector参考](http://doc.scrapy.org/en/latest/topics/selectors.html#topics-selectors-ref)
 
+## 关于选择器
+Scrapy帮我们下载完页面后，我们怎样在满是html标签的内容中找到我们所需要的元素呢，这里就需要使用到选择器了，它们是用来定位元素并且提取元素的值。先来举几个例子看看：
+
+* /html/head/title: 选择`<title>`节点, 它位于html文档的`<head>`节点内
+* /html/head/title/text(): 选择上面的`<title>`节点的内容.
+* //td: 选择页面中所有的<td>元素
+* //div[@class="mine"]: 选择所有拥有属性`class="mine"`的div元素
+
+Scrapy使用css和xpath选择器来定位元素，它有四个基本方法：
+
+* xpath(): 返回选择器列表，每个选择器代表使用xpath语法选择的节点
+* css(): 返回选择器列表，每个选择器代表使用css语法选择的节点
+* extract(): 返回被选择元素的unicode字符串
+* re(): 返回通过正则表达式提取的unicode字符串列表
+
 ## 使用选择器
 下面我们通过Scrapy shell演示下选择器的使用，假设我们有如下的一个网页<http://doc.scrapy.org/en/latest/_static/selectors-sample1.html>，内容如下：
 ``` html

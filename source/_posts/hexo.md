@@ -20,23 +20,23 @@ hexo是一个台湾人做的基于Node.js的静态博客程序，优势是生成
 
 ### 安装hexo
 利用 npm 命令即可安装。打开窗口控制台，输入安装hexo命令：
-```
+``` bash
 npm install -g hexo
 ```
 
 ### 初始化
 安装完成后，在你喜爱的文件夹下（如D:\hexo），控制台执行以下指令，hexo会自动在目标文件夹建立网站所需要的所有文件。
-```
+``` bash
 hexo init
 ```
 
 安装依赖包：
-```
+``` bash
 npm install
 ```
 
 一切准备就绪让我们试验下，在D:\hexo内执行以下命令：
-```
+``` bash
 hexo g
 hexo s
 ```
@@ -65,14 +65,14 @@ deploy:
 
 如果你是第一次使用Github或者是已经使用过，但没有配置过SSH，则可能需要配置一下SSH。
 在Git Bash输入以下指令（任意位置点击鼠标右键），检查是否已经存在了SSH keys。
-```
+``` bash
 ls -al ~/.ssh
 ```
 
 如果不存在就没有关系，如果存在的话，直接删除.ssh文件夹里面所有文件：
 
 输入以下指令（邮箱就是你注册Github时候的邮箱）后回车，出现提示让你输入的时候一直按回车：
-```
+``` bash
 ssh-keygen -t rsa -C "yidao620@gmail.com"
 ```
 
@@ -82,23 +82,23 @@ eval `ssh-agent -s`
 ssh-add
 ```
 到了这一步，就可以添加SSH key到你的Github账户了。键入以下指令，拷贝Key（先拷贝了，等一下可以直接粘贴，不放心的在执行下面命令后，先黏贴在记事本上）：
-```
+``` bash
 clip < ~/.ssh/id_rsa.pub
 ```
 然后到Github里面，点击右上角的设置图标Settings,找到SSH keys,Ttile随便你命名，Key就黏贴上你刚才复制的key,然后点Add SSH key，最后会让你重新输入下gitHub的密码
 最后还是测试一下吧，键入以下命令：
-```
+``` bash
 ssh -T git@github.com
 ```
 你可能会看到有警告，输入“yes”就好
 
 还要安装hexo-deployer-git这个模块:
-```
+``` bash
 npm install hexo-deployer-git --save
 ```
 
 以上就表示SSH配置好了，执行以下命令部署到Github上。
-```
+``` bash
 hexo g
 hexo d
 ```
@@ -106,7 +106,7 @@ hexo d
 
 ## 发表一篇文章
 在你的D:\hexo目录下面，控制台执行命令：
-```
+``` bash
 hexo new "Hello World"
 ```
 
@@ -131,7 +131,7 @@ tags: [文章, 测试] #文章标签，多于一项时用这种格式，只有�
 
 ### 安装主题
 
-```
+``` bash
 $ git clone https://github.com/wuchong/jacman.git themes/jacman
 ```
 
@@ -139,12 +139,12 @@ $ git clone https://github.com/wuchong/jacman.git themes/jacman
 修改你的博客根目录下的config.yml配置文件中的theme属性，将其设置为jacman
 
 ### 更新主题
-```
+``` bash
 cd themes/jacman
 git pull
 ```
 更新好后，本地启动起来效果
-```
+``` bash
 hexo server -g  #生成加预览
 ```
 
@@ -165,7 +165,7 @@ hexo server -g  #生成加预览
 
 （假定最初创建博客为A，其他另一个为B)
 1) 在A中的git_blog目录下，建立source分支：
-```
+``` bash
 $ git branch source // 创建source分支
 $ git checkout source // 切换到source分支
 $ git remote -v //查看远程分支名字
@@ -177,7 +177,7 @@ $ git push origin source // 将当前git_blog下的内容push到Github上的远�
 
 ```
 2) 在B中建立git_blog目录，安装npm，安装Hexo，添加SSH，然后使用
-```
+``` bash
 $ git clone -b source git@github.com:yidao620c/yidao620c.github.com.git
 ```
 在B中建立本地的source分支，并与远程的source分支进行了绑定。git_blog下的yidao620c.github.com文件夹里保存了和远程source分支相同的内容。
@@ -187,11 +187,11 @@ $ git clone -b source git@github.com:yidao620c/yidao620c.github.com.git
 1. 在A中使用Hexo的new、g、d方法添加、生成、部署新的博客，内容都会被同步自动放到Github的master分支上；
 2. 在1>.之后，同样保证B的git当前在git_blog下的source分支下
 先使用：
-```
+``` bash
 git pull origin source
 ```
 获得Github的source分支上的最新版本，再使用：
-```
+``` bash
 $ git add -u
 $ git commit -m ""
 $ git push origin source
@@ -199,7 +199,7 @@ $ git push origin source
 将新内容提交至Github的source分支上，完成source管理。
 
 ### 其他说明
-```
+``` bash
 git add -f "" // 强制添加文件/文件夹为tracked状态
 $ git rm --cache "" // 解除文件为tracked状态
 $ git rm -r --cache "" // 解除文件夹为tracked状态
@@ -209,7 +209,7 @@ $ git rm -r --cache "" // 解除文件夹为tracked状态
 
 ### 安装hexo-generator-feed
 
-```
+``` bash
 npm install hexo-generator-feed --save
 ```
 安装完后，会在node_modules目录下生成hexo-generator-feed目录

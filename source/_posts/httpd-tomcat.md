@@ -65,23 +65,23 @@ sudo alternatives --set javac /opt/jdk1.8.0_51/bin/javac
 ```
 
 查看下JDK版本
-```
+``` bash
 java -version
 ```
 
 修改环境变量
-```
+``` bash
 sudo vim /etc/profile
 ```
 
 输入以下内容
-```
+``` bash
 export JAVA_HOME=/opt/jdk1.8.0_51
 export JRE_HOME=/opt/jdk1.8.0_51/jre
 export PATH=$PATH:$JAVA_HOME/bin
 ```
 执行
-```
+``` bash
 source /etc/profile
 ```
 
@@ -96,7 +96,7 @@ ln -sv apache-tomcat-8.0.24 tomcat
 ```
 
 2.配置环境变量
-```
+``` bash
 vim /etc/profile.d/tomcat.sh
 ```
 
@@ -106,12 +106,12 @@ PATH=$CATALINA_BASE/bin:$PATH
 export PATH CATALINA_BASE
 ```
 执行：
-```
+``` bash
 . /etc/profile.d/tomcat.sh
 ```
 
 3.查看状态：
-```
+``` bash
 catalina.sh version
 ```
 

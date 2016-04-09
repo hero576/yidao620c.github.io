@@ -1,5 +1,5 @@
 ---
-title: "Scrapy笔记（2）- 完整的例子"
+title: "Scrapy笔记（2）- 完整示例"
 date: 2016-03-10 09:59:15 +0800
 comments: true
 toc: true
@@ -98,24 +98,6 @@ class HuxiuSpider(scrapy.Spider):
             print(item['title'],item['link'],item['desc'])
 ```
 
-## 关于选择器
-Scrapy帮我们下载完页面后，我们怎样在满是html标签的内容中找到我们所需要的元素呢，
-这里就需要使用到选择器了。先来举几个例子看看：
-
-* /html/head/title: 选择`<title>`节点, 它位于html文档的`<head>`节点内
-* /html/head/title/text(): 选择上面的`<title>`节点的内容.
-* //td: 选择页面中所有的<td>元素
-* //div[@class="mine"]: 选择所有拥有属性`class="mine"`的div元素
-
-Scrapy使用css和xpath选择器来定位元素，它有四个基本方法：
-
-* xpath(): 返回选择器列表，每个选择器代表使用xpath语法选择的节点
-* css(): 返回选择器列表，每个选择器代表使用css语法选择的节点
-* extract(): 返回被选择元素的unicode字符串
-* re(): 返回通过正则表达式提取的unicode字符串列表
-
-更多关于CSS和XPath选择器的内容后面会讲到，这里你只需要知道它们是用来定位元素并且提取元素的值就行了。
-
 ## 运行爬虫
 在根目录执行下面的命令，其中huxiu是你定义的spider名字：
 ```
@@ -161,16 +143,79 @@ class HuxiuSpider(scrapy.Spider):
 现在parse只提取感兴趣的链接，然后将链接内容解析交给另外的方法去处理了。
 你可以基于这个构建更加复杂的爬虫程序了。
 
-## 存储抓取数据
+## 导出抓取数据
 最简单的保存抓取数据的方式是使用json格式的文件保存在本地，像下面这样运行：
 ``` bash
 scrapy crawl huxiu -o items.json
 ```
 在演示的小系统里面这种方式足够了。不过如果你要构建复杂的爬虫系统，
-最好编写[Item Pipeline](http://doc.scrapy.org/en/latest/topics/item-pipeline.html#topics-item-pipeline)。
-你初始化工程的时候已经有了一个默认的pipline，在coolscrapy/pipelines.py中。
+最好自己编写[Item Pipeline](http://doc.scrapy.org/en/latest/topics/item-pipeline.html#topics-item-pipeline)。
+
+## 保存数据到数据库
+上面我们介绍了可以将抓取的Item导出为json格式的文件，不过最常见的做法还是编写Pipeline将其存储到数据库中。我们在`coolscrapy/pipelines.py`定义
+``` python
+# -*- coding: utf-8 -*-
+import datetime
+import redis
+import json
+import logging
+from contextlib import contextmanager
+
+from scrapy import signals
+from scrapy.exporters import JsonItemExporter
+from scrapy.pipelines.images import ImagesPipeline
+from scrapy.exceptions import DropItem
+from sqlalchemy.orm import sessionmaker
+from coolscrapy.models import News, db_connect, create_news_table, Article
+
+
+class ArticleDataBasePipeline(object):
+    """保存文章到数据库"""
+
+    def __init__(self):
+        engine = db_connect()
+        create_news_table(engine)
+        self.Session = sessionmaker(bind=engine)
+
+    def open_spider(self, spider):
+        """This method is called when the spider is opened."""
+        pass
+
+    def process_item(self, item, spider):
+        a = Article(url=item["url"],
+                    title=item["title"].encode("utf-8"),
+                    publish_time=item["publish_time"].encode("utf-8"),
+                    body=item["body"].encode("utf-8"),
+                    source_site=item["source_site"].encode("utf-8"))
+        with session_scope(self.Session) as session:
+            session.add(a)
+
+    def close_spider(self, spider):
+        pass
+```
+上面我使用了python中的SQLAlchemy来保存数据库，这个是一个非常优秀的ORM库，我写了篇关于它的入门教程，可以参考下。
+
+然后在`setting.py`中配置这个Pipeline，还有数据库链接等信息：
+``` python
+ITEM_PIPELINES = {
+    'coolscrapy.pipelines.ArticleDataBasePipeline': 5,
+}
+
+# linux pip install MySQL-python
+DATABASE = {'drivername': 'mysql',
+            'host': '192.168.203.95',
+            'port': '3306',
+            'username': 'root',
+            'password': 'mysql',
+            'database': 'spider',
+            'query': {'charset': 'utf8'}}
+```
+再次运行爬虫
+``` bash
+scrapy crawl huxiu
+```
+那么所有新闻的文章都存储到数据库中去了。
 
 ## 下一步
-本章只是带你领略了scrapy最基本的功能，还有很多高级特性没有讲到。
-接下来会通过多个例子向你展示scrapy的其他特性，然后再深入讲述每个特性。
+本章只是带你领略了scrapy最基本的功能，还有很多高级特性没有讲到。接下来会通过多个例子向你展示scrapy的其他特性，然后再深入讲述每个特性。
 

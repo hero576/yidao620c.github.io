@@ -7,12 +7,15 @@
  */
 
 body {
-    background-color: #FFF;
-    color: #444;
-    font-family: "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif;
+    background-color: #fff;
+    color: #555;
+    font-family: "Microsoft YaHei", "WenQuanYi Micro Hei", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", SimSun, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: 14px;
+}
+h2 {
+  font-weight: bold;
 }
 .body_container {
     padding: 0 20px;
@@ -55,7 +58,7 @@ a:focus {
             overflow: hidden;
         }
         #logo {
-            font: bold 38px/1.12 "Times New Roman", Georgia, Times, sans-serif;
+            font: bold 38px/1.12 "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif;
             color: #555;
             span, &:hover {
                 color: #777;
@@ -168,7 +171,7 @@ a:focus {
         margin: 0;
         color: #555;
         text-align: left;
-        font: bold 28px/1.1 "ff-tisa-web-pro", Cambria, "Times New Roman", Georgia, Times, sans-serif;
+        font: bold 28px/1.1 "Microsoft YaHei", "WenQuanYi Micro Hei","TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial;
         a {
             color: #555;
         }
@@ -238,7 +241,7 @@ a:focus {
         line-height: 1.77;
         color: #444;
         padding-top: 1px;
-        text-align: justify;
+        //text-align: justify;
         text-justify: distribute;
         word-break: normal;
         h2 {
@@ -1602,4 +1605,11 @@ em.search-keyword {
   color: #01579f;
 }
 
+.pure-g {
+  font-family: "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif
+}
+
+.pure-g [class *="pure-u"] {
+    font-family: "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif;
+}
 
