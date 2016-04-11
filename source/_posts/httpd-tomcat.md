@@ -4,7 +4,7 @@ date: 2015-10-13 10:59:15 +0800
 comments: true
 toc: true
 categories: linux
-tags: [apache, tomcat, 负载均衡]
+tags: [负载均衡]
 ---
 
 操作系统：CentOS 6.5_x86_64

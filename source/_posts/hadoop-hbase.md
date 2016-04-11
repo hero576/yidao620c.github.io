@@ -4,7 +4,7 @@ title: "centos6上安装Hadoop和HBase"
 date: 2015-05-27 14:01:57 +0800
 toc: true
 categories: 技术随笔
-tags: [hadoop, hbase]
+tags: [hadoop]
 ---
 
 操作系统：CentOS 6.5 64位

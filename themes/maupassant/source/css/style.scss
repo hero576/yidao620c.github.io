@@ -9,7 +9,7 @@
 body {
     background-color: #fff;
     color: #555;
-    font-family: "Microsoft YaHei", "WenQuanYi Micro Hei", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", SimSun, sans-serif;
+    font-family: Lato, "PingFang SC", "Microsoft YaHei", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: 14px;
@@ -800,7 +800,7 @@ figure.highlight,
     .code,
     .tag {
         background-color: inherit;
-        font-family: Menlo;
+        font-family: "Input Mono", "PT Mono", Consolas, Monaco, Menlo, monospace;
         border:      none;
         padding:     0;
         margin:      0;
@@ -1616,7 +1616,7 @@ em.search-keyword {
 .with-love {
     display: inline-block;
     margin-left: 5px;
-    margin-right: 2px;
+    margin-right: 3px;
 }
 .footera {
   color: #555;
@@ -1626,4 +1626,8 @@ em.search-keyword {
 .footera a:hover {
     color: #222;
     border-bottom-color: #222;
+}
+
+.myfa {
+  padding-right: 3px;
 }

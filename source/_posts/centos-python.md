@@ -4,7 +4,7 @@ title: "centos6.x安装python2.7"
 date: 2015-10-10 19:02:42 +0800
 toc: true
 categories: python
-tags: [python,centos]
+tags: [python]
 ---
 
 更新系统和开发工具集，下面所有的指令都在root用户下完成

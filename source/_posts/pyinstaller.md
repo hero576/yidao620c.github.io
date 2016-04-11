@@ -4,7 +4,7 @@ title: "使用PyInstaller打包Python程序"
 date: 2015-04-23 10:22:26 +0800
 toc: true
 categories: python
-tags: [pyinstaller]
+tags: [python]
 ---
 
 PyInstaller是一个能将Python程序转换成单个可执行文件的程序，
