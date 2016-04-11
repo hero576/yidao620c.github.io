@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "windows7上面使用Octopress搭建GitHub博客"
+title: "使用Octopress搭建GitHub博客"
 date: 2015-03-18 17:41:21 +0800
 comments: true
 toc: true
-categories: 技术随笔
+categories: 朝花夕拾
 tags: [octopress]
 ---
 

@@ -193,7 +193,7 @@ class ArticleDataBasePipeline(object):
     def close_spider(self, spider):
         pass
 ```
-上面我使用了python中的SQLAlchemy来保存数据库，这个是一个非常优秀的ORM库，我写了篇关于它的入门教程，可以参考下。
+上面我使用了python中的SQLAlchemy来保存数据库，这个是一个非常优秀的ORM库，我写了篇关于它的[入门教程](http://yidao620c.github.io/2016/03/07/sqlalchemy.html)，可以参考下。
 
 然后在`setting.py`中配置这个Pipeline，还有数据库链接等信息：
 ``` python
