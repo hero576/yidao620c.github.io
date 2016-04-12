@@ -254,6 +254,22 @@ category_generator:
   per_page: 100
 ```
 
+## 绑定自己的域名
+Github Page绑定自己域名，在source/目录下面新建`CNAME`文件，里面写入你的github.io地址比如我的
+```
+yidao620c.github.io
+```
+去自己的域名运营商处添加CNAME类型的DNS记录:
+```
+CNAME: @ => yidao620c.github.io
+CNAME: www =>yidao620c.github.io
+```
+如果是DNSPod，那么后面多加个点
+```
+@类型，CNAME，cmback.github.io.
+www类型，CNAME，cmback.github.io.
+```
+
 ## FAQ
 
 * 遇到有大括号的代码块，如果多行的不用管，如果单行的就单个反引号，并且在里面加raw标签
