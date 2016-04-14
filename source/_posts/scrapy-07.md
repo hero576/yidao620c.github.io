@@ -9,7 +9,7 @@ tags: [scrapy]
 
 Scrapy使用Python内置的的日志系统来记录事件日志。
 日志配置
-```
+``` python
 LOG_ENABLED = true
 LOG_ENCODING = "utf-8"
 LOG_LEVEL = logging.INFO
