@@ -76,7 +76,7 @@ class XMLSpider(XMLFeedSpider):
     namespaces = [('atom', 'http://www.w3.org/2005/Atom')]
     allowed_domains = ["github.io"]
     start_urls = [
-        "http://yidao620c.github.io/atom.xml"
+        "http://www.pycoding.com/atom.xml"
     ]
     iterator = 'xml'  # 缺省的iternodes，貌似对于有namespace的xml不行
     itertag = 'atom:entry'
