@@ -11,7 +11,7 @@ tags: [scrapy]
 下载某个链接得到的页面里面含有异步加载的内容，这样再使用之前的方式我们根本获取不到异步加载的这些网页内容。
 
 使用Javascript渲染和处理网页是种非常常见的做法，如何处理一个大量使用Javascript的页面是Scrapy爬虫开发中一个常见的问题，
-这篇文章将说明如何在Scrapy爬虫中使用scrapy-splash来处理页面中得Javascript。<!--more-->
+这篇文章将说明如何在Scrapy爬虫中使用[scrapy-splash](https://github.com/scrapy-plugins/scrapy-splash)来处理页面中得Javascript。<!--more-->
 
 ### scrapy-splash简介
 scrapy-splash利用[Splash](https://github.com/scrapy/scrapy)将javascript和Scrapy集成起来，使得Scrapy可以抓取动态网页。
@@ -202,38 +202,66 @@ end
 而标准的scrapy session参数可以使用`SplashRequest`将cookie添加到当前Splash cookiejar中
 
 ### 使用实例
-获取一个HTML页面内容和屏幕截图
+接下来我通过一个实际的例子来演示怎样使用，我选择爬取[京东网](http://www.jd.com/)首页的异步加载内容。
+
+京东网打开首页的时候只会将导航菜单加载出来，其他具体首页内容都是异步加载的，下面有个"猜你喜欢"这个内容也是异步加载的，
+我现在就通过爬取这个"猜你喜欢"这四个字来说明下普通的Scrapy爬取和通过使用了Splash加载异步内容的区别。
+
+首先我们写个简单的测试Spider，不使用splash：
 ``` python
-import json
-import base64
+class TestSpider(scrapy.Spider):
+    name = "test"
+    allowed_domains = ["jd.com"]
+    start_urls = [
+        "http://www.jd.com/"
+    ]
+
+    def parse(self, response):
+        logging.info(u'---------我这个是简单的直接获取京东网首页测试---------')
+        guessyou = response.xpath('//div[@id="guessyou"]/div[1]/h2/text()').extract_first()
+        logging.info(u"find：%s" % guessyou)
+        logging.info(u'---------------success----------------')
+```
+然后运行结果：
+```
+2016-04-18 14:42:44 test_spider.py[line:20] INFO ---------我这个是简单的直接获取京东网首页测试---------
+2016-04-18 14:42:44 test_spider.py[line:22] INFO find：None
+2016-04-18 14:42:44 test_spider.py[line:23] INFO ---------------success----------------
+```
+我找不到那个"猜你喜欢"这四个字
+
+接下来我使用splash来爬取
+``` python
 import scrapy
 from scrapy_splash import SplashRequest
 
-class MySpider(scrapy.Spider):
 
-    # ...
+class JsSpider(scrapy.Spider):
+    name = "jd"
+    allowed_domains = ["jd.com"]
+    start_urls = [
+        "http://www.jd.com/"
+    ]
+
+    def start_requests(self):
         splash_args = {
-            'html': 1,
-            'png': 1,
-            'width': 600,
-            'render_all': 1,
+            'wait': 0.5,
         }
-        yield SplashRequest(url, self.parse_result, endpoint='render.json',
-                            args=splash_args)
+        for url in self.start_urls:
+            yield SplashRequest(url, self.parse_result, endpoint='render.html',
+                                args=splash_args)
 
-    # ...
     def parse_result(self, response):
-        # magic responses are turned ON by default,
-        # so the result under 'html' key is available as response.body
-        html = response.body
-
-        # you can also query the html result as usual
-        title = response.css('title').extract_first()
-
-        # full decoded JSON data is available as response.data:
-        png_bytes = base64.b64decode(response.data['png'])
-
-        # ...
+        logging.info(u'----------使用splash爬取京东网首页异步加载内容-----------')
+        guessyou = response.xpath('//div[@id="guessyou"]/div[1]/h2/text()').extract_first()
+        logging.info(u"find：%s" % guessyou)
+        logging.info(u'---------------success----------------')
 ```
-
+运行结果：
+```
+2016-04-18 14:42:51 js_spider.py[line:36] INFO ----------使用splash爬取京东网首页异步加载内容-----------
+2016-04-18 14:42:51 js_spider.py[line:38] INFO find：猜你喜欢
+2016-04-18 14:42:51 js_spider.py[line:39] INFO ---------------success----------------
+```
+可以看出结果里面已经找到了这个"猜你喜欢"，说明异步加载内容爬取成功！
 

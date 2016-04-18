@@ -125,10 +125,11 @@ ITEM_PIPELINES = {
 
 ## Feed exports
 这里顺便提下Feed exports，一般有的爬虫直接将爬取结果序列化到文件中，并保存到某个存储介质中。只需要在settings里面设置几个即可：
-
+```
 * FEED_FORMAT= json # json|jsonlines|csv|xml|pickle|marshal
 * FEED_URI= file:///tmp/export.csv|ftp://user:pass@ftp.example.com/path/to/export.csv|s3://aws_key:aws_secret@mybucket/path/to/export.csv|stdout:
 * FEED_EXPORT_FIELDS = ["foo", "bar", "baz"] # 这个在导出csv的时候有用
+```
 
 ## 请求和响应
 Scrapy使用`Request`和`Response`对象来爬取网站。`Request`对象被蜘蛛生成，然后被传递给下载器，之后下载器处理这个`Request`后返回`Response`对象，然后返回给生成`Request`的这个蜘蛛。
@@ -186,4 +187,9 @@ class LoginSpider(scrapy.Spider):
 ```
 
 ### Response子类
-TextResponse |HtmlResponse |XmlResponse
+一个`scrapy.http.Response`对象代表了一个HTTP相应，通常是被下载器下载后得到，并交给Spider做进一步的处理。Response也有很多默认的子类，用于表示各种不同的响应类型。
+
+* TextResponse 在基本`Response`类基础之上增加了编码功能，专门用于二进制数据比如图片、声音或其他媒体文件
+* HtmlResponse 此类是`TextResponse`的子类，通过查询HTML的`meta http-equiv `属性实现了编码自动发现
+* XmlResponse  此类是`TextResponse`的子类，通过查询XML声明实现编码自动发现
+
