@@ -412,7 +412,7 @@ a:focus {
         font: bold 25px / 1.1 "ff-tisa-web-pro", Cambria, "Times New Roman", Georgia, Times, sans-serif;
     }
     .date {
-        padding-right: .7em;
+        padding-right: 2em;
     }
 }
 /* for archive page ends*/
@@ -611,7 +611,7 @@ div {
 /* read more*/
 .readmore a {
     font-size: 14px;
-    color: #444;
+    color: #42b983;
     margin: -10px 0;
     padding: 5px 10px;
     border: 1px solid #ddd;
@@ -805,7 +805,7 @@ figure.highlight,
         padding:     0;
         margin:      0;
         // To override cursor attribute of `.tag` components
-        cursor:      text;
+        //cursor:      text;
     }
     // To align line number and line of code regardless if there is a scroll bar or not
     .gutter,
@@ -1634,4 +1634,26 @@ em.search-keyword {
 
 code, kbd, pre, samp{
   font-family: "Input Mono", "PT Mono", Consolas, Monaco, Menlo, monospace;
+}
+
+.post-archive .post-title-link:hover {
+    border-bottom: 0;
+    color: #267B54;
+}
+.post-archive .post-title-link {
+    color: #42b983;
+    word-break: break-all;
+}
+a.post-title-link:hover {
+    border-bottom: 2px solid #42b983;
+}
+.post-title .post-title-link .read-more {
+    color: #42b983;
+}
+.post-nav a.pre:hover, .post-nav a.next:hover {
+    border-bottom: 0;
+    color: #267B54;
+}
+.post-nav .pre, .post-nav .next {
+    color: #1E952D;
 }
