@@ -1637,23 +1637,29 @@ code, kbd, pre, samp{
 }
 
 .post-archive .post-title-link:hover {
-    border-bottom: 0;
-    color: #267B54;
+  border-bottom: 0;
+  color: #267B54;
 }
 .post-archive .post-title-link {
-    color: #42b983;
-    word-break: break-all;
+  color: #42b983;
+  word-break: break-all;
 }
 a.post-title-link:hover {
-    border-bottom: 2px solid #42b983;
+  border-bottom: 2px solid #42b983;
 }
 .post-title .post-title-link .read-more {
-    color: #42b983;
+  color: #42b983;
 }
 .post-nav a.pre:hover, .post-nav a.next:hover {
-    border-bottom: 0;
-    color: #267B54;
+  color: #1E952D;
+  border-bottom: 1px solid #42b983;
 }
 .post-nav .pre, .post-nav .next {
-    color: #1E952D;
+  color: #1E952D;
 }
+//.toc-article a.toc-link:hover {
+//  color: #444;
+//}
+//.toc-article .toc-link {
+//  color: #2EA737;
+//}
