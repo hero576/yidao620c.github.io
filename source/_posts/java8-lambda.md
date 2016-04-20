@@ -14,9 +14,9 @@ tags: java
 其他特性比如日期API，泛型，反射，注解，集合框架，并发，Nashorn引擎等等这里暂时就不详细介绍了。
 具体可以参考：<http://openjdk.java.net/projects/jdk8/features>
 
-昨天参加了Oracle的Java8宣讲活动，有幸目睹了Simon Ritter的风采，写个总结来分享下。**<!--more-->
+昨天参加了Oracle的Java8宣讲活动，有幸目睹了Simon Ritter的风采，写个总结来分享下。<!--more-->
 
-#### Java并发编程演变：
+### Java并发编程演变：
 
 版本      |发布年份  |并发技术
 ---------|---------|-----------------------------
@@ -28,7 +28,7 @@ tags: java
 
 先来一个小例子见识下Java8的威力！
 
-#### 传统的外部迭代处理代码
+### 传统的外部迭代处理代码
 
 ``` java
 List<Student> students = ...
@@ -48,7 +48,7 @@ for (Student s : students) {
 * 顺序执行：迭代从开始到结束一个一个的顺序迭代元素
 * 线程不安全，由于业务逻辑依靠可修改变量，容易产生竞态问题
 
-#### 基于Inner Classes的内部迭代
+### 基于Inner Classes的内部迭代
 
 ``` java
 List<Student> students = ...
@@ -78,7 +78,7 @@ double highestScore = students.
 
 代码写的有点难看
 
-#### 基于Lambdas的内部迭代
+### 基于Lambdas的内部迭代
 
 ``` java
 SomeList<Student> students = ...
