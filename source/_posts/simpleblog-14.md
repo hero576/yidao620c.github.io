@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Django1.7开发博客（14）- 集成Xadmin"
+title: "Django1.8开发博客（14）- 集成Xadmin"
 date: 2015-04-21 21:45:29 +0800
 toc: true
 categories: python
@@ -34,11 +34,11 @@ xadmin是一个django的管理后台实现，使用了更加灵活的架构设�
 
 #### 添加依赖
 
-在requirements.txt中添加如下的依赖，注意：要用到xadmin的django1.7分支
+在requirements.txt中添加如下的依赖，注意：要用到xadmin的django1.8分支
 ```
 django-reversion==1.8.5
 xlwt==0.7.5
-git+https://github.com/sshwsfc/django-xadmin.git@django1.7
+git+https://github.com/sshwsfc/django-xadmin.git@django1.8
 ```
 
 #### 修改settings.py

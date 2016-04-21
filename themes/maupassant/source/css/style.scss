@@ -9,7 +9,7 @@
 body {
     background-color: #fff;
     color: #555;
-    font-family: Lato, "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-family: Lato, "PingFang SC", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: 14px;
@@ -58,7 +58,7 @@ a:focus {
             overflow: hidden;
         }
         #logo {
-            font: bold 38px/1.12 "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif;
+            font: bold 38px/1.12 "WenQuanYi Micro Hei", "Microsoft YaHei", SimSun, sans-serif;
             color: #555;
             span, &:hover {
                 color: #777;
@@ -171,7 +171,7 @@ a:focus {
         margin: 0;
         color: #555;
         text-align: left;
-        font: bold 28px/1.1 "Microsoft YaHei", "WenQuanYi Micro Hei","TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial;
+        font: bold 28px/1.1 "WenQuanYi Micro Hei", "Microsoft YaHei", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial;
         a {
             color: #555;
         }
@@ -1606,11 +1606,11 @@ em.search-keyword {
 }
 
 .pure-g {
-  font-family: "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif
+  font-family: "WenQuanYi Micro Hei", "Microsoft YaHei", SimSun, sans-serif
 }
 
 .pure-g [class *="pure-u"] {
-    font-family: "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif;
+    font-family: "WenQuanYi Micro Hei", "Microsoft YaHei", SimSun, sans-serif;
 }
 
 .with-love {

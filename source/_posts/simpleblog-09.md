@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Django1.7开发博客（9）- 用户认证"
+title: "Django1.8开发博客（9）- 用户认证"
 date: 2015-04-21 14:47:47 +0800
 toc: true
 categories: python
@@ -160,7 +160,7 @@ LOGIN_REDIRECT_URL = '/'
 ```
 很显然这时候logout肯定会报错。我们还得做些事情。
 
-对于这方面的详细文档请参考：<https://docs.djangoproject.com/en/1.7/topics/auth/default/>
+对于这方面的详细文档请参考：<https://docs.djangoproject.com/en/1.8/topics/auth/default/>
 
 打开mysite/urls.py文件，添加一个logout配置：
 ``` python

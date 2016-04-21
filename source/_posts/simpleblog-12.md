@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Django1.7开发博客（12）- i18n国际化"
+title: "Django1.8开发博客（12）- i18n国际化"
 date: 2015-04-21 19:27:29 +0800
 toc: true
 categories: python
@@ -17,7 +17,7 @@ Django能完美支持文本翻译、日期时间和数字的格式化、时区�
 1. 允许用户根据自己的偏好来实现本地化显示。翻译依据语言，格式化依据国家，
 这些信息由浏览器中的`Accept-Language`头来决定。不过目前为止时区还未能实现。
 
-参考官方文档：<https://docs.djangoproject.com/en/1.7/topics/i18n/><!--more-->
+参考官方文档：<https://docs.djangoproject.com/en/1.8/topics/i18n/><!--more-->
 
 ### 配置
 实际上django的国际化做的非常好了，配置很简单。

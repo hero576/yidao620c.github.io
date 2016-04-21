@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Django1.7开发博客（13）- redis缓存"
+title: "Django1.8开发博客（13）- redis缓存"
 date: 2015-04-21 20:27:29 +0800
 toc: true
 categories: python
