@@ -459,23 +459,24 @@ a:focus {
 blockquote,.stressed {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    margin: 2.5em 0;
-    padding: 0 0 0 50px;
-    color: #555;
-    border-left: none;
+    margin: 0;
+    margin-bottom: .85em;
+    padding: 0 15px;
+    color: #858585;
+    border-left: 4px solid #e5e5e5;
 }
-blockquote:before,.stressed-quote:before {
-    content: "\201C";
-    display: block;
-    font-family: times;
-    font-style: normal;
-    font-size: 48px;
-    color: #444;
-    font-weight: bold;
-    line-height: 30px;
-    margin-left: -50px;
-    position: absolute;
-}
+//blockquote:before,.stressed-quote:before {
+//    content: "\201C";
+//    display: block;
+//    font-family: times;
+//    font-style: normal;
+//    font-size: 48px;
+//    color: #444;
+//    font-weight: bold;
+//    line-height: 30px;
+//    margin-left: -50px;
+//    position: absolute;
+//}
 strong,b,em {
     font-weight: bold;
 }
@@ -1663,3 +1664,11 @@ a.post-title-link:hover {
 //.toc-article .toc-link {
 //  color: #2EA737;
 //}
+
+blockquote {
+  margin: 0;
+    margin-bottom: .85em;
+    padding: 0 15px;
+    color: #858585;
+    border-left: 4px solid #e5e5e5;
+}

@@ -143,7 +143,7 @@ from whitenoise.django import DjangoWhiteNoise
 application = DjangoWhiteNoise(get_wsgi_application())
 ```
 
-> 注意 当看到 <your-username>时，别忘了替换为你自己的用户名。
+> 注意: 当看到`<your-username>`时，别忘了替换为你自己的用户名。
 
 这个文件的作用是告诉 PythonAnywhere 我们的Web应用程序在什么位置，Django设置文件的名字是什么。它也设置"whitenoise"静态文件工具。
 
