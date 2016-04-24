@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Django1.8开发博客（2）- 模型"
+title: "Django1.9开发博客（2）- 模型"
 date: 2015-04-20 18:49:57 +0800
 toc: true
 categories: python
@@ -82,7 +82,7 @@ DateTimeField：日期时间类型
 ForeignKey：外键类型
 ```
 
-详细的字段类型说明请参考官方文档：[field-types](https://docs.djangoproject.com/en/1.8/ref/models/fields/#field-types)
+详细的字段类型说明请参考官方文档：[field-types](https://docs.djangoproject.com/en/1.9/ref/models/fields/#field-types)
 
 **在数据库中为模型生成表结构：**
 
@@ -235,7 +235,7 @@ Superuser created successfully.
 
 ![](http://yidaospace.qiniudn.com/dj004.jpg)
 
-更多关于django admin的内容，参考官方文档：[admin](https://docs.djangoproject.com/en/1.8/ref/contrib/admin/)
+更多关于django admin的内容，参考官方文档：[admin](https://docs.djangoproject.com/en/1.9/ref/contrib/admin/)
 
 ### 接下来呢？
 先别急嘛，坐下来喝杯咖啡先。到现在为止你已经前进了很远了。

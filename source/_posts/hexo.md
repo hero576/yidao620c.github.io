@@ -292,7 +292,7 @@ www，CNAME，cmback.github.io.
 
 ## 参考
 
-[hexo干货系列](http://tengj.top/tags/hexo/)
-[让你的Octopress博客在多台Mac上同时使用](http://wangzz.github.io/blog/2014/04/02/ru-he-pei-zhi-rang-ni-de-octopressbo-ke-zai-duo-tai-macshang-tong-shi-shi-yong/)
-[大道至简——Hexo简洁主题推荐](https://www.haomwei.com/technology/maupassant-hexo.html)
+* [hexo干货系列](http://tengj.top/tags/hexo/)
+* [让你的Octopress博客在多台Mac上同时使用](http://wangzz.github.io/blog/2014/04/02/ru-he-pei-zhi-rang-ni-de-octopressbo-ke-zai-duo-tai-macshang-tong-shi-shi-yong/)
+* [大道至简——Hexo简洁主题推荐](https://www.haomwei.com/technology/maupassant-hexo.html)
 

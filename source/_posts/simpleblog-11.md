@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Django1.8开发博客（11）- 富文本与代码高亮"
+title: "Django1.9开发博客（11）- 富文本与代码高亮"
 date: 2015-04-21 18:27:29 +0800
 toc: true
 categories: python

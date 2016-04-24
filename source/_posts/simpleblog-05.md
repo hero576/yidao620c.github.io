@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Django1.8开发博客（5）- 页面美化"
+title: "Django1.9开发博客（5）- 页面美化"
 date: 2015-04-21 10:23:50 +0800
 toc: true
 categories: python

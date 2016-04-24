@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Django1.8开发博客（6）- 模板继承"
+title: "Django1.9开发博客（6）- 模板继承"
 date: 2015-04-21 11:44:21 +0800
 toc: true
 categories: python

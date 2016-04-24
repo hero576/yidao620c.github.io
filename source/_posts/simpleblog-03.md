@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Django1.8开发博客（3）- 部署"
+title: "Django1.9开发博客（3）- 部署"
 date: 2015-04-20 19:03:57 +0800
 toc: true
 categories: python
@@ -9,267 +9,161 @@ tags: django
 
 到目前为止，你的网站只能在你自己的电脑上访问到。你需要将它发布到公网上去让地球上的人都能看到，那么要怎么做呢？
 
-Heroku是一个主机托管平台，对于访问量不是很大的小应用是免费的，正好适用于我们的这个例子。
+在互联网上你可以找到很多的服务器供应商。我们将使用一个相对简单的托管平台[PythonAnywhere](http://pythonanywhere.com/)。
+PythonAnywhere对于一些没有太多访问者的小应用是免费的，所以它对你来说绝对是足够使用的。
 
-Heroku官网上有一篇django的教程：
-[getting started with django](https://devcenter.heroku.com/articles/getting-started-with-django)<!--more-->
+其它我们将使用到的外部服务是GitHub，它是一个代码托管服务。还有其它的一些服务，但当今几乎所有的程序员都有 GitHub 帐户，相信你肯定有一个！<!--more-->
 
-这里我把它复制到这里来详细讲解一下。
+## 安装Git
+Git是一个被大量程序员使用的"版本控制系统"。此软件可以跟踪任何时间文件的改变，这样你以后可以随时召回某个特定版本。
 
-### requirements.txt文件
-我们需要创建一个requirements.txt文件来告知Heroku需要在服务器上创建哪些python包。
+windows系统下面可以下载[git-scm](http://git-scm.com/)安装。除了第5步"Adjusting your PATH environment"，
+需要选择"Run Git and associated Unix tools from the Windows command-line"(底部的选项)。除此之外，默认值都没有问题。
 
-不过首先，Heroku需要我们在本地按照一些包。在python虚拟环境virtualenv下面执行：
-```
-(myvenv) [mango@centos mysite]$ pip install dj-database-url gunicorn whitenoise
-```
-然后，在mysite目录，也就是manage.py所在目录执行：
-```
-(myvenv) [mango@centos00 mysite]$ pip freeze > requirements.txt
-```
-这条命令会新建一个requirements.txt文件，里面包含了工程的所有依赖包。
-
-打开这个文件，添加下面这句话：
-```
-psycopg2==2.5.4
-```
-要想在Heroku上面运行，必须加上这句。
-
-### Procfile文件
-另一个需要创建的文件就是Procfile，它告知Heroku在启动网站时需要执行的命令。
-同样在manage.py所在目录，新建一个文件名为Procfile，添加如下内容：
-```
-web: gunicorn mysite.wsgi
-```
-这句话的意思就是我们将要部署一个web应用程序，并且我们通过执行 gunicorn mysite.wsgi命令来完成。
-
-gunicorn是一个类似django的runserver的程序，但是功能更强大。
-
-### runtime.txt文件
-我们需要告知Heroku运行时的python版本，这里我们指定为3.4.2。新建runtime.txt，加入
-```
-python-3.4.2
+Linux系统的安装使用包管理器安装
+``` bash
+sudo apt-get install git
+# or
+sudo yum install git
 ```
 
-### mysite/local_settings.py文件
-由于我们本地开发使用的数据库跟服务器上部署时使用的数据库是不一样的。
-那么我们需要创建一个local_settings.py来指定本地用的数据库。
-``` python
-import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
-DEBUG = True
+## Git版本库
+首先初始化仓库
+``` bash
+$ git init
+Initialized empty Git repository in ~/simpleblog/.git/
+$ git config --global user.name "yidao620c"
+$ git config --global user.email yidao620@gmail.com
 ```
 
-### mysite/settings.py文件
-另外我们还需要修改settings.py文件，在文件结尾添加如下几行
-``` python
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+每个项目我们只需要初始化一次Git仓库（而且你从此不需要重新输入用户名和邮箱）
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-ALLOWED_HOSTS = ['*']
-
-STATIC_ROOT = 'staticfiles'
-
-DEBUG = False
-```
-然后再导入本地开发配置，也是在最后添加
-``` python
-try:
-    from .local_settings import *
-except ImportError:
-    pass
-```
-
-### mysite/wsgi.py文件
-打开mysite/wsgi.py文件，添加如下几行到最后：
-``` python
-from whitenoise.django import DjangoWhiteNoise
-application = DjangoWhiteNoise(application)
-```
-OK，工程配置修改做完了。
-
-### Heroku账号
-首先你需要安装Heroku toolbelt，教程地址：<https://toolbelt.heroku.com/>
-
-两句话搞定：
-```
-wget -qO- https://toolbelt.heroku.com/install.sh | sh
-echo 'PATH="/usr/local/heroku/bin:$PATH"' >> ~/.profile
-```
-然后申请一个账号：<https://id.heroku.com/signup/www-home-top>
-
-登录：
-```
-heroku login
-```
-如果报bad URI错误的话，那么代理设置必须是http://192.168.203.91:3128/这样的完整形式。
-```
-[mango@centos00 work]$ heroku login
-Enter your Heroku credentials.
-Email: yidao620@gmail.com
-Password (typing will be hidden):
-Your Heroku account does not have a public ssh key uploaded.
-Found an SSH public key at /home/mango/.ssh/id_rsa.pub
-Would you like to upload it to Heroku? [Yn] Y
-Uploading SSH public key /home/mango/.ssh/id_rsa.pub... done
-Authentication successful.
-```
-
-### .gitignore文件
-我们并不想将所有文件都上传到服务器上，
-比如我们本地设置local_setttings.py，数据库文件等。
-在我们工程主目录下面创建一个.gitignore文件，内容如下
+Git会追踪这个目录下所有文件和文件夹的更改，但是有一些文件我们希望Git忽略它。为此，我们可以在系统根目录下创建一个命名为`.gitignore`的文件。打开编辑器，创建新文件并写入以下内容：
 ```
 myvenv
-__pycache__
+.idea/
 *.pyc
+__pycache__
 staticfiles
 local_settings.py
 db.sqlite3
+migrations
+whoosh_index/
+```
+最后保存我们的更改。转到你的控制台并运行这些命令：
+```bash
+$ git add --all .
+$ git commit -m "My simple blog first commit"
 ```
 
-### 部署到Heroku
-第一步先创建一个工程
+## 推送到Github上
+登录[GitHub.com](跳转到GitHub.com网站，注册一个新的免费账号)网站，如果没有就先注册一个。
+创建一个新的仓库名字为`simpleblog`，在下一屏中，你将看到你的仓库克隆 URL。选择“HTTPS”版本，拷贝地址，我们马上要把它粘贴到终端
+
+在控制台输入以下内容（替换<yidao620c>为你的github用户名，不包含尖括号）：
+``` bash
+$ git remote add origin https://github.com/yidao620c/simpleblog.git
+$ git push -u origin master
 ```
-(myvenv) [mango@centos00 mysite]$ heroku create yidaoblog
+输入你的Github账号名和密码，然后你会看到成功的消息说明没问题了。
+
+## 在 PythonAnywhere设置我们的博客
+先去<www.pythonanywhere.com>网站注册个用户名，免费的用户即可。
+
+## 在 PythonAnywhere 上拉取我们的代码
+当然注册完 PythonAnywhere，你讲会转到仪表盘或“控制台”页面。
+选择启动“Bash”控制台这一选项，这是 PythonAnywhere 版的控制台，就像你本地电脑上的一样。
+``` bash
+$ git clone https://github.com/yidao620c/simpleblog.git
 ```
-返回结果
+这将会拉取一份你的代码副本到 PythonAnywhere 上。通过键入`tree simpleblog`查阅
+
+## 在 PythonAnywhere 上创建 virtualenv
+如同你在自己电脑上做的，你可以在 PythonAnywhere 上创建 virtualenv 虚拟环境。在 Bash 控制台下，键入：
+``` bash
+cd simpleblog
+virtualenv --python=python3.4 myvenv
+source myvenv/bin/activate
+pip install django whitenoise
 ```
-Creating yidaoblog... done, stack is cedar
-https://yidaoblog.herokuapp.com/ | git@heroku.com:yidaoblog.git
+注意pip安装步骤可能需要几分钟。耐心等待即可！但是如果超过5分钟，就不对劲了，去查下网络原因。
+
+## 收集静态文件
+whitenoise是用来服务所谓的“static files”静态文件的工具，
+静态文件是很少改动或者并非可运行的程序代码的那些文件，比如 HTML 或 CSS 文件。
+在我们的计算机上，它们以不同的方式工作，我们需要比如“whitenoise”这样的工具来为其服务。
+
+在教程后续编辑网站 CSS 章节会介绍更多有关静态文件的内容。
+
+暂且我们只需要在服务器上运行一个额外的命令，就是collectstatic。
+它告诉Django去收集服务器上所有需要的静态文件。就眼下来说主要是使admin管理界面看起来更漂亮的文件。
+``` bash
+(mvenv) $ python manage.py collectstatic
 ```
 
-请记住上面的地址git@heroku.com:yidaoblog.git
+## 在 PythonAnywhere 上创建数据库
+服务器与你自己的计算机不同的另外一点是：它使用不同的数据库。因此用户账户以及文章和你电脑上的可能会有不同。
 
-第二步初始化git本地仓库提交，并添加上面的远程仓库地址
-```
-[mango@centos00 mysite]$ git init
-初始化空的 Git 版本库于 /home/mango/work/djangogirls/mysite/.git/
-[mango@centos00 mysite]$ git add .
-[mango@centos00 mysite]$ git commit -m 'yidao blog by django.'
-[mango@centos00 mysite]$ git remote add origin git@heroku.com:yidaoblog.git
+我们可以像在自己的计算机上一样在服务器上初始化数据库，使用 migrate 以及 createsuperuser：
+``` bash
+(mvenv) $ python manage.py migrate
+(mvenv) $ python manage.py createsuperuser
 ```
 
-第三步push工程
-```
-[mango@centos00 mysite]$ git push origin master
-```
+## 发布博客
+现在我们的代码已在PythonAnywhere上，我们的 virtualenv 已经准备好，静态文件已收集，数据库已初始化。我们准备好发布网络应用程序！
 
-最后得到类似下面的输出：
-```
-Successfully installed Django dj-database-url gunicorn whitenoise psycopg2
-     Cleaning up...
+通过点击 logo 返回到 PythonAnywhere 仪表盘，然后点击 Web 选项卡。最终，点 Add a new web app
 
------> Preparing static assets
-       Running collectstatic...
-       61 static files copied to '/app/staticfiles'.
+在确认你的域名之后，选择对话框中 manual configuration (注 不是 "Django" 选项)，下一步选择 Python 3.4，然后点击 Next 以完成该向导。
 
------> Discovering process types
-       Procfile declares types -> web
+### 设置 virtualenv
+你将会被带到 PythonAnywhere 上你的Web 应用程序的配置屏，那个页面是每次你想修改服务器上你的应用程序时候要去的页面。
 
------> Compressing... done, 39.6MB
------> Launching... done, v5
-       https://yidaoblog.herokuapp.com/ deployed to Heroku
+在“Virtualenv”一节，点击红色文字“Enter the path to a virtualenv"，然后键入：/home/<your-username>/simpleblog/myvenv/。前进之前，先点击有复选框的蓝色框以保存路径。
 
-To git@heroku.com:yidaoblog.git
- * [new branch]      master -> master
-```
-大功告成。
+### 配置 WSGI 文件
+Django使用“WSGI 协议”，它是用来服务Python网站的一个标准。PythonAnywhere支持这个标准。PythonAnywhere识别我们Django博客的方式是通过配置WSGI配置文件。
 
-### 访问应用
-让Heroku启动你的应用
-```
-$ heroku ps:scale web=1 --app yidaoblog
-```
-启动一个实例即可
+点击 “WSGI configuration file”链接（在"Code"一节，它将被命名为如 /var/www/<your-username>_pythonanywhere_com_wsgi.py），然后跳转到一个编辑器。
 
-同步数据库（这一步是必须要做的，否则会报500错误）：
-```
-$ heroku run:detached python manage.py migrate --app yidaoblog
-```
-不过我运行后，只是表结构同步了，本地数据并没有同步，所以还要进行数据同步。
-试了好多教程都不尽如人意。最后一个最好的方案是本地直接使用postgresql开发，然后使用import技术。
-
-参考教程： <https://devcenter.heroku.com/articles/heroku-postgres-import-export>
-
-如果本地要使用postgresql开发的话，local_settings.py文件需要修改如下：
+删除所有的内容并用以下内容替换：
 ``` python
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+import sys
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': '192.168.203.95',
-        'PORT': '5432',
-    }
-}
+path = '/home/<your-username>/simpleblog'  # use your own username here
+if path not in sys.path:
+    sys.path.append(path)
 
-DEBUG = True
+os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'
+
+from django.core.wsgi import get_wsgi_application
+from whitenoise.django import DjangoWhiteNoise
+application = DjangoWhiteNoise(get_wsgi_application())
 ```
 
-### 在CentOS6上面安装postgresql9.3
-```
-sudo yum install python-devel
-export PATH=/usr/pgsql-9.3/bin/:$PATH
-pip install psycopg2
-```
-出现pg_config命令找不到的时候可以先find：
-```
-sudo find /usr -name pg_config
-```
-然后添加到PATH中去：
-```
-export PATH=/usr/pgsql-9.3/bin/:$PATH
-```
-使用postgres用户登录后备份数据库：
-```
-su - postgres(postgres)
-pg_dump dbname > /tmp/mydb.txt
-```
-将输出的mydb.txt放到某个静态文件服务器上，必须在公网上可访问，比如七牛存储。
-为什么我没有选择AWS S3呢？原因你肯定懂得啦，就算我有了梯子还是不行，
-弄了一下午还是没成功，快气晕了。哎…
+> 注意 当看到 <your-username>时，别忘了替换为你自己的用户名。
 
-使用如下命令进行数据同步：
-```
-heroku pgbackups:restore DATABASE_URL 'http://yidaospace.qiniudn.com/mydb.txt'
-```
-期间需要你输入你的app名字来确认，并且还需要给你的app添加一个免费的addon：
-```
-heroku addons:add pgbackups
-```
-查看日志：
-```
-(myvenv) [mango@centos00 mysite]$ heroku logs
-```
-查看启动的实例
-```
-[mango@centos00 mysite]$ heroku ps
-=== web (1X): `gunicorn mysite.wsgi`
-web.1: up 2014/11/04 09:40:43 (~ 7m ago)
-```
+这个文件的作用是告诉 PythonAnywhere 我们的Web应用程序在什么位置，Django设置文件的名字是什么。它也设置"whitenoise"静态文件工具。
 
-打开浏览器访问吧！ Enjoy it…
+点击 Save 然后返回到 Web 选项卡。
 
-输入网址 https://yidaoblog.herokuapp.com/admin 后的界面如下：
+一切搞定！点击大大的绿色 Reload 按钮然后你将会看到你的应用程序。页面的顶部可以看到它的链接。
 
-![](http://yidaospace.qiniudn.com/dj005.jpg)
+## 调试技巧
+如果你在访问你的网站时候看到一个错误，首先要去error log中找一些调试信息。你可以在PythonAnywhere Web选项卡中发现它的链接。
+检查那里是否有任何错误信息，底部是最新的信息。常见问题包括：
 
-停止应用的命令
-```
-heroku ps:scale web=0 --app yidaoblog
-```
+* 忘记我们在控制台中的步骤之一：创建 virtualenv，激活它，安装 Django 进去，运行 collectstatic，迁移数据库。
+* 在 Web 选项卡中，virtualenv 路径设置错误 — 如果真是这样，这通常会是一个红色错误消息。
+* WSGI 文件设置错误 — 你的 my-first-blog 目录地址设置是否正确？
+* 你是否为你的 virtualenv 选择了同样的 Python 版本，如同 Web 应用程序里的那样？两个应该都是 3.4。
+* 有一些常见的调试小贴士在[debugging tips on the PythonAnywhere](https://www.pythonanywhere.com/wiki/DebuggingImportError)里.
+
+## 你上线了！
+你网站的默认页面说“Welcome to Django”，如同你本地计算机上的一样。试着添加/admin/到URL的末尾，然后你会到达管理者的页面。输入用户名和密码登录，然后你会看到服务器上的 add new Posts 。
+
+给你自己一个超大的鼓励！服务器部署是web开发中最棘手的部分之一，它通常要耗费人们几天时间才能搞定。但你的网站已经上线，运转在真正的互联网上，就是这样！
+
+先给自己个赞吧~

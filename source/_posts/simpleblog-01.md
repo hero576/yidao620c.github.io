@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Django1.8开发博客（1）- 入门篇"
+title: "Django1.9开发博客（1）- 入门篇"
 date: 2015-04-20 17:31:20 +0800
 toc: true
 categories: python
@@ -8,15 +8,15 @@ tags: django
 ---
 
 笔者用过django一段时间了，是时候做点笔记了。不过官网文档稍微有点复杂，对新手而言很困难，
-而网上的一些教程很多都过时了。最近看到一个外文的教程非常不错，网址是：<http://tutorial.djangogirls.org/>，
-这个是基于django1.8和python3.4，通俗易懂，非常适合新手入门。
+而网上的一些教程很多都过时了。最近看到一个外文的教程非常不错，网址是：<http://tutorial.simpleblog.org/>，
+这个是基于django1.9和python3.4，通俗易懂，非常适合新手入门。
 那么我自己参考这个整理了一下这个教程，同时还将源码上传到GitHub上去了。希望对于大家有帮助。教程中如果有不足之处希望大家不吝赐教 ^_^
 
-参考教程：<http://tutorial.djangogirls.org/>
+参考教程：<http://tutorial.simpleblog.org/>
 
 GitHub项目地址：<https://github.com/yidao620c/simpleblog>
 
-Heroku演示地址：<https://yidaoblog.herokuapp.com/><!--more-->
+演示地址：<https://yidao620.pythonanywhere.com/><!--more-->
 
 非常期待有人合作一起完成正式版1.0。目前有74个人fork，但暂时还木有收到任何的pull requests。→_→
 
@@ -27,9 +27,9 @@ Django是一个开源免费的Web框架，使用Python编写。能够让你快�
 
 官方网站：<https://www.djangoproject.com/>
 
-笔者写这篇教程的时候，最新版本是1.9，不过Django1.8是LTS长期支持版，所以我选择了这个
+笔者写这篇教程的时候，最新版本是1.9
 
-### 安装Django1.8
+### 安装Django1.9
 
 **安装python虚拟环境**
 
@@ -53,10 +53,10 @@ pip3 install virtualenv
 ```
 关于virtualenv的详细说明，请参考文档：[virtualenv][https://virtualenv.pypa.io/en/latest/]
 
-3，创建一个文件夹叫djangogirls
+3，创建一个文件夹叫simpleblog
 ``` bash
-mkdir djangogirls
-cd djangogirls
+mkdir simpleblog
+cd simpleblog
 ```
 
 4，创建虚拟环境myenv
@@ -69,14 +69,14 @@ python3 -m venv myvenv
 source myvenv/bin/activate
 ```
 
-如果看到下面这个提示，说明成功进入了虚拟环境：`(myvenv) ~/djangogirls$`
+如果看到下面这个提示，说明成功进入了虚拟环境：`(myvenv) ~/simpleblog$`
 
 这时候可以使用python来代替python3了。
 
-6，在虚拟环境中安装django1.8
+6，在虚拟环境中安装django1.9
 ```
-(myvenv) ~$ pip install django==1.8
-Downloading/unpacking django==1.8
+(myvenv) ~$ pip install django==1.9.5
+Downloading/unpacking django==1.9.5
 Installing collected packages: django
 Successfully installed django
 Cleaning up...
@@ -94,11 +94,11 @@ OK，到此为止，django环境已经搞定了。
 我们在 Django 安装这一节内的 在虚拟环境下工作 部分中解释过了。
 在windows下面运行命令：`myvenv\Scripts\activate`，在苹果或linnux环境下运行命令：`source myvenv/bin/activate`
 
-假设你已经在刚刚的djangogirls目录中了，那么执行下面的命令：
+假设你已经在刚刚的simpleblog目录中了，那么执行下面的命令：
 ```
-(myvenv) [mango@centos00 djangogirls]$ django-admin.py startproject mysite
+(myvenv) [mango@centos00 simpleblog]$ django-admin.py startproject mysite
 ```
-会自动在djangogirls目录中生成一个mysite目录，进入mysite目录，会是下面的结构：
+会自动在simpleblog目录中生成一个mysite目录，进入mysite目录，会是下面的结构：
 ```
 myste
 ├───manage.py
@@ -163,7 +163,6 @@ Running migrations:
 如果你看到下面这个页面，那么恭喜你，成功入门。
 
 ![](http://yidaospace.qiniudn.com/dj001.jpg)
-
 
 [install-python3-on-centos6]: http://www.shayanderson.com/linux/install-python-3-on-centos-6-server.htm
 [virtualenv]: http://docs.python-guide.org/en/latest/dev/virtualenvs/

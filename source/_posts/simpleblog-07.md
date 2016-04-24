@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Django1.8开发博客（7）- 实现功能"
+title: "Django1.9开发博客（7）- 实现功能"
 date: 2015-04-21 14:02:56 +0800
 toc: true
 categories: python
@@ -291,7 +291,7 @@ OK，现在让我们来测试下效果：
 完美，恭喜你！你的应用已经变得越来越酷了。
 
 如果你想对django的表单有更深入的了解，
-请查阅官方文档：<https://docs.djangoproject.com/en/1.8/topics/forms/>
+请查阅官方文档：<https://docs.djangoproject.com/en/1.9/topics/forms/>
 
 ## 还有一件事
 发布到heroku上去。不要我每次提醒了吧，Enjoy it！
