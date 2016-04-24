@@ -70,7 +70,7 @@ deploy:
 ls -al ~/.ssh
 ```
 
-如果不存在就没有关系，如果存在的话，直接删除.ssh文件夹里面所有文件：
+如果不存在就没有关系，如果存在的话，直接删除.ssh文件夹里面所有文件
 
 输入以下指令（邮箱就是你注册Github时候的邮箱）后回车，出现提示让你输入的时候一直按回车：
 ``` bash
@@ -191,8 +191,10 @@ $ git checkout -b source origin/source
 $ npm install hexo
 $ npm install
 $ npm install hexo-deployer-git
+$ npm install hexo-renderer-jade --save
+$ npm install hexo-renderer-sass --save
 ```
-注意：千万别执行`hexo init`这个命令啊，同时那些主题的安装步骤也不再需要了。
+注意：千万别执行`hexo init`这个命令啊，同时maupassant主题的安装步骤还是需要的。
 
 ### 使用方法
 在任意一台mac操作，都需先切换并保持在source分支上。使用git命令管理source文件；使用hexo命令进行同步至远程master分支，无需处理本地master分支
