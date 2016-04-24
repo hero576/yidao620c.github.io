@@ -15,8 +15,9 @@ hexo是一个台湾人做的基于Node.js的静态博客程序，优势是生成
 我这个教程是基于window 64系统，Hexo3版本
 
 ### 安装依赖软件
-[Node.js](https://nodejs.org/en): node.js用来创建hexo博客框架的，我当前安装版本为：node-v5.7.1-x64
-[Git客户端](http://git-scm.com/download/win): 把本地的hexo内容提交到github上去，我当前安装的是Git-2.7.1-64-bit
+[Node.js](https://nodejs.org/en): node.js用来创建hexo博客框架的，我安装的node-v5.7.1-x64
+
+[Git客户端](http://git-scm.com/download/win): 把本地的hexo内容提交到github上去，我安装的Git-2.7.1-64-bit
 
 ### 安装hexo
 利用 npm 命令即可安装。打开窗口控制台，输入安装hexo命令：
@@ -127,20 +128,22 @@ tags: [文章, 测试] #文章标签，多于一项时用这种格式，只有�
 ## hexo主题及其配置
 
 如果你不喜欢默认主题，那么可以去hexo官网找更多的[主题](https://hexo.io/themes/)。
-我这里选择Jacman主题说明一下
+我这里选择maupassant-hexo主题说明一下，这个是一个非常简洁的主题，我喜欢简单的东西。
 
 ### 安装主题
 
 ``` bash
-$ git clone https://github.com/wuchong/jacman.git themes/jacman
+$ git clone https://github.com/tufu9441/maupassant-hexo.git themes/maupassant
+$ npm install hexo-renderer-jade --save
+$ npm install hexo-renderer-sass --save
 ```
 
 ### 启用主题
-修改你的博客根目录下的config.yml配置文件中的theme属性，将其设置为jacman
+修改你的博客根目录下的config.yml配置文件中的theme属性，将其设置为maupassant
 
 ### 更新主题
 ``` bash
-cd themes/jacman
+cd themes/maupassant
 git pull
 ```
 更新好后，本地启动起来效果
@@ -149,7 +152,8 @@ hexo server -g  #生成加预览
 ```
 
 ### 主题的_config.yml配置
-具体配置请直接参考[如何使用 Jacman 主题](http://wuchong.me/blog/2014/11/20/how-to-use-jacman/)
+具体配置请直接参考[如何使用maupassant主题](https://www.haomwei.com/technology/maupassant-hexo.html)。
+同时我对这个主题进行了很多的修改让它看上去更加符合自己的审美观，如果对我博客的主题感兴趣可以直接在我的github页面拉取即可。
 
 ## 多台电脑同时维护博客
 
@@ -164,6 +168,7 @@ hexo server -g  #生成加预览
 ### 具体步骤
 
 （假定最初创建博客为A，其他另一个为B)
+
 1) 在A中的git_blog目录下，建立source分支：
 ``` bash
 $ git branch source // 创建source分支
@@ -174,18 +179,26 @@ $ git remote -v //查看远程分支名字
  // origin	git@github.com:yidao620c/yidao620c.github.com.git (push)
 修改.gitignore文件，添加"public/"字段至其中。
 $ git push origin source // 将当前git_blog下的内容push到Github上的远程仓库的source分支（会自动创建）上
-
 ```
-2) 在B中建立git_blog目录，安装npm，安装Hexo，添加SSH，然后使用
+
+2) 在B中建立git_blog目录，安装npm，安装Hexo，添加SSH，然后在B中建立本地的source分支，并与远程的source分支进行了绑定。
+git_blog下的yidao620c.github.com文件夹里保存了和远程source分支相同的内容。
 ``` bash
 $ git clone -b source git@github.com:yidao620c/yidao620c.github.com.git
+$ cd yidao620c.github.com
+$ git branch -a
+$ git checkout -b source origin/source
+$ npm install hexo
+$ npm install
+$ npm install hexo-deployer-git
 ```
-在B中建立本地的source分支，并与远程的source分支进行了绑定。git_blog下的yidao620c.github.com文件夹里保存了和远程source分支相同的内容。
+注意：千万别执行`hexo init`这个命令啊，同时那些主题的安装步骤也不再需要了。
 
 ### 使用方法
 在任意一台mac操作，都需先切换并保持在source分支上。使用git命令管理source文件；使用hexo命令进行同步至远程master分支，无需处理本地master分支
-1. 在A中使用Hexo的new、g、d方法添加、生成、部署新的博客，内容都会被同步自动放到Github的master分支上；
-2. 在1>.之后，同样保证B的git当前在git_blog下的source分支下
+1. 在A中使用Hexo的new、g、d方法添加、生成、部署新的博客，内容都会被同步自动放到Github的master分支上
+2. 在A中使用git命令的`push origin source`同步source到远程source分支
+3. 同样保证B的git当前在git_blog下的source分支下
 先使用：
 ``` bash
 git pull origin source
@@ -230,9 +243,6 @@ feed:
   hub:
 ```
 其中，feed是可选项，可配可不配！然后根据各个主题的说明添加一个RSS订阅链接即可
-
-## 新主题maupassant
-最近我又换成了另外一个更加简洁的主题叫[maupassant](https://github.com/tufu9441/maupassant-hexo)，非常简单的配置，喜欢的可以试试
 
 ## 自定义分页
 安装三个插件：归档，标签，分类。然后将每个分页显示文章数都变大点
