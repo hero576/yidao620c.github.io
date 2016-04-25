@@ -89,22 +89,9 @@ git pull
 cd simpleblog
 virtualenv --python=python3.4 myvenv
 source myvenv/bin/activate
-pip install django whitenoise
+pip install django
 ```
 注意pip安装步骤可能需要几分钟。耐心等待即可！但是如果超过5分钟，就不对劲了，去查下网络原因。
-
-## 收集静态文件
-whitenoise是用来服务所谓的“static files”静态文件的工具，
-静态文件是很少改动或者并非可运行的程序代码的那些文件，比如 HTML 或 CSS 文件。
-在我们的计算机上，它们以不同的方式工作，我们需要比如“whitenoise”这样的工具来为其服务。
-
-在教程后续编辑网站 CSS 章节会介绍更多有关静态文件的内容。
-
-暂且我们只需要在服务器上运行一个额外的命令，就是collectstatic。
-它告诉Django去收集服务器上所有需要的静态文件。就眼下来说主要是使admin管理界面看起来更漂亮的文件。
-``` bash
-(mvenv) $ python manage.py collectstatic
-```
 
 ## 在 PythonAnywhere 上创建数据库
 服务器与你自己的计算机不同的另外一点是：它使用不同的数据库。因此用户账户以及文章和你电脑上的可能会有不同。
@@ -137,15 +124,15 @@ Django使用“WSGI 协议”，它是用来服务Python网站的一个标准。
 import os
 import sys
 
-path = '/home/<your-username>/simpleblog'  # use your own username here
+path = '/home/<your-username>/my-first-blog'  # use your own username here
 if path not in sys.path:
     sys.path.append(path)
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'
 
 from django.core.wsgi import get_wsgi_application
-from whitenoise.django import DjangoWhiteNoise
-application = DjangoWhiteNoise(get_wsgi_application())
+from django.contrib.staticfiles.handlers import StaticFilesHandler
+application = StaticFilesHandler(get_wsgi_application())
 ```
 
 > 注意: 当看到`<your-username>`时，别忘了替换为你自己的用户名。
