@@ -78,6 +78,11 @@ $ git clone https://github.com/yidao620c/simpleblog.git
 ```
 这将会拉取一份你的代码副本到 PythonAnywhere 上。通过键入`tree simpleblog`查阅
 
+今后每次需要更新的时候执行
+``` bash
+git pull
+```
+
 ## 在 PythonAnywhere 上创建 virtualenv
 如同你在自己电脑上做的，你可以在 PythonAnywhere 上创建 virtualenv 虚拟环境。在 Bash 控制台下，键入：
 ``` bash
@@ -155,10 +160,10 @@ application = DjangoWhiteNoise(get_wsgi_application())
 如果你在访问你的网站时候看到一个错误，首先要去error log中找一些调试信息。你可以在PythonAnywhere Web选项卡中发现它的链接。
 检查那里是否有任何错误信息，底部是最新的信息。常见问题包括：
 
-* 忘记我们在控制台中的步骤之一：创建 virtualenv，激活它，安装 Django 进去，运行 collectstatic，迁移数据库。
-* 在 Web 选项卡中，virtualenv 路径设置错误 — 如果真是这样，这通常会是一个红色错误消息。
-* WSGI 文件设置错误 — 你的 my-first-blog 目录地址设置是否正确？
-* 你是否为你的 virtualenv 选择了同样的 Python 版本，如同 Web 应用程序里的那样？两个应该都是 3.4。
+* 忘记我们在控制台中的步骤：创建virtualenv，激活它，安装Django，运行collectstatic，迁移数据库。
+* 在Web选项卡中，virtualenv路径设置错误 — 如果真是这样，这通常会是一个红色错误消息。
+* WSGI 文件设置错误 — 你的simpleblog目录地址设置是否正确？
+* 你是否为你的virtualenv选择了同样的Python版本，如同Web应用程序里的那样？两个应该都是3.4。
 * 有一些常见的调试小贴士在[debugging tips on the PythonAnywhere](https://www.pythonanywhere.com/wiki/DebuggingImportError)里.
 
 ## 你上线了！

@@ -65,6 +65,7 @@ class Post(models.Model):
 from models import Post
 from haystack import indexes
 class PostIndex(indexes.SearchIndex, indexes.Indexable):
+    # 文章内容
     text = indexes.CharField(document=True, use_template=True)
     # 对title字段进行索引
     title = indexes.CharField(model_attr='title')
@@ -116,18 +117,19 @@ jieba其实已经提供了集成whoosh的ChineseAnalyzer，
 也就是说不需要自己写ChineseAnalyzer了，直接在whoosh_backend.py中直接引用就好；
 同时，不推荐将whoosh_backend.py放到Lib下面，这样移植性会有问题，自己的代码，还是放在项目下面为妙。
 
-1\. 将文件whoosh_backend.py拷贝到app下面，并重命名为whoosh_cn_backend.py，
+1\. 将文件haystack.backends.whoosh_backend.py拷贝到app下面，并重命名为whoosh_cn_backend.py，
 如blog/whoosh_cn_backend.py。重点的改造有：
 
 * 增加：
 ``` python
 from jieba.analyse import ChineseAnalyzer
 ```
+
 * 修改
 ``` python
-schema_fields[field_class.index_fieldname] = TEXT(stored=True, analyzer=ChineseAnalyzer(),
- field_boost=field_class.boost, sortable=True)
+schema_fields[field_class.index_fieldname] = TEXT(stored=True, analyzer=ChineseAnalyzer(), field_boost=field_class.boost, sortable=True)
 ```
+
 2\. 修改后端引擎，setting.py配置：
 ``` python
 # full text search

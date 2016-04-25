@@ -229,7 +229,7 @@ HTML页面只识别HTML标签，那么怎样让生成动态的内容呢？答案
 ![](http://yidaospace.qiniudn.com/dj010.jpg)
 
 ### 别忘了一件事
-别忘了把它push到heroku上面去。
+别忘了把它push到pythonanywhere上面去。
 
 ```
 git add .

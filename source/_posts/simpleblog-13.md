@@ -28,11 +28,11 @@ stackoverflow网站使用Redis做为缓存服务器。
 我们希望在本博客系统中，对于文章点击数、阅览数等数据实现缓存，提高效率。
 
 #### requirements.txt
-添加如下内容，方便部署到heroku上面
+添加如下内容，方便以后安装软件依赖，由于在pythonanywhere上面并不能安装redis服务，所以本章只能在本地测试。
 ```
-redis==2.10.3
-django-redis==3.7.2
-APScheduler==3.0.1
+redis==2.10.5
+django-redis==4.4.2
+APScheduler==3.1.0
 ```
 
 #### settings.py配置

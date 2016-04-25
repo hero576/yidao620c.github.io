@@ -294,5 +294,5 @@ OK，现在让我们来测试下效果：
 请查阅官方文档：<https://docs.djangoproject.com/en/1.9/topics/forms/>
 
 ## 还有一件事
-发布到heroku上去。不要我每次提醒了吧，Enjoy it！
+发布到pythonanywhere上去。不要我每次提醒了吧，Enjoy it！
 
