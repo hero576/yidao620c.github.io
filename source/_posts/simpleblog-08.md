@@ -134,110 +134,58 @@ OK，刷新页面看效果：
 删除后再去首页看，已经没有这篇文章了。
 
 ## 分页功能
-在首页显示文章列表时候需要分页显示，这时候可以使用django的一个插件叫pagination
+在首页显示文章列表时候需要分页显示，这时候可以使用django内置的Paginator来分页
+
+关于分页的官方文档：<https://docs.djangoproject.com/en/1.9/topics/pagination/>
 
 设置非常简单，简直是简单到变态。
 
-settings.py文件中
+### 在view里面使用Paginator
 
-1. INSTALLED_APPS增加'pagination'项
 ``` python
-# Application definition
-INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'blog',
-    'pagination',
-)
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+def post_list(request):
+    """所有已发布文章"""
+    postsAll = Post.objects.annotate(num_comment=Count('comment')).filter(
+        published_date__isnull=False).prefetch_related(
+        'category').prefetch_related('tags').order_by('-published_date')
+    for p in postsAll:
+        p.click = cache_manager.get_click(p)
+    paginator = Paginator(postsAll, 10)  # Show 10 contacts per page
+    page = request.GET.get('page')
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        posts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        posts = paginator.page(paginator.num_pages)
+    return render(request, 'blog/post_list.html', {'posts': posts, 'page': True})
 ```
-1. MIDDLEWARE_CLASSES增加'pagination.middleware.PaginationMiddleware'
-``` python
-MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'pagination.middleware.PaginationMiddleware',
-)
-```
-1. TEMPLATE_CONTEXT_PROCESSORS增加'django.core.context_processors.request'
-``` python
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.core.context_processors.tz",
-    "django.contrib.messages.context_processors.messages",
-    "blog.commons.context_processors.custom_proc",
-    "django.core.context_processors.request",
-)
-```
-1. requirements.txt中增加依赖：
-```
-django-pagination-py3==1.1.1
-```
-1. 修改post_list.html页面，增加autopaginate标签
+这里我传到页面去的posts是一个Page对象，另外我还传了一个"page"标志，因为其他方法也会使用到这个页面，但是不需要分页的。
+
+修改post_list.html页面，增加分页div
 ``` html
-{% extends 'mysite/base.html' %}
-{% load blog_tags %}
-{% load pagination_tags %}
-{% block content %}
-    {% if list_header %}
-        <div class="box">{{ list_header }}</div>
+{% for post in posts %}
+...这个中间是对于文章post的循环，这个不变...
+{% endfor %}
+{% if page %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if posts.has_previous %}
+                <a href="?page={{ posts.previous_page_number }}">previous</a>
+            {% endif %}
+            <span class="current">
+                Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+            </span>
+            {% if posts.has_next %}
+                <a href="?page={{ posts.next_page_number }}">next</a>
+            {% endif %}
+        </span>
+    </div>
     {% endif %}
-    {% autopaginate posts 10 %}
-    {% for post in posts %}
-        <div class="post">
-            <h2><a href="{% url 'blog.views.post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
-            <div class="info">
-                <span class="date">{{ post.published_date|date:'Y年m月d日' }}</span>
-                <span class="comments">
-                    {% if post.num_comment > 0 %}
-                        {{ post.num_comment }} 条评论
-                    {% else %}
-                        没有评论
-                    {% endif %}
-                </span>
-                <span class="comments">
-                    {{ post.click }} 人阅读&nbsp;&nbsp;
-                </span>
-                <div class="fixed"></div>
-            </div>
-            <div class="content">
-                <p>
-                    {% autoescape off %}
-                        {{ post.text|more:post.id }}
-                    {% endautoescape %}
-                </p>
-            </div>
-            <div class="under">
-                <span class="categories">分类: </span>
-                <span>
-                    <a href="{% url 'blog.views.post_list_by_category' cg=post.category.name %}"
-                       rel="category tag">{{ post.category.name }}
-                    </a>
-                </span>
-                <span class="tags">标签: </span>
-                <span>
-                    {% for tg in post.tags.all %}
-                        <a href="{% url 'blog.views.post_list_by_tag' tag=tg.name %}"
-                           rel="tag">{{ tg.name }}</a>&nbsp;
-                    {% endfor %}
-                </span>
-            </div>
-        </div>
-    {% endfor %}
-    {% paginate %}
-{% endblock %}
 ```
 
 刷新下列表首页，看看分页效果。
