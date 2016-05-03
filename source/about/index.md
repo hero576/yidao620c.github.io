@@ -6,7 +6,7 @@ comments: false
 
 嗨，我叫熊能，由于记忆力很差，习惯了做笔记和写博客。以后决定在Github上面写，可以使用markdown语法，还有版本管理功能。分享是一种美德，予人玫瑰，手留余香。
 
-我的业余爱好是运动和旅游，技能是Java、Scala、Python等，并对数学、算法和大数据也有很高的兴趣。
+我的业余爱好是运动和旅游，技能是Java、Python，并对数学、算法和大数据也有很高的兴趣。
 
 非常感谢您能来到这里，欢迎你给我任何的建议和评论。
 
@@ -24,7 +24,7 @@ Hello, my name is Xiong Neng. Having a poor memory makes me take notes and write
 I choose github page because it supports markdown syntax and has the benefit of version control.
 Sharing is a virtue. The fragrance always stays in the hand that gives the rose.
 
-My hobbies are sports and travel, working skills are Java, Scala, Python.
+My hobbies are sports and travel, working skills are Java, Python.
 I'm also very interested in mathematics, algorithm and big data analysis.
 
 Thanks for coming here and I'll be appreciate if you leave a comment to me.
