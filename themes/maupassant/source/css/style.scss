@@ -788,12 +788,13 @@ figure.highlight,
     margin:         10px 0;
     line-height:    1.2em;
     color:          #333;
-    padding-top:    15px;
+    //padding-top:    15px;
     overflow:       hidden;
 
     table {
         display:    block;
         width:      100%;
+        margin: auto auto auto;
     }
     // Reset for tag `pre` and  for class `.gutter`, `.code`, `.tag`
     pre,
@@ -1462,6 +1463,7 @@ table {
     background: transparent;
     border-collapse: collapse;
     border-spacing: 0;
+    border: 1px solid #ddd;
     text-align: left;
     th {
         font-weight: bold;
@@ -1476,6 +1478,14 @@ table {
             background: #f7f8f8;
         }
     }
+}
+
+th, td {
+    border-bottom: 3px solid #ddd;
+    border-right: 1px solid #eee;
+}
+td {
+    border-bottom-width: 1px;
 }
 
 /* article-share*/
@@ -1671,4 +1681,23 @@ blockquote {
     padding: 0 15px;
     color: #858585;
     border-left: 4px solid #e5e5e5;
+}
+
+::selection {
+    background: #262a30;
+    color: #fff;
+}
+
+table>tbody>tr:hover {
+    background-color: #f5f5f5;
+}
+//table>tbody>tr:nth-of-type(odd) {
+//    background-color: #f9f9f9;
+//}
+.highlight td {
+    border: none;
+    padding: 0;
+}
+.highlight table td, .gist table td {
+    border: none;
 }
