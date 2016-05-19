@@ -13,7 +13,7 @@ tags: [hadoop]
 
 **备注：** 下面所有的命令中，以#开头的表示是root用户，以$开头的是普通用户<!--more-->
 
-#### 安装SSH
+### 安装SSH
 先切换到root用户，执行下列步骤
 ``` bash
 rpm -qa |grep ssh  #检查是否装了SSH包
@@ -23,7 +23,7 @@ chkconfig --level 2345 sshd on  #如果没设置启动就设置下.
 service sshd restart  #重新启动
 ```
 
-#### 创建hadoop用户
+### 创建hadoop用户
 ``` bash
 $ su
 password:
@@ -33,7 +33,7 @@ New passwd:
 Retype new passwd
 ```
 
-#### 生成pub-key
+### 生成pub-key
 切换到hadoop用户后，执行
 ``` bash
 $ ssh-keygen -t rsa
