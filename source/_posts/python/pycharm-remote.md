@@ -69,5 +69,15 @@ Deploy path on server 这里填写相对于root path的目录，下面那个web 
 然后点击"Add Remote"，填写主机的ssh配置
 ![](http://yidaospace.qiniudn.com/pcr007.png)
 
+如果之前配置过SFTP的话就直接选“Deployment configuration”，然后选择刚刚的模板名称就可以了，由于我上面配置过就直接选模板，
+这里请仔细看我的Python解释器是虚拟环境virtualenv，这个要在服务器上面先创建好虚拟环境。
+![](http://yidaospace.qiniudn.com/pcr009.png)
+
 #### 开始调试
-完成之后选择这个远程的解释器作为工程的解释器即可。然后你就可以像本地调试一样打断点做调试了。这个步骤太简单就不截图了，记得修改源码后同步到服务器继续下一次的调试。
+完成之后选择这个远程的解释器作为工程的解释器即可,然后配置一个运行实例，打断点调试。我已django工程为例来说明。
+选择“Run/Debug Configuration”，添加一个“Django server”，然后配置像下面这样写
+![](http://yidaospace.qiniudn.com/pcr010.png)
+请注意图中标出的几个点，具体什么意思就不用多解释了吧，^_^
+
+然后你就可以像本地调试一样打断点做调试了。这个步骤太简单就不截图了，记得修改源码后同步到服务器继续下一次的调试。
+
