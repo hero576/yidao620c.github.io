@@ -74,7 +74,9 @@ Deploy path on server 这里填写相对于root path的目录，下面那个web 
 ![](http://yidaospace.qiniudn.com/pcr009.png)
 
 #### 开始调试
-完成之后选择这个远程的解释器作为工程的解释器即可,然后配置一个运行实例，打断点调试。我已django工程为例来说明。
+完成之后选择这个远程的解释器作为工程的解释器即可,然后配置一个运行实例，打断点调试。
+这里我以另外一个django工程为例来说明，名字为zspace，因为用一个web工程来说明更具代表性。
+
 选择“Run/Debug Configuration”，添加一个“Django server”，然后配置像下面这样写
 ![](http://yidaospace.qiniudn.com/pcr010.png)
 请注意图中标出的几个点，具体什么意思就不用多解释了吧，^_^
