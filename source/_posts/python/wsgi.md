@@ -142,6 +142,30 @@ start_response(force_str(status), response_headers)
 return response
 ```
 
+### WSGI中间件
+WSGI Middleware（中间件）也是WSGI规范的一部分。我们之前讲过WSGI中的两个角色：server和application。
+而middleware是运行在server和application中间的应用（一般也是python应用）。middleware同时具备server和application角色，
+对于server来讲它就是个application，而对于application来说，它就是个server。middleware并不修改server端和application端的规范，
+只是同时实现了这两种角色的功能而已。你可以将middleware形象比喻成批发商，对于厂商而已它是购买者，而对于零售店而已它是供应方。
+下面我用一张图来形象的说明这个中间件的工作原理：
+![](http://yidaospace.qiniudn.com/wsgi20.png)
+
+上图中最上面的三个彩色框表示角色，中间的白色框表示操作，操作的发生顺序按照1 ~ 5进行了排序，我们直接对着上图来说明middleware是如何工作的：
+
+1. Server收到客户端的HTTP请求后，生成了environ_s，并且已经定义了start_response_s。
+2. Server调用Middleware的application对象，传递的参数是environ_s和start_response_s。
+3. Middleware会根据environ执行业务逻辑，生成environ_m，并且已经定义了start_response_m。
+4. Middleware决定调用Application的application对象，传递参数是environ_m和start_response_m。Application的application对象处理完成后，会调用start_response_m并且返回结果给Middleware，存放在result_m中。
+5. Middleware处理result_m，然后生成result_s，接着调用start_response_s，并返回结果result_s给Server端。Server端获取到result_s后就可以发送结果给客户端了。
+
+从上面的流程可以看出middleware应用的几个特点：
+
+1. Server认为middleware是一个application。
+1. Application认为middleware是一个server。
+1. Middleware可以有多层。
+
+因为Middleware能过处理所有经过的request和response，所以要做什么都可以，没有限制。比如可以检查request是否有非法内容，检查response是否有非法内容，为request加上特定的HTTP header等，这些都是可以的。
+
 ### WSGI的实现和部署
 要使用WSGI，需要分别实现server角色和application角色。
 
