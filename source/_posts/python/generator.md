@@ -210,6 +210,24 @@ def print_successive_primes(iterations, base=10):
 2. 注意到这一行`prime_generator.send(None)`，当我们使用`send`来启动一个生成器（也就是从生成器第一行开始执行一直到碰到第一个`yield`语句），你必须发送`None`。
 这个是有必要的，因为生成器函数定义的第一条语句并不是yield，因此要是我们发送一个真实的数据过去，没东西可以接受啊。一旦这个生成器启动了，我们就能给它发送数据了。
 
+在来看一个send例子
+```python
+def h():
+        print 'Wen Chuan',
+        m = yield 5  # Fighting!
+        print m
+        d = yield 12
+        print 'We are together! %s' % d
+
+
+c = h()
+k = c.send(None)  # 相当于c.send(None)
+print k
+kk = c.send('Fighting!')
+print 'kk=%d' % kk
+c.send('dd')
+```
+
 ### 总结
 现在我们已经对生成器和`yield`原理有了理解。让我们再看看`yield`还有什么是可以做的。
 尽管send确实可以像上面那样用，但是生产简单的序列的时候我们基本不会那样用。下面再举一个例子看看send使用的常见场景：
