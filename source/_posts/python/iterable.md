@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "python核心 - 可迭代对象与迭代器"
+title: "python核心 - 迭代器"
 date: 2015-12-01 20:02:42 +0800
 toc: false
 categories: python
