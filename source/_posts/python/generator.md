@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "python核心 - 生成器"
+title: "python核心 - 生成器和协程"
 date: 2015-12-02 22:12:42 +0800
-toc: false
+toc: true
 categories: python
 tags: [python]
 ---
@@ -213,22 +213,31 @@ def print_successive_primes(iterations, base=10):
 在来看一个send例子
 ```python
 def h():
-        print 'Wen Chuan',
-        m = yield 5  # Fighting!
-        print m
-        d = yield 12
-        print 'We are together! %s' % d
+    print 'Wen Chuan',
+    m = yield 5  # Fighting!
+    print m
+    d = yield 12
+    print 'We are together! %s' % d
 
+def caller():
+    c = h()
+    k = c.next()  # 相当于c.send(None)
+    print k
+    kk = c.send('Fighting!')
+    print 'kk=%d' % kk
+    c.send('dd')
 
-c = h()
-k = c.send(None)  # 相当于c.send(None)
-print k
-kk = c.send('Fighting!')
-print 'kk=%d' % kk
-c.send('dd')
+caller()
 ```
+分析一下整个执行流程：
 
-### 总结
+执行到`k = c.next()`的时候，其实相对于`c.send(None)`，这个会执行这个生成器函数直到遇见`yield`语句，k负责接收yield语句返回值，那么就是5.
+接收完值后控制权里面回到caller()里来，然后打印k的值为5。然后执行`c.send('fighting')`，这一步会跳到h()的上次保存点，给m赋值为`fighting`（上一次是从`m=yield 5`那个地方跳出来的），
+然后打印m的值，直到运行到又碰到yield语句`yield 12`，然后控制权返回到caller()来，并将kk设置成12，打印'kk=12'，最后一句`c.send('dd')`，
+又跳到h()中的上次保存点去，将d设置成'dd'，然后打印`We are together! dd`，它会继续往下执行一定要找到一个`yield`语句，但是遗憾的是后面没有了，只能抛出`StopIteration`异常了。
+如果我在`h()`生成器函数最后加一条`yield`就不会报错了。
+
+### Python中的协程
 现在我们已经对生成器和`yield`原理有了理解。让我们再看看`yield`还有什么是可以做的。
 尽管send确实可以像上面那样用，但是生产简单的序列的时候我们基本不会那样用。下面再举一个例子看看send使用的常见场景：
 ```python
@@ -244,7 +253,7 @@ def consume():
     data_items_seen = 0
 
     while True:
-        data = yield
+        data = yield  # 负责接收数据
         data_items_seen += len(data)
         running_sum += sum(data)
         print('The running average is {}'.format(running_sum / float(data_items_seen)))
@@ -256,7 +265,7 @@ def produce(consumer):
         data = get_data()
         print('Produced {}'.format(data))
         consumer.send(data)
-        yield
+        yield  # 变成一个生成器函数
 
 if __name__ == '__main__':
     consumer = consume()
@@ -267,9 +276,21 @@ if __name__ == '__main__':
         print('Producing...')
         next(producer)
 ```
-呃，竟然是生产者-消费者模式，进程间通信，看上去好高级哦，不过原理很简单，应该看得懂吧。
+呃，竟然是生产者-消费者模式，这种方式其实就是协程异步方案，看上去好高级哦，不过原理很简单，应该看得懂吧。
 
-### 记住
+Python的线程是系统级进程，线程间切换开销不小，而且Python在执行多线程时默认加了一个全局解释器锁（GIL），所以Python的多线程其实是串行的，并不能利用多核的优势。而哪怕在Java、C#这样的语言中，多线程真的是并发的，虽然可以利用多核优势，但由于线程的切换是由调度器控制的，不论是用户级线程还是系统级线程，调度器都会由于IO操作、时间片用完等原因强制夺取某个线程的控制权，又由于线程间共享状态的不可控性，同时也会带来安全问题。所以我们在写多线程程序的时候都会加各种锁，很是麻烦，一不小心就会造成死锁，而且锁对性能，总是有些影响的。
+
+然后说到协程，与线程的抢占式调度不同，它是协作式调度，之前忘了看哪个技术分享视频说过，纤程（跟协程一样，只是叫法不同），大致上就是一种可控制的回调，是比线程更轻量级的一种实现异步编程的方式。协程在Python中可以用generator(生成器)实现，生成器主要由yeild关键字实现。
+
+而用yeild实现协程的话，其实有挺多不同的方式，不过大致的思想都是用yeild来暂停当前执行的程序，转而执行另一个，再在恰当的时候（可以控制）回来执行。用法很灵活。
+
+produce和consumer协同合作，过程清晰可控，在一个线程中执行，不需要锁，也就不会出现死锁情况。
+
+其实Python用生成器对协程的实现并不完整，不过可以用一些第三方库，比如greenlet，毕竟Python最大的优势就是库多嘛。
+
+
+### 总结
+
 看完这篇文章，我希望你能记住下面这几点就足够了：
 
 * 生成器是用来生产序列的
@@ -279,5 +300,4 @@ if __name__ == '__main__':
 * 和迭代器类似，我们可以通过在生成器上面使用`next()`或者是`for`循环来获取下一个值
 
 我希望这篇文章能对你理解生成器有帮助，你应该知道了它是什么，为什么它这样有用，以及怎样使用它。如果你之前就熟悉它，我希望现在对于它不会存在误解了。
-
 
