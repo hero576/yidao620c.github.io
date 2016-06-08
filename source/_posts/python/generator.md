@@ -212,30 +212,32 @@ def print_successive_primes(iterations, base=10):
 
 在来看一个send例子
 ```python
-def h():
-    print 'Wen Chuan',
-    m = yield 5  # Fighting!
-    print m
-    d = yield 12
-    print 'We are together! %s' % d
+if __name__ == '__main__':
+    def myfunc():
+        print 'start myfunc...',
+        m = yield 111
+        print 'get m = %s' % m
+        n = yield 222
+        print 'get n = %s' % n
+        yield
 
-def caller():
-    c = h()
-    k = c.next()  # 相当于c.send(None)
-    print k
-    kk = c.send('Fighting!')
-    print 'kk=%d' % kk
-    c.send('dd')
+    def caller():
+        c = myfunc()       # 调用生成器函数获取到生成器c
+        result = c.next()  # 相当于c.send(None)
+        print '(1) result=%s' % result
+        result = c.send('Hello')
+        print '(2) result=%s' % result
+        c.send('Goodbye')
 
-caller()
+    caller()
 ```
-分析一下整个执行流程：
+我用图片方式标注几个重要的执行点，然后分析一下整个执行流程：
+![](http://yidaospace.qiniudn.com/yield08.png)
 
-执行到`k = c.next()`的时候，其实相对于`c.send(None)`，这个会执行这个生成器函数直到遇见`yield`语句，k负责接收yield语句返回值，那么就是5.
-接收完值后控制权里面回到caller()里来，然后打印k的值为5。然后执行`c.send('fighting')`，这一步会跳到h()的上次保存点，给m赋值为`fighting`（上一次是从`m=yield 5`那个地方跳出来的），
-然后打印m的值，直到运行到又碰到yield语句`yield 12`，然后控制权返回到caller()来，并将kk设置成12，打印'kk=12'，最后一句`c.send('dd')`，
-又跳到h()中的上次保存点去，将d设置成'dd'，然后打印`We are together! dd`，它会继续往下执行一定要找到一个`yield`语句，但是遗憾的是后面没有了，只能抛出`StopIteration`异常了。
-如果我在`h()`生成器函数最后加一条`yield`就不会报错了。
+1. 执行到`result = c.next()`的时候，这个会执行这个生成器函数直到遇见`yield`语句，yield语句返回值111，控制权里面回到caller()里来，将返回值赋值给result，那么打印"(1) result=111"。
+2. 然后执行`c.send('Hello')`，这一步会跳到myfunc()的上次保存点，m接收值`Hello`（上一次是从`m = yield 111`那个地方跳出来的），然后打印"get m = Hello"，直到运行到又碰到yield语句`yield 222`。
+3. 然后控制权返回到caller()来，并将result设置成222，打印"(2) result=222"。
+4. 最后一句`c.send('Goodbye')`，又跳到myfunc()中的上次保存点去，n接收值'Goodbye'，然后打印`get n = Goodbye`，它会继续往下执行一定要找到一个`yield`语句并返回到caller()中，否则抛出`StopIteration`异常。
 
 ### Python中的协程
 现在我们已经对生成器和`yield`原理有了理解。让我们再看看`yield`还有什么是可以做的。
