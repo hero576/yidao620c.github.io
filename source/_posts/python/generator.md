@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "python核心 - 生成器和协程"
+title: "python核心 - 生成器和yield"
 date: 2015-12-02 22:12:42 +0800
 toc: true
 categories: python
