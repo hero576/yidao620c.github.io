@@ -23,17 +23,14 @@ Scrapy也能帮你实现高阶的爬虫框架，比如爬取时的网站认证�
 [Python 2.7.11](https://www.python.org/downloads/release/python-2711/)，
 具体方法请google下很多这样的教程。
 
-安装python-devel
+先安装一些依赖软件
 ```
 yum install python-devel
-```
-
-安装 libffi-devel：
-```
 yum install libffi-devel
+yum install openssl-devel
 ```
 
-安装openssl
+然后安装pyopenssl库
 ```
 pip install pyopenssl
 ```

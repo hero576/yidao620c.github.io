@@ -22,7 +22,7 @@ stackoverflow网站使用Redis做为缓存服务器。
 
 ### 安装redis
 服务器安装篇我写了专门文章，
-请参阅[redis入门与安装](http://www.pycoding.com/blog/20150417/redis-install.html)
+请参阅[redis入门与安装](http://www.pycoding.com/2015/07/01/java/redis01.html)
 
 ### django中的配置
 我们希望在本博客系统中，对于文章点击数、阅览数等数据实现缓存，提高效率。
