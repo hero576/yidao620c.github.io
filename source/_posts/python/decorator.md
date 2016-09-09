@@ -79,11 +79,9 @@ print greet()
 
 5.内部函数可以访问包含它的函数的局部变量：
 
-其实就是我们所说的闭包，在构建装饰器的时候这是一个非常有用的模式。
-另外还要注意，Python只允许读取外部变量而不允许修改。
+其实就是我们所说的闭包，在构建装饰器的时候这是一个非常有用的模式。另外还要注意，Python只允许读取外部变量而不允许修改。
 
-观察一下下面的代码，
-注意我们是如何通过修改上面实例代码来读取外部函数中的name参数值并返回一个新的函数的。
+观察一下下面的代码，注意我们是如何通过修改上面实例代码来读取外部函数中的name参数值并返回一个新的函数的。
 ``` python
 def compose_greet_func(name):
     def get_message():
@@ -95,6 +93,42 @@ greet = compose_greet_func("John")
 print greet()
 
 # Outputs: Hello there John!
+```
+
+### Python中的闭包
+
+既然讲到这里了，就不得不去提一下python中的闭包了。
+
+定义：如果在一个内部函数里，对在外部作用域（外部函数的局部变量或者参数，但不是在全局作用域）的变量进行引用，那么内部函数就被认为是闭包（closure）
+
+分解来说，包含下面3个条件：
+
+1. 需要函数嵌套, 就是一个函数里面再写一个函数.
+2. 外部函数需要返回一个内部函数的引用
+3. 外部函数中有一些局部变量或者参数, 并且, 这些局部变量或参数在内部函数中有使用
+
+一些概念:
+
+1. 自由变量: 外部函数中定义的局部变量, 并且在内部函数中被使用
+2. 闭包: 那个使用了自由变量并被返回的内部函数就称为闭包
+
+支持闭包的语言有这样的特性：
+
+1. 函数是一阶值（First-class value），即函数可以作为另一个函数的返回值或参数，还可以作为一个变量的值
+2. 函数可以嵌套定义，即在一个函数内部可以定义另一个函数
+
+代码示例：
+
+``` python
+def line_conf():
+    b = 15
+    def line(x):
+        return 2*x+b
+    return line       # return a function object
+
+b = 5
+my_line = line_conf()  # 返回一个闭包函数
+print(my_line(5))
 ```
 
 ### 构造装饰器
@@ -313,6 +347,5 @@ if __name__ == '__main__':
 * [Python Decorators III: 一个基于装饰器的构建系统](http://www.artima.com/weblogs/viewpost.jsp?thread=241209)
 * [Python装饰器指南 Matt Harrison](http://www.amazon.com/gp/product/B006ZHJSIM/ref=as_li_ss_tl?ie=UTF8&camp=1789&creative=390957&creativeASIN=B006ZHJSIM&linkCode=as2&tag=thcosh00-20)
 
-到此为止Python装饰器概率已经介绍完了。我希望你能从中受益，
-如果你哈有任何的建议或问题，可以在评论中提出来。祝您编程快乐！
+到此为止Python装饰器概率已经介绍完了。我希望你能从中受益，如果你有任何的建议或问题，可以在评论中提出来。祝您编程快乐！
 
