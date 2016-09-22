@@ -1,5 +1,5 @@
 ---
-title: "python核心 - 字符串和unicode"
+title: "python核心 - 字符串编码"
 date: 2015-10-24 10:06:22 +0800
 comments: true
 toc: true
@@ -31,6 +31,9 @@ Unicode把所有语言都统一到一套编码里，这样就不会再有乱码�
 
 ### Python的字符串
 搞清楚了令人头疼的字符编码问题后，我们再来研究Python的字符串。
+
+Python 2.x版本虽然支持Unicode，但在语法上需要'xxx'和u'xxx'两种字符串表示方式。
+在Python 3.x版本中，把'xxx'和u'xxx'统一成Unicode编码，即写不写前缀u都是一样的，而以字节形式表示的字符串则必须加上b前缀：b'xxx'
 
 在最新的Python 3版本中，字符串是以Unicode编码的，也就是说，Python的字符串支持多语言，例如：
 ``` python
@@ -83,7 +86,76 @@ UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-1: ordin
 申明了UTF-8编码并不意味着你的.py文件就是UTF-8编码的，必须并且要确保文本编辑器正在使用UTF-8 without BOM编码：
 ![](http://yidaospace.qiniudn.com/pystr003.png)
 
-如果.py文件本身使用UTF-8编码，并且也申明了# -*- coding: utf-8 -*-，打开命令提示符测试就可以正常显示中文：
+如果.py文件本身使用UTF-8编码，并且也申明了# -*- coding: utf-8 -*-，打开命令提示符测试就可以正常显示中文
+
+### Python2和3处理字符串和unicode的差异
+先准备两张图片
+![](http://yidaospace.qiniudn.com/unicode005.png)
+第一张图片是几个特殊字符的unicode代码点（CODE POINT），
+用\uXXXX或者\xXX来表示，其中X都是十六进制字符，而\x表示前面一个字节为00就变成简写了。
+![](http://yidaospace.qiniudn.com/unicode006.png)
+第二张图片是UTF-8怎样来通过可变字节来编码相应字符的代码点
+
+#### 文本模型
+在python2中
+
+str: a sequence of bytes
+
+unicode: a sequence of code points
+
+在 Python2 中，有两种字符串数据类型。一种纯旧式的文字: “str” 对象,存储 bytes 。
+如果你使用一个 “u” 前缀，那么你会有一个 “unicode” 对象，存储的是 code points 。
+在一个 unicode 字符串中，你可以使用\u或\x来插入任何的 unicode 代码点(\x后面接2位的十六进制表示\u00XX这样的简写)。
+
+``` python
+my_string = "Hello World."
+print(type(my_string))
+
+my_unicdoe = u"Hi \u2119\u01b4\u2602\u210c\xf8\u1f24"
+print(len(my_unicode))  # 9个字符
+
+my_utf8 = my_unicode.encode('utf-8')
+print(len(my_utf8))  # 19个字节
+
+my_unicode2 = my_utf8.decode('utf-8')
+print(len(my_unicode2))  # 9个字符，恢复原来的
+
+# my_unicode2.encode('ascii')  # 报错，因为ascii只能表示0-127个字符
+
+my_unicode2.encode('ascii', 'replace') # 用?代替不能编码的字符
+my_unicode2.encode('ascii', 'xmlcharrefreplace') # 对于不能编码的产生一个完全替代的 HTML/XML 字符，保护所有的原始数据
+my_unicode2.encode('ascii', 'ignore') # 忽略不能编码的字符，留下的都是ascii字符
+
+```
+
+在python3中
+
+str: a sequence of code points
+
+bytes: a sequence of bytes
+
+1. 只有一个文本类型是`str`(默认就是unicode编码字符)
+2. 有两个字节类型是`bytes`和`bytearray`
+
+在 Python 2 中的 “str” 现在叫做 “bytes”，而 Python 2 中的 “unicode” 现在叫做 “str”。
+
+``` python
+my_string = "Hi \u2119\u01b4\u2602\u210c\xf8\u1f24"
+print(type(my_string))  # <class 'str'>
+
+my_bytes = b"Hello world"
+print(type(my_bytes))  # <class 'bytes'>
+```
+
+避免bytes和unicode混合使用报错的原则是：制造一个 Unicode 三明治， bytes 在外， Unicode 在内。
+
+我们有五个不可忽视的事实:
+
+* 程序中所有的输入和输出均为 byte
+* 世界上的文本需要比 256 更多的符号来表现
+* 你的程序必须处理 byte 和 unicode
+* byte 流中不会包含编码信息
+* 指明的编码有可能是错误的
 
 ### 常见乱码问题
 
@@ -107,4 +179,17 @@ else:
     #s="中文"
     print s.decode('utf-8').encode('gb2312')
 ```
+
+这是你在编程中保持 Unicode 清洁的三个建议:
+
+1. Unicode 三明治：尽可能的让你程序处理的文本都为 Unicode 。
+2. 了解你的字符串。你应该知道你的程序中，哪些是 unicode, 哪些是 byte, 对于这些 byte 串，你应该知道，他们的编码是什么。
+3. 测试 Unicode 支持。使用一些奇怪的符号来测试你是否已经做到了以上几点。
+
+如果你遵循以上建议的话，你将会写出对 Unicode 支持很好的代码。不管 Unicode 中有多么不规整的编码你的程序也不会挂掉。
+
+### 参考
+
+1. <http://lucumr.pocoo.org/2014/1/5/unicode-in-2-and-3/>
+2. <http://pycoders-weekly-chinese.readthedocs.io/en/latest/issue5/unipain.html>
 
