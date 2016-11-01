@@ -88,7 +88,7 @@ UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-1: ordin
 
 如果.py文件本身使用UTF-8编码，并且也申明了# -*- coding: utf-8 -*-，打开命令提示符测试就可以正常显示中文
 
-### Python2和3处理字符串和unicode的差异
+### Python2和3的差异
 先准备两张图片
 ![](http://yidaospace.qiniudn.com/unicode005.png)
 第一张图片是几个特殊字符的unicode代码点（CODE POINT），
@@ -96,7 +96,6 @@ UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-1: ordin
 ![](http://yidaospace.qiniudn.com/unicode006.png)
 第二张图片是UTF-8怎样来通过可变字节来编码相应字符的代码点
 
-#### 文本模型
 在python2中
 
 str: a sequence of bytes
