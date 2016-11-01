@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "乱弹篇 - Vagrant"
-date: 2016-05-28 22:22:22 +0800
+date: 2016-09-02 22:22:22 +0800
 toc: true
 categories: python
 tags: [vagrant]
