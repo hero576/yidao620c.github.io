@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "八月乱弹 - Vagrant"
+title: "每日一弹 - Vagrant"
 date: 2016-09-02 22:22:22 +0800
 toc: true
 categories: python
