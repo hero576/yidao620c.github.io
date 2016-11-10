@@ -6,7 +6,7 @@ toc: true
 categories: python
 tags: [python]
 ---
-当需要将写的程序打包分发出去的时候，就要使用到setuptools工具了，这里我通过一个简单例子来介绍它的使用方法
+当需要将写的程序打包分发出去的时候，就要使用到setuptools工具了，这里我通过一个简单例子来介绍它的使用方法，源码安装就可以了。
 
 ### 项目目录结构
 这里我写了一个很简单的django程序来展示这种，目录结果如下
@@ -95,5 +95,87 @@ python setup.py sdist bdist_wheel upload
 恭喜你成功将你的软件包上传至PyPI上面，全世界的人都可以通过pip来安装了：
 ```
 pip install zspace
+```
+
+### pip包管理器
+讲完了怎样打包发布，接下来我们来讲怎样使用这些包。一般都会使用到pip这个工具
+
+#### 安装pip
+有几种方法安装pip
+
+第1种使用get-pip.py来安装：
+```
+curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+sudo python get-pip.py
+```
+
+第2种使用easy_install命令来安装：
+
+先安装setuptools，上面也讲了打包也需要这个，直接源码安装，去pypi上面下载最新的tar包解压后执行：
+```
+python setup.py install
+```
+然后使用easy_install来安装最新版的：
+```
+sudo easy_install pip
+```
+或者去pypi上面下载最新源码来安装也行
+
+#### 使用pip
+基本使用：
+```
+# 安装
+sudo pip install foo
+# 升级
+sudo pip install -U foo
+# 卸载
+sudo pip uninstall foo
+# 查询已经安装的包
+pip list
+# 查询可以安装的包
+pip search foo
+```
+
+其他有用的功能：
+
+批量下载，读取requirements.txt，将里面指定的包（包括依赖包）下载到本地某个目录，不安装
+```
+pip download -d "/root/packages/" -r requirements.txt
+```
+批量安装，pip从本地包安装
+```
+pip install --no-index --find-links=/root/packages/ -r requirements.txt
+```
+下载指定的包到指定文件夹
+```
+pip download -d /root/packages/  gevent
+```
+安装指定的离线包
+```
+pip install --no-index --find-links=/root/packages/  gevent
+```
+
+### 虚拟环境
+安装，同样两种方式，一种源码，一种是通过pip，这里我通过pip安装：
+```
+sudo pip install -U virtualenv
+```
+创建一个独立于系统的虚拟环境
+```
+virtualenv --no-site-packages --no-download django-mimo
+```
+基本使用
+```
+# 激活
+source django-mimo/bin/activate
+# 退出
+deactivate
+# 删除，退出后直接删除django-mimo文件夹即可
+# 安装包（激活后）
+pip install Django
+# 整体虚拟环境导出（激活后）
+pip freeze  > requirements.txt
+# 整体虚拟环境导入（激活后）
+pip install -r requirements.txt
 ```
 

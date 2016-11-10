@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Django1.9开发博客（14）- 集成Xadmin"
+title: "Django1.9开发博客14- 集成Xadmin"
 date: 2015-04-21 21:45:29 +0800
 toc: true
 categories: python

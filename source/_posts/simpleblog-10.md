@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Django1.9开发博客（10）- 全文搜索"
+title: "Django1.9开发博客10- 全文搜索"
 date: 2015-04-21 15:47:28 +0800
 toc: true
 categories: python

@@ -1,5 +1,5 @@
 ---
-title: "Scrapy笔记（8）- 文件与图片"
+title: "Scrapy笔记08- 文件与图片"
 date: 2016-03-20 01:16:12 +0800
 comments: true
 toc: true
