@@ -13,7 +13,7 @@ comments: false
 ### 联系方式
 
 * 邮件: <yidao620@gmail.com>
-* 博客: <http://www.pycoding.com>
+* 博客: <http://yidao620c.github.io>
 * GitHub: <https://github.com/yidao620c>
 
 ----------
@@ -34,7 +34,7 @@ There is just one way to excellence, keep running.
 ### Contact me
 
 * Email: <yidao620@gmail.com>
-* Blog: <http://www.pycoding.com>
+* Blog: <http://yidao620c.github.io>
 * GitHub: <https://github.com/yidao620c>
 
 <center>微信扫一扫，请博主喝杯咖啡</center>

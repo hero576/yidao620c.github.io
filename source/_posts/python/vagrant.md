@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "每日一弹 - Vagrant"
+title: "Vagrant创建虚拟化开发环境"
 date: 2016-09-02 22:22:22 +0800
 toc: true
 categories: python
@@ -8,10 +8,13 @@ tags: [vagrant]
 ---
 
 作为一名开发者，是否经常抱怨环境问题，某个bug只出现在你的环境下面，找了很久才找到原来是一个很小的环境差异导致。
-Vagrant可以非常容易的配置一个统一的可复制、可移植的分布式开发环境，在VirtualBox、VMware、AWS或[其他provider](https://www.vagrantup.com/docs/providers/)平台上，借助[provisioning工具](https://www.vagrantup.com/docs/provisioning/)，
+Vagrant可以非常容易的配置一个统一的可复制、可移植的分布式开发环境，
+在VirtualBox、VMware、AWS或[其他provider](https://www.vagrantup.com/docs/providers/)平台上，
+借助[provisioning工具](https://www.vagrantup.com/docs/provisioning/)，
 比如shell脚本、Ansible、Chef等自动在各个机器上面安装和配置好软件。
 
-只需要一个Vagrantfile，别人就能基于它创建统一的环境，不管你的工作机器是Linux、Mac OS 还是Windows系统，最后创建的虚拟机环境都是一样的。<!--more-->
+只需要一个Vagrantfile，别人就能基于它创建统一的环境，不管你的工作机器是Linux、Mac OS 还是Windows系统，
+最后创建的虚拟机环境都是一样的。官网：<https://www.vagrantup.com/> <!--more-->
 
 ### 安装
 
