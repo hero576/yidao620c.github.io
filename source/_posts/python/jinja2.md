@@ -128,7 +128,7 @@ class MyLoader(BaseLoader):
 * jinja2.ModuleLoader(path) #预编译好的模块
 
 #### 自定义过滤器
-`{{ 42|myfilter(23) }}`会被`myfilter(42, 23)`调用，一个例子
+{% raw %}`{{ 42|myfilter(23) }}`{% endraw %}会被`myfilter(42, 23)`调用，一个例子
 ``` python
 def datetimeformat(value, format='%H:%M / %d-%m-%Y'):
     return value.strftime(format)
@@ -189,14 +189,14 @@ def nl2br(eval_ctx, value):
 
 默认的语法配置是这样的，你可以自己自定义：
 
-* {% ... %} 这个是语句
-* {{ ... }} 这个是表达式，打印模板输出
-* {# ... #} 这个是注释部分，不会输出
-* #  ... #  这个是行语句
+    * {% raw %}{% ... %}{% endraw %} 这个是语句
+    * {% raw %}{{ ... }}{% endraw %} 这个是表达式，打印模板输出
+    * {% raw %}{# ... #}{% endraw %} 这个是注释部分，不会输出
+    * #  ... #  这个是行语句
 
 #### 变量
 两种访问方式：
-``` python
+```
 {{ foo.bar }}
 {{ foo['bar'] }}
 
@@ -353,7 +353,7 @@ if判断
 ```
 
 临时指定autoescape
-``` html
+```
 {% autoescape true %}
     Autoescaping is active within this block
 {% endautoescape %}

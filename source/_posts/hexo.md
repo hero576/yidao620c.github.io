@@ -284,7 +284,7 @@ www，CNAME，cmback.github.io.
 
 ## FAQ
 
-* 遇到有大括号的代码块，如果多行的不用管，如果单行的就单个反引号，并且在里面加raw标签
+* 遇到有大括号的代码块，如果多行的不用管，如果单行的就单个反引号，并且在里面加raw标签，比如{% raw %} `{{test}}` {% endraw %}
 * 关闭hexo的将回车当换行做法是用正常的markdown两个回车当换行，在全局_config.yml中添加配置
 ```
   marked:
