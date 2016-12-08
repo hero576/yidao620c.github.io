@@ -43,10 +43,8 @@ links:
     url: http://www.infoq.com/cn/
   - title: 伯乐在线
     url: http://blog.jobbole.com/
-  - title: Matrix67
-    url: http://www.matrix67.com/blog/
-  - title: 拿客
-    url: http://coderknock.com/
+  - title: 博客园
+    url: http://www.cnblogs.com/
 
 # Static files
 js: js
