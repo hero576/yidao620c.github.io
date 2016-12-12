@@ -50,9 +50,9 @@ log-bin=mysql3306-bin
 3\. 启动数据库服务器,并登陆数据库,授予相应的用户用于同步
 ``` bash
 mysql -uroot -p
-mysql> grant replication slave on *.* to 'slave1'@'192.168.212.201' identified by 'winstore';
+mysql> GRANT REPLICATION SLAVE,RELOAD,SUPER ON *.* TO 'slave1'@'192.168.212.201' IDENTIFIED BY 'winstore';
 # 刷新授权表信息
-mysql> flush privileges;
+mysql> FLUSH PRIVILEGES;
 # 查看记下position 号和日志文件名(很重要)
 mysql> show master status;
 +----------------------+----------+--------------+------------------+-------------------+
@@ -77,23 +77,22 @@ mysql> unlock tables;
 [root@node200 ~]# scp /tmp/mysql.sql root@192.168.212.201:/tmp
 ```
 
-5\. 从DB server配置文件只需修改一项,其余用命令行做
+5\. 从数据库配置文件只需修改一项,其余用命令行做
 ``` bash
 [root@node201 ~]# vi /etc/my.cnf
 # 设置server_id,一般建议设置为IP
 server_id = 201
-read-ony = 1
 ```
 
-6\.启动数据库,还原备份数据
+6\.启动从数据库,还原备份数据
 ``` bash
 # 启动数据库
-[root@node201 ~]# systemctl restart mysql.service
+[root@node201 ~]# systemctl restart mysqld.service
 # 还原主DB server备份的数据
 [root@node201 ~]# mysql -uroot -p < /tmp/mysql.sql
 ```
 
-7\. 登陆数据库,添加相关参数(主DBserver的ip/端口/同步用户/密码/position号/读取哪个日志文件)
+7\. 登陆从数据库,添加相关参数(主DBserver的ip/端口/同步用户/密码/position号/读取哪个日志文件)
 ``` bash
 [root@node201 ~]# mysql -uroot -p
 mysql> change master to
