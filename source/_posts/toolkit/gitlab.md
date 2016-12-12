@@ -3,7 +3,7 @@ layout: post
 title: "centos7安装gitlab8.9"
 date: 2016-09-09 22:22:22 +0800
 toc: true
-categories: environment
+categories: toolkit
 tags: [git]
 ---
 内部需要搭建一个源码管理控制环境，选择开源的gitlab，环境为centos7。这个平台类似于github，使用起来非常方便。
@@ -422,7 +422,17 @@ listen 0.0.0.0:80;
 server_name 192.168.217.161; ## Replace
 server_tokens off; ## Don't show
 location / {
-    client_max_body_size 256m;
+    client_max_body_size 512m;
+```
+另外还要加个gitlab的upstream，里面默认就一个gitlab-workhorse：
+```
+upstream gitlab {
+  server unix:/home/git/gitlab/tmp/sockets/gitlab.socket fail_timeout=0;
+}
+
+upstream gitlab-workhorse {
+  server unix:/home/git/gitlab/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
+}
 ```
 修改权限
 ```
@@ -556,6 +566,12 @@ user.save
 # 如果不知道具体邮箱，可以通过find来查找邮箱
 user = User.find(1)
 ```
+
+## FAQ
+
+1. 内网请使用SSH协议的地址来pull/push，profile settings中SSH Keys添加相应的pubkey
+2. 公网的话就使用https协议了，这个暂时还没研究
+3. win7上面push的时候报了一个libcurl-4.dll找不到，去网上下载后放到C:\Windows\SysWOW64\下面
 
 ## 参考文档
 
