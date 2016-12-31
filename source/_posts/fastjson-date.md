@@ -3,7 +3,7 @@ layout: post
 title: "fastjson对Date的处理"
 date: 2015-04-22 13:45:15 +0800
 toc: true
-categories: 技术随笔
+categories: java
 tags: java
 ---
 
