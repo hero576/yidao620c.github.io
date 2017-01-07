@@ -4,7 +4,7 @@ title: "python核心 - 生成器"
 date: 2015-12-02 22:12:42 +0800
 toc: true
 categories: python
-tags: [python]
+tags: [python核心]
 ---
 
 对于大部分的python初学者而言，生成器和`yield`关键字比较难以理解。很多文章解释的不清楚，这篇文章我想深入的讲解这个`yield`关键字，它到底是个什么东西，为什么它如此的重要，以及我们该如何去使用它。

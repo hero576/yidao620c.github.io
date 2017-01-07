@@ -4,7 +4,7 @@ title: "python核心 - 元类"
 date: 2015-12-05 22:22:22 +0800
 toc: true
 categories: python
-tags: [python]
+tags: [python核心]
 ---
 
 动态语言和静态语言最大的不同，就是函数和类的定义，不是编译时定义的，而是运行时动态创建的。我们在hello.py模块里定义一个Hello的

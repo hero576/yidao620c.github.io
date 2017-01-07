@@ -4,7 +4,7 @@ date: 2015-10-24 10:06:22 +0800
 comments: true
 toc: true
 categories: python
-tags: [python]
+tags: [python核心]
 ---
 
 ### 字符编码

@@ -4,7 +4,7 @@ date: 2015-10-26 22:22:22 +0800
 comments: true
 toc: true
 categories: python
-tags: [python]
+tags: [python核心]
 ---
 当需要将写的程序打包分发出去的时候，就要使用到setuptools工具了，这里我通过一个简单例子来介绍它的使用方法，源码安装就可以了。
 
