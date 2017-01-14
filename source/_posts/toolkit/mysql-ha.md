@@ -8,13 +8,13 @@ tags: [mysql]
 ---
 
 常见的高可用MySQL解决方案有主从复制，主主复制，Heartbeat/SAN高可用，MySQL Cluster高可用等等。
-这里我使用最简单的主从复制高可用方案，也是Mysql内置的功能。<!--more-->
+这里我使用最简单的主从复制高可用方案，也是Mysql内置的功能。
 
-## mysql主从复制原理：
+mysql主从复制原理：
 
 1. master将数据改变记录到二进制日志(binary log)中,也即是配置文件log-bin指定的文件(这些记录叫做二进制日志事件，binary log events)
 2. slave将master的binary log events拷贝到它的中继日志(relay log)
-3. slave重做中继日志中的事件,将改变反映它自己的数据(数据重演)
+3. slave重做中继日志中的事件,将改变反映它自己的数据(数据重演) <!--more-->
 
 ## mysql主从复制支持的类型：
 

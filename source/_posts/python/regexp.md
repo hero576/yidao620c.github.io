@@ -80,15 +80,19 @@ tags: [python核心]
 {n,}    |匹配前一个字符或者子表达式至少n次
 {n,}?   |前一个的惰性匹配
 ^       |匹配字符串的开头
+$       |匹配字符串结束，MULTILINE下匹配下一行前面
 \A      |匹配字符串开头
-$       |匹配字符串结束
-\b      |退格字符
+\Z      |匹配字符串结尾
 \c      |匹配一个控制字符
+\b      |退格字符
+\t      |匹配制表符
+\s      |匹配任意空白符[\t\n\r\f\v]
+\S      |匹配任意非空白符[^ \t\n\r\f\v]
 \d      |匹配任意数字
 \D      |匹配数字以外的字符
-\t      |匹配制表符
 \w      |匹配任意数字字母下划线
 \W      |不匹配数字字母下划线
+\1      |匹配内容和group 1一样
 
 ## re模块
 python通过re模块提供对正则表达式的完全支持。由于Python的字符串本身也用\转义，
@@ -285,4 +289,67 @@ if __name__ == '__main__':
 
 ```
 
+## 高级用法
+
+先来详细讲解扩展用法(?...)，一般来讲这个扩展不会创建新的分组group， (?P<name>...)是唯一例外。
+
+### 不可捕获组
+(?:...)，匹配括号中的正则式，但是不能再后面通过组来捕获这个东西了，
+无论是在正则式里面还是在match对象或替换中都不能通过组来捕获。
+
+### 命名组
+用法为(?P<name>...)，这样定义后可以在后面通过名字来应用这个组。
+比如匹配单引号或双引号引起来的字符串：(?P<quote>['"]).*?(?P=quote)
+
+三种场景使用
+
+场景           | 用法
+--------------|-------
+正则式本身      | (?P=quote) 或 \1
+match对象m     | m.group('quote') 或 m.end('quote')
+re.sub()替换   | \g<quote> 或 \g<1> 或 \1
+
+### lookahead匹配
+
+等于用法为Hello (?=World)，匹配"Hello "，当且仅当紧跟着World的时候，匹配完不消耗字符串World。
+
+不等于用法为Hello (?!World)，匹配"Hello "，当且仅当后面不是紧跟着World的时候，匹配完不消耗字符串World。
+
+### lookbehind匹配
+等于用法为(?<=Hello )World，匹配"World"，当且仅当前面紧跟着"Hello "，匹配不消耗Hello 。
+
+不等于用法为(?<!Hello )World，匹配"World"，当且仅当前面不紧跟着"Hello "，匹配不消化Hello 。
+
+### 条件匹配
+(?(id/name)yes-pattern|no-pattern)
+
+如果group id或name存在就匹配yes-pattern否则匹配no-pattern，no-pattern可以省略。
+比如,(<)?(\w+@\w+(?:\.\w+)+)(?(1)>|$)匹配email: aa@gmail.com或<aa@gmail.com>，但不匹配<aa@gmail.com
+
+注：上面使用不可捕获组语法(?:\.\w+)+，所以这个正则式只有两个group。永远记住上面写过的(?...)不创建分组group
+
+### flags标志
+re模块提供很多flags标志来影响匹配行为
+
+用法：
+``` python
+patt = re.compile('[a-zA-Z]+', flags=re.M)
+m = patt.match('xxx')
+
+# 多个flags
+m = re.match('[a-zA-Z]+', 'xxx', flags=re.I | re.M )
+
+re.search(pattern, string, flags=0)
+re.fullmatch(pattern, string, flags=0)
+re.split(pattern, string, maxsplit=0, flags=0)
+re.findall(pattern, string, flags=0)
+re.sub(pattern, repl, string, count=0, flags=0)
+
+```
+
+    re.I/IGNORECASE:    忽略大小写
+    re.M/MULTILINE:     多行模式，主要影响的是^和$
+    re.S/DOTALL:        .可表示换行符
+
 关于正则表达式要讲的内容太多了，这里我介绍了python中最常用的功能，其他更加深入的主题，请参考专业书籍。
+
