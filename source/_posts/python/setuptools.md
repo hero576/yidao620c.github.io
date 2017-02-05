@@ -9,24 +9,37 @@ tags: [python核心]
 当需要将写的程序打包分发出去的时候，就要使用到setuptools工具了，这里我通过一个简单例子来介绍它的使用方法，源码安装就可以了。
 
 ### 项目目录结构
-这里我写了一个很简单的django程序来展示这种，目录结果如下
+这里通过我自己写的一个rpc模块来做演示，目录结果如下
 ![](http://yidaospace.qiniudn.com/pysetup001.png)
 
-项目最顶层的目录为“zspace”，其中与打包最相关的文件是setup.py，这里面最核心的文件就是这个setup.py了，我们看看里面写什么：<!--more-->
+项目最顶层的目录为“xnrpc”，其中与打包最相关的文件是setup.py，
+这里面最核心的文件就是这个setup.py了，我们看看里面写什么：<!--more-->
 ``` python
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
-    name='zspace',
+    name='xnrpc',
     version='1.0.0',
-    description='A auto test django project',
-    url='https://github.com/yidao620c/core-python',
+    packages = find_packages(),
+    # Project uses , so ensure
+    install_requires=[
+        "gevent>=1.1.2",
+        "zerorpc>=0.6.0",
+    ],
+    package_data = {
+        # If any package contains *.txt or *.rst files, include them:
+        '': ['*.txt', '*.rst'],
+        # include any *.msg files found in the 'test' package, too:
+        'test': ['*.msg'],
+    },
+    description='simple rpc based on zerorpc and gevent',
+    url='https://github.com/yidao620c/xnrpc',
     author='Xiong Neng',
     author_email='yidao620@gmail.com',
-    license='MIT',
+    license='Apache License 2.0',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -39,8 +52,7 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
-    keywords='simple django project',
-    packages=['autotest', 'zspace'],
+    keywords=['xnrpc', 'gevent', 'zerorpc'],
 )
 
 ```
@@ -54,11 +66,11 @@ setup(
 * license为本项目遵循的授权许可
 * classifiers有很多设置，具体内容可以参考官方文档
 * keywords是本项目的关键词，理解为标签
-* packages是本项目包含哪些包,我这里只有一个名词为hive的包
+* packages是本项目包含哪些包，使用工具函数自动发现包
 
 ### 项目打包
-cd zspace
-python setup.py bdist_wheel
+cd xnrpc/
+python setup.py sdist bdist_wheel
 
 如果报错：invalid command 'bdist_wheel'，则先安装下wheel模块：
 ``` python
@@ -77,12 +89,30 @@ pip install wheel
 index-servers = pypi
 
 [pypi]
-username:xiongneng
+repository=http://pypi.python.org/pypi
+username=yidao620c
+password=********
 ```
 
 ### 注册项目
 ```
 python setup.py register
+```
+
+如果报错：
+Server response (403): Must access using HTTPS instead of HTTP
+
+解决方法：
+
+使用<https://github.com/pypa/twine>
+```bash
+pip install twine
+```
+
+注册项目:
+``` bash
+twine register dist/xnrpc-1.0.0.tar.gz
+twine register dist/xnrpc-1.0.0-py2-none-any.whl
 ```
 
 通过上面.pypirc文件中的配置，在PyPI上注册项目信息，成功注册之后，可以在PyPI上看到自己的项目名称：
@@ -94,7 +124,19 @@ python setup.py sdist bdist_wheel upload
 
 恭喜你成功将你的软件包上传至PyPI上面，全世界的人都可以通过pip来安装了：
 ```
-pip install zspace
+pip install xnrpc
+```
+
+### 下载量分析
+安装:
+``` bash
+pip install vanity
+```
+
+使用:
+```
+vanity xnrpc
+vanity xnrpc==1.0.0
 ```
 
 ### pip包管理器
@@ -125,15 +167,15 @@ sudo easy_install pip
 基本使用：
 ```
 # 安装
-sudo pip install foo
+sudo pip install xnrpc
 # 升级
-sudo pip install -U foo
+sudo pip install -U xnrpc
 # 卸载
-sudo pip uninstall foo
+sudo pip uninstall xnrpc
 # 查询已经安装的包
 pip list
 # 查询可以安装的包
-pip search foo
+pip search xnrpc
 ```
 
 其他有用的功能：
@@ -148,7 +190,7 @@ pip install --no-index --find-links=/root/packages/ -r requirements.txt
 ```
 下载指定的包到指定文件夹
 ```
-pip download -d /root/packages/  gevent
+pip download -d /root/packages/ gevent
 ```
 安装指定的离线包
 ```
