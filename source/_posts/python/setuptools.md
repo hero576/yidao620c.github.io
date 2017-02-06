@@ -118,9 +118,13 @@ twine register dist/xnrpc-1.0.0-py2-none-any.whl
 通过上面.pypirc文件中的配置，在PyPI上注册项目信息，成功注册之后，可以在PyPI上看到自己的项目名称：
 
 ### 上传项目
-python setup.py sdist bdist_wheel upload
-
+``` bash
+# python setup.py sdist bdist_wheel upload
+# 安装了twine使用
+twine upload dist/*
+```
 通过上面.pypirc文件中的配置，上传打包文件，可以在PyPI上看到上传的项目文件：
+![](http://yidaospace.qiniudn.com/pysetup003.png)
 
 恭喜你成功将你的软件包上传至PyPI上面，全世界的人都可以通过pip来安装了：
 ```
@@ -194,7 +198,7 @@ pip download -d /root/packages/ gevent
 ```
 安装指定的离线包
 ```
-pip install --no-index --find-links=/root/packages/  gevent
+pip install --no-index --find-links=/root/packages/ gevent
 ```
 
 ### 虚拟环境
