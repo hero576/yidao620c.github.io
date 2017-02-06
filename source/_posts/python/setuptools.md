@@ -6,10 +6,14 @@ toc: true
 categories: python
 tags: [python核心]
 ---
-当需要将写的程序打包分发出去的时候，就要使用到setuptools工具了，这里我通过一个简单例子来介绍它的使用方法，源码安装就可以了。
+当需要将写的程序打包分发出去的时候，就要使用到setuptools工具了，这里我通过一个实际例子来介绍它的使用方法。
+之前写过一个rpc模块叫xnrpc：
+
+* github项目地址：<https://github.com/yidao620c/xnrpc>
+* pipi模块地址：<https://pypi.python.org/pypi/xnrpc>
 
 ### 项目目录结构
-这里通过我自己写的一个rpc模块来做演示，目录结果如下
+xnrpc项目的目录结果如下
 ![](http://yidaospace.qiniudn.com/pysetup001.png)
 
 项目最顶层的目录为“xnrpc”，其中与打包最相关的文件是setup.py，
