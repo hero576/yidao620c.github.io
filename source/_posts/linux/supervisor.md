@@ -24,11 +24,36 @@ sudo pip install supervisor
 ```
 如果是 Ubuntu 系统，也可以使用 apt-get 来安装
 
-## 配置
 安装完成之后，可以运行 echo_supervisord_conf 生成默认的配置文件：
 ``` bash
 echo_supervisord_conf > /etc/supervisord.conf
 ```
+
+## supervisor自启动服务
+这里只介绍在CentOS7上面添加supervisord服务为自启动，其他平台请自行google
+
+修改 ``/lib/systemd/system/supervisord.service`，添加如下内容：
+```
+[Unit]
+Description=Process Monitoring and Control Daemon
+After=rc-local.service
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/supervisord -c /etc/supervisord.conf
+SysVStartPriority=99
+
+[Install]
+WantedBy=multi-user.target
+```
+
+无需修改/etc/supervisord.conf配置文件，该启动脚本都能够添加到systemctl自启动服务:
+``` bash
+systemctl enable supervisord.service
+systemctl start/restart/stop supervisord.service
+```
+
+## 配置详解
 
 Supervisor 相当强大，提供了很丰富的功能，不过我们可能只需要用到其中一小部分。安装完成之后，可以编写配置文件，来满足自己的需求。
 为了方便，我们把配置分成两部分：
