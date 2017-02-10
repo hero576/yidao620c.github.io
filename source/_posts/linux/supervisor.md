@@ -183,7 +183,7 @@ files = /etc/supervisor/conf.d/*.conf
 经常查看日志文件，包括 supervisord 的日志和各个 pragram 的日志文件，
 程序 crash 或抛出异常的信息一半会输出到 stderr，可以查看相应的日志文件来查找问题。
 
-Supervisor 有很丰富的功能，还有其他很多项配置，可以在官方文档获取更多信息：http://supervisord.org/index.html
+Supervisor有很丰富的功能，还有其他很多配置，可以在官方文档获取更多信息：http://supervisord.org/index.html
 
 ## FAQ
 最后记录一下问题和解决办法:
