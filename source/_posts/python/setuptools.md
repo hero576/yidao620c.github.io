@@ -57,20 +57,30 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     keywords=['xnrpc', 'gevent', 'zerorpc'],
+    entry_points={
+        # "xnrpc.registered_commands": [
+        #     "upload = xnrpc.commands.upload:main",
+        #     "register = xnrpc.commands.register:main",
+        # ],
+        "console_scripts": [
+            "xnrpc = xnrpc.__main__:main",
+        ],
+    },
 )
 
 ```
 
-* name为项目名称，和顶层目录名称一致;
-* version是项目当前的版本，1.0.0.dev1表示1.0.0版，目前还处于开发阶段
-* description是包的简单描述，这个包是做什么的
-* url为项目访问地址，我的项目放在github上。
-* author为项目开发人员名称
-* author_email为项目开发人员联系邮件
-* license为本项目遵循的授权许可
-* classifiers有很多设置，具体内容可以参考官方文档
-* keywords是本项目的关键词，理解为标签
-* packages是本项目包含哪些包，使用工具函数自动发现包
+* name           -> 为项目名称，和顶层目录名称一致;
+* version        -> 是项目当前的版本，1.0.0.dev1表示1.0.0版，目前还处于开发阶段
+* description    -> 是包的简单描述，这个包是做什么的
+* url            -> 为项目访问地址，我的项目放在github上。
+* author         -> 为项目开发人员名称
+* author_email   -> 为项目开发人员联系邮件
+* license        -> 为本项目遵循的授权许可
+* classifiers    -> 有很多设置，具体内容可以参考官方文档
+* keywords       -> 是本项目的关键词，理解为标签
+* packages       -> 是本项目包含哪些包，使用工具函数自动发现包
+* entry_points   -> 可以定义安装该模块后执行的脚本，比如将某个函数作为linux命令
 
 ### 项目打包
 ``` bash
