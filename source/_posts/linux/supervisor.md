@@ -34,14 +34,18 @@ echo_supervisord_conf > /etc/supervisord.conf
 
 修改 ``/lib/systemd/system/supervisord.service`，添加如下内容：
 ```
+# supervisord service for systemd (CentOS 7.0+)
 [Unit]
-Description=Process Monitoring and Control Daemon
-After=rc-local.service
+Description=Supervisor daemon
 
 [Service]
 Type=forking
 ExecStart=/usr/bin/supervisord -c /etc/supervisord.conf
-SysVStartPriority=99
+ExecStop=/usr/bin/supervisorctl $OPTIONS shutdown
+ExecReload=/usr/bin/supervisorctl $OPTIONS reload
+KillMode=process
+Restart=on-failure
+RestartSec=60s
 
 [Install]
 WantedBy=multi-user.target
@@ -170,7 +174,7 @@ files = /etc/supervisor/conf.d/*.conf
 ## 命令详解
 
 1. supervisord: 初始启动Supervisord，启动、管理配置中设置的进程;
-2. supervisorctl stop(start, restart) xxx，停止（启动，重启）某一个进程(xxx);
+2. supervisorctl stop(start, restart) xxx/all，停止（启动，重启）某一个进程(xxx)/全部;
 3. supervisorctl reread: 只载入最新的配置文件, 并不重启任何进程;
 4. supervisorctl reload: 载入最新的配置文件，停止原来的所有进程并按新的配置启动管理所有进程;
 5. supervisorctl update: 根据最新的配置文件，启动新配置或有改动的进程，配置没有改动的进程不会受影响而重启;

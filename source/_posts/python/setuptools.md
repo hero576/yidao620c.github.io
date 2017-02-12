@@ -73,8 +73,10 @@ setup(
 * packages是本项目包含哪些包，使用工具函数自动发现包
 
 ### 项目打包
+``` bash
 cd xnrpc/
 python setup.py sdist bdist_wheel
+```
 
 如果报错：invalid command 'bdist_wheel'，则先安装下wheel模块：
 ``` python
