@@ -208,7 +208,7 @@ fileinput.close()       #关闭队列
 
 实例1：利用fileinput读取一个文件所有行
 ``` python
-for line in fileinput.input('data.txt'):
+for line in fileinput.input('data.txt', openhook=fileinput.hook_encoded("utf-8")):
     print(line.rstrip())
 ```
 
