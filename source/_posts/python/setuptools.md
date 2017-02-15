@@ -33,13 +33,8 @@ setup(
         "gevent>=1.1.2",
         "zerorpc>=0.6.0",
     ],
-    package_data = {
-        # If any package contains *.txt or *.rst files, include them:
-        '': ['*.txt', '*.rst'],
-        # include any *.msg files found in the 'test' package, too:
-        'test': ['*.msg'],
-    },
     description='simple rpc based on zerorpc and gevent',
+    long_description=open("README.rst").read(),
     url='https://github.com/yidao620c/xnrpc',
     author='Xiong Neng',
     author_email='yidao620@gmail.com',
@@ -56,6 +51,17 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
+    package_data = {
+        # If any package contains *.txt or *.rst files, include them:
+        '': ['*.txt', '*.rst'],
+        # include any *.msg files found in the 'test' package, too:
+        'test': ['*.msg'],
+    },
+    # The data_files option can be used to specify additional files
+    # needed by the module distribution: configuration files,
+    # message catalogs, data files
+    data_files=[('etc/xnrpc', ['etc/xnrpc.conf']), ],
+    cmdclass={'install': CustomInstallCommand},
     keywords=['xnrpc', 'gevent', 'zerorpc'],
     entry_points={
         # "xnrpc.registered_commands": [
@@ -70,17 +76,39 @@ setup(
 
 ```
 
-* name           -> 为项目名称，和顶层目录名称一致;
-* version        -> 是项目当前的版本，1.0.0.dev1表示1.0.0版，目前还处于开发阶段
-* description    -> 是包的简单描述，这个包是做什么的
-* url            -> 为项目访问地址，我的项目放在github上。
-* author         -> 为项目开发人员名称
-* author_email   -> 为项目开发人员联系邮件
-* license        -> 为本项目遵循的授权许可
-* classifiers    -> 有很多设置，具体内容可以参考官方文档
-* keywords       -> 是本项目的关键词，理解为标签
-* packages       -> 是本项目包含哪些包，使用工具函数自动发现包
-* entry_points   -> 可以定义安装该模块后执行的脚本，比如将某个函数作为linux命令
+* name               -> 为项目名称，和顶层目录名称一致;
+* version            -> 是项目当前的版本，1.0.0.dev1表示1.0.0版，目前还处于开发阶段
+* description        -> 是包的简单描述，这个包是做什么的
+* long_description   -> 这是项目的详细描述，出现在pypi软件的首页上
+* url                -> 为项目访问地址，我的项目放在github上。
+* author             -> 为项目开发人员名称
+* author_email       -> 为项目开发人员联系邮件
+* license            -> 为本项目遵循的授权许可
+* classifiers        -> 有很多设置，具体内容可以参考官方文档
+* keywords           -> 是本项目的关键词，理解为标签
+* packages           -> 是本项目包含哪些包，使用工具函数自动发现包
+* package_data       -> 通常包含与包实现相关的文件
+* data_files         -> 指定其他的一些文件（如配置文件）
+* cmdclass           -> build或install的时候执行的额外操作
+* entry_points       -> 可以定义安装该模块后执行的脚本，比如将某个函数作为linux命令
+
+这里面重点讲解三个：
+
+1. package_data   通常包含与包实现相关的文件。打包的时候会自动包括进去
+2. data_files     指定其他的一些文件（如配置文件并放置在指定的目录），
+如果目录名是相对路径，则是相对于`sys.prefix`或`sys.exec_prefix`的路径
+3. cmdclass       build或install的时候执行的额外操作
+
+还有一个文件`MANIFEST.in`定义了打源码包的时候需要包含的文件，一个示例如下：
+```
+include LICENSE
+include README.rst
+include README.md
+include AUTHORS
+
+recursive-include tests *.py
+recursive-include etc *.conf
+```
 
 ### 项目打包
 ``` bash
