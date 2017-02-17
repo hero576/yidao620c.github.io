@@ -3,7 +3,7 @@ layout: post
 title: "centos6上安装Hadoop和HBase"
 date: 2015-05-27 14:01:57 +0800
 toc: true
-categories: 技术随笔
+categories: java
 tags: [hadoop]
 ---
 

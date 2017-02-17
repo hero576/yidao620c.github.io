@@ -4,7 +4,7 @@ title: "centos6更新yum源"
 date: 2015-04-13 19:02:42 +0800
 toc: true
 categories: linux
-tags: [linux]
+tags: [yum]
 ---
 
 先备份

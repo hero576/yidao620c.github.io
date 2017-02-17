@@ -3,7 +3,7 @@ layout: post
 title: "redis笔记02 - 基本操作"
 date: 2015-07-06 16:15:42 +0800
 toc: false
-categories: java
+categories: linux
 tags: redis
 ---
 

@@ -3,7 +3,7 @@ layout: post
 title: "redis入门与安装"
 date: 2015-04-17 16:44:16 +0800
 toc: true
-categories: 技术随笔
+categories: linux
 tags: redis
 ---
 
