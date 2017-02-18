@@ -372,6 +372,80 @@ if __name__ == '__main__':
 充分利用多核CPU。由于系统总的进程数量十分有限，因此操作系统调度非常高效。用异步IO编程模型来实现多任务是一个主要的趋势。
 
 对应到Python语言，单进程的异步编程模型称为协程，有了协程的支持，就可以基于事件驱动编写高效的多任务程序。
-python语言通过yield关键字来支持协程，而第三方框架gevent则是一个非常优秀的协程框架。我们会在后续讲解这个。
+python语言通过yield关键字来支持协程，而第三方框架gevent则是一个非常优秀的协程框架。
 
+### 并发方式总结
+
+#### 线程（Thread）
+``` python
+import threading
+class worker(threading.Thread):
+    def __init__(self):
+        pass
+    def run():
+        """thread worker function"""
+        print 'Worker'
+
+t = worker()
+t.start()
+```
+
+#### 进程（Process）
+``` python
+from multiprocessing import Process
+
+def worker():
+    """thread worker function"""
+    print 'Worker'
+p = Process(target=worker)
+p.start()
+p.join()
+```
+
+由于线程共享相同的地址空间和内存，所以线程之间的通信是非常容易的，然而进程之间的通信就要复杂一些了。
+常见的进程间通信有，管道，消息队列，Socket接口（TCP/IP）等等。
+
+Python的mutliprocess模块提供了封装好的管道和队列，可以方便的在进程间传递消息。
+
+Python进程间的同步使用锁，这一点喝线程是一样的。
+
+另外，Python还提供了进程池Pool对象，可以方便的管理和控制线程。
+
+#### 远程分布式主机 （Distributed Node）
+随着大数据时代的到临，摩尔定理在单机上似乎已经失去了效果，数据的计算和处理需要分布式的计算机网络来运行，
+程序并行的运行在多个主机节点上，已经是现在的软件架构所必需考虑的问题。
+
+远程主机间的进程间通信有几种常见的方式:
+
+* TCP／IP
+* 远程方法调用 Remote Function Call，Python下有一个开源的实现[RPyC](http://rpyc.readthedocs.org/)
+* 远程对象 Remote Object
+* 消息队列 Message Queue
+
+其中用的最多的还是消息队列，常见的支持Python接口的消息机制有：
+
+* [RabbitMQ](http://www.rabbitmq.com/)
+* [ZeroMQ](http://zguide.zeromq.org/)
+* [Kafka](http://kafka.apache.org/)
+
+#### 协程（Pseudo－Thread）
+协程看上去像是线程，使用的接口类似线程接口，但是实际使用非线程的方式，对应的线程开销也不存的。
+
+eventlet，gevent和concurence都是基于greenlet提供并发的。
+
+gevent和eventlet类似:
+``` python
+import gevent
+from gevent import socket
+urls = ['www.google.com', 'www.example.com', 'www.python.org']
+jobs = [gevent.spawn(socket.gethostbyname, url) for url in urls]
+gevent.joinall(jobs, timeout=2)
+
+print [job.value for job in jobs]
+```
+
+对于IO密集型的任务，使用多线程，或者是多进程都可以有效的提高程序的效率，
+而使用伪线程性能提升非常显著，eventlet比没有并发的情况下，响应时间从9秒提高到0.03秒。
+同时eventlet／gevent提供了非阻塞的异步调用模式，非常方便。
+这里推荐使用线程或者协程，因为在响应时间类似的情况下，线程和协程消耗的资源更少。
 
