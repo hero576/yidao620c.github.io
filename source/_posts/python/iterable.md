@@ -7,35 +7,28 @@ categories: python
 tags: [python核心]
 ---
 
-迭代(Iteration)指的是去获取元素的一种方式，一个接一个。当你显式或隐式的使用循环来遍历某个元素集的时候，那就是迭代。
+迭代(iteration)指的是去获取元素的一种方式，一个接一个。当你显式或隐式的使用循环来遍历某个元素集的时候，那就是迭代。
 
 在Python里面，可迭代对象(iterable)和迭代器(iterator)有着特殊的含义。
 
-一个`iterable`指的就是一个对象：
+* `iterable`是实现了`__iter__()`方法的对象，该方法会返回一个`iterator`对象
+* `iterator`是实现了`__iter__()`和`__next__()`方法的对象，`__iter__()`方法返回的是`iterator`对象本身
 
-1. 要么定义了一个返回迭代器(iterator)的`__iter__`方法，
-2. 要么定义了一个可下标访问元素的`__getitem__`方法，下标从0开始，并且下标不合法的时候抛出`IndexError`异常。
+由此可见，`iterable`和`iterator`的本质区别就是后者多了一个`__next__()`方法。
+也就是说一个`iterator`对象必定是一个`iterable`对象。
 
-也就是说就算一个对象没有定义`__iter__`方法，但是定义了`__getitem__`方法的话也可以，python 2里面的`str`对象就是个很好的例子。<!--more-->
-
-`iterator`定义就比较简单，它就是一个定义了`next`(Python 2)或者`__next__`(Python 3)方法的对象。
-这个对象会记住迭代操作的状态，每次调用`__next__`方法时，会将状态值更新指向下一个迭代值。
-
-当你使用一个`for`循环或者`map`，或着一个列表推导，那么会先通过iter()获取相应的迭代器，然后每次循环自动通过`next`方法调用这个迭代器(iterator)，从中获取每一个元素，从而完成迭代过程。
+当你使用一个`for`循环或者`map`，或着一个列表推导，那么会先通过iter()获取相应的迭代器，
+然后每次循环自动通过`next`方法调用这个迭代器(iterator)，从中获取每一个元素，从而完成迭代过程。
 
 在一个`iterable`对象上执行`iter`会返回一个`iterator`对象, 比如`iter(obj)`
 
 下面一个例子可以非常清晰的解释清楚：
 ```python
 >>> s = 'cat'      # s is an ITERABLE
-                   # s is a str object that is immutable
-                   # s has no state
-                   # s has a __getitem__() method
 
 >>> t = iter(s)    # t is an ITERATOR
                    # t has state (it starts by pointing at the "c")
                    # t has a next() method and an __iter__() method
-
 >>> next(t)        # the next() function returns the next value and advances the state
 'c'
 >>> next(t)        # the next() function returns the next value and advances
