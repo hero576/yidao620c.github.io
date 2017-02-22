@@ -3,7 +3,7 @@ title: "Nginx入门"
 date: 2015-10-20 10:59:15 +0800
 comments: true
 toc: true
-categories: linux
+categories: web
 tags: [nginx]
 ---
 
