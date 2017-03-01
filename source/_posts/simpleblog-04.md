@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Django1.9开发博客04- 三部曲"
-date: 2015-04-20 19:16:02 +0800
+date: 2015-08-09 20:16:02 +0800
 toc: true
 categories: python
 tags: django

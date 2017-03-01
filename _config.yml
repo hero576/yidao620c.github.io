@@ -95,5 +95,5 @@ marked:
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repository: https://github.com/yidao620c/yidao620c.github.io.git
+  repository: xn@xncoding.com:/var/repo/hexo.git
   branch: master

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Django1.9开发博客12- i18n国际化"
-date: 2015-04-21 19:27:29 +0800
+date: 2015-08-24 19:12:29 +0800
 toc: true
 categories: python
 tags: django
