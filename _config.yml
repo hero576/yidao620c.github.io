@@ -4,15 +4,15 @@
 
 # Site
 title: 那年八月
-subtitle: 胡乱写点东西 →_→
-description: 这里要写啥我不是很清楚
+subtitle: Simple notes
+description: 这里要写啥我不是很清楚 →_→
 author: 熊能
-language: zh-CN
+language: zh-Hans
 timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yidao620c.github.io
+url: https://www.xncoding.com
 root: /
 permalink: :year/:month/:day/:title.html
 permalink_defaults:
@@ -83,7 +83,21 @@ feed:
   limit: 20
   hub:
 ## Themes: https://hexo.io/themes/
-theme: maupassant
+theme: next
+avatar: /uploads/avatar.png
+
+# JiaThis 分享服务
+jiathis: true
+# 多说分享服务
+duoshuo_share: true
+
+algolia:
+  applicationID: 'OFNGCUOLOW'
+  apiKey: '2cd2edac28bf6f65be36c05bdfb1a245'
+  adminApiKey: '2461abf473f29aa8a0d2449e527a7181'
+  indexName: 'xnindex'
+  chunkSize: 5000
+
 stylus:
   compress: true
 
