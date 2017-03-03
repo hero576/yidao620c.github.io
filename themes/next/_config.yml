@@ -266,7 +266,8 @@ custom_logo:
 # Available value:
 #    normal | night | night eighties | night blue | night bright
 # https://github.com/chriskempson/tomorrow-theme
-highlight_theme: night
+# http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html
+highlight_theme: normal
 
 
 # ---------------------------------------------------------------

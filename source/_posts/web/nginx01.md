@@ -66,7 +66,7 @@ whereis nginx
 每次进入目录启动很不方便，centos7自带的systemd可很好的管理这些启动服务。
 
 `vi /usr/lib/systemd/system/nginx.service` 并输入如下内容：
-```
+``` ini
 [Unit]
 Description=nginx - high performance web server
 Documentation=http://nginx.org/en/docs/
@@ -86,7 +86,7 @@ WantedBy=multi-user.target
 ```
 
 注意上面的几个路径，请修改成你自己nginx安装目录：
-```
+``` ini
 PIDFile=/usr/local/nginx/logs/nginx.pid  # 在nginx.conf中指定的pid
 ExecStartPre=/usr/local/nginx/sbin/nginx -t -c /usr/local/nginx/conf/nginx.conf
 ExecStart=/usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
@@ -135,7 +135,7 @@ find / -name nginx.conf
 这些配置一般就是一个指令的名字，后面一个空格，再加上这个指令的参数值，结尾用一个分号。
 
 下面是刚刚安装nginx的默认配置：
-```
+``` nginx
 user nginx;
 worker_processes  1;
 
@@ -322,14 +322,14 @@ server_name  *.xiongneng.cc;
 ```
 nginx 会处理所有的对 `xiongneng.cc` 子域名的请求。继续再看一下 `nginx.conf` 里的 server 配置区块
 
-```
+``` nginx
 root         /usr/local/nginx/html;
 ```
 root 指令配置了这个虚拟主机的根目录。之前安装好 nginx，在浏览器里打开服务器的 IP 地址，看到的测试页面，就在这个目录的下面。
 
 ### location
 
-```
+``` nginx
 location / {
     root   html;
     index  index.html index.htm;
@@ -405,7 +405,8 @@ ping xiongneng.cc
 这样我们只需要写自己的配置放到那个目录就可以了。
 
 `vi /usr/local/nginx/conf/conf.d/xn.dev.conf`，内容如下
-```
+
+``` nginx
 server {
   listen        80;
   server_name   xiongneng.cc www.xiongneng.cc;
@@ -436,7 +437,7 @@ systemctl reload nginx
 想再创建一个虚拟主机，可以在 conf.d 目录下面，再去创建一个 .conf 文件，
 这次把这个文件命名为 xnblog.dev.conf ，你也可以在同一个配置文件里定义多个 server 配置区块去定义多个服务器，
 不过把不同的服务器的配置分割成不同的文件更好一些。打开这个文件，输入下面的内容：
-```
+``` nginx
 server {
   listen        80;
   server_name   blog.xiongneng.cc;
