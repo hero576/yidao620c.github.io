@@ -14,7 +14,9 @@ mysql主从复制原理：
 
 1. master将数据改变记录到二进制日志(binary log)中,也即是配置文件log-bin指定的文件(这些记录叫做二进制日志事件，binary log events)
 2. slave将master的binary log events拷贝到它的中继日志(relay log)
-3. slave重做中继日志中的事件,将改变反映它自己的数据(数据重演) <!--more-->
+3. slave重做中继日志中的事件,将改变反映它自己的数据(数据重演)
+
+其实就是根据主数据库的日志文件来进行同步。<!--more-->
 
 ## mysql主从复制支持的类型：
 
