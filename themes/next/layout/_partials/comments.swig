@@ -29,5 +29,6 @@
     {% elseif theme.livere_uid %}
       <div id="lv-container" data-id="city" data-uid="{{ theme.livere_uid }}"></div>
     {% endif %}
+    <script src="https://dn-hb0716.qbox.me/duoshuo.js"></script>
   </div>
 {% endif %}
