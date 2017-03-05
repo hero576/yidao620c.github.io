@@ -1,0 +1,1076 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="sphinx,readthedocs," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="那年八月" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Read the Docs是一个在线文档托管服务，
+你可以从各种版本控制系统中导入文档，如果你使用webhooks，
+那么每次提交代码后可以自动构建并上传至readthedocs网站，非常方便。
+一般来讲，这个非常适合写软件文档以及编写一些教程、电子书之类。对于一些一两篇文章就能写清楚的可以记笔记或写博客，
+但是如果要写成一个系列的，不如写成一本书的形式，更美观，也更系统。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用ReadtheDocs托管文档">
+<meta property="og:url" content="https://www.xncoding.com/2017/01/22/fullstack/readthedoc.html">
+<meta property="og:site_name" content="那年八月">
+<meta property="og:description" content="Read the Docs是一个在线文档托管服务，
+你可以从各种版本控制系统中导入文档，如果你使用webhooks，
+那么每次提交代码后可以自动构建并上传至readthedocs网站，非常方便。
+一般来讲，这个非常适合写软件文档以及编写一些教程、电子书之类。对于一些一两篇文章就能写清楚的可以记笔记或写博客，
+但是如果要写成一个系列的，不如写成一本书的形式，更美观，也更系统。">
+<meta property="og:image" content="http://xnstatic-1253397658.cossh.myqcloud.com/rtd01.png">
+<meta property="og:image" content="http://xnstatic-1253397658.cossh.myqcloud.com/rtd02.png">
+<meta property="og:image" content="http://xnstatic-1253397658.cossh.myqcloud.com/rtd03.png">
+<meta property="og:updated_time" content="2017-03-05T07:25:28.032Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用ReadtheDocs托管文档">
+<meta name="twitter:description" content="Read the Docs是一个在线文档托管服务，
+你可以从各种版本控制系统中导入文档，如果你使用webhooks，
+那么每次提交代码后可以自动构建并上传至readthedocs网站，非常方便。
+一般来讲，这个非常适合写软件文档以及编写一些教程、电子书之类。对于一些一两篇文章就能写清楚的可以记笔记或写博客，
+但是如果要写成一个系列的，不如写成一本书的形式，更美观，也更系统。">
+<meta name="twitter:image" content="http://xnstatic-1253397658.cossh.myqcloud.com/rtd01.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'OFNGCUOLOW',
+      apiKey: '2cd2edac28bf6f65be36c05bdfb1a245',
+      indexName: 'xnindex',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.xncoding.com/2017/01/22/fullstack/readthedoc.html"/>
+
+
+
+
+
+  <title> 使用ReadtheDocs托管文档 | 那年八月 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">那年八月</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Simple notes</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-comments"></i> <br />
+            
+            留言
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://www.xncoding.com/2017/01/22/fullstack/readthedoc.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="熊能">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="那年八月">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                使用ReadtheDocs托管文档
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-22T20:16:09+08:00">
+                2017-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/fullstack/" itemprop="url" rel="index">
+                    <span itemprop="name">fullstack</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/01/22/fullstack/readthedoc.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/22/fullstack/readthedoc.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/01/22/fullstack/readthedoc.html" class="leancloud_visitors" data-flag-title="使用ReadtheDocs托管文档">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://readthedocs.org/" target="_blank" rel="external">Read the Docs</a>是一个在线文档托管服务，
+你可以从各种版本控制系统中导入文档，如果你使用<a href="http://docs.readthedocs.io/en/latest/webhooks.html" target="_blank" rel="external">webhooks</a>，
+那么每次提交代码后可以自动构建并上传至readthedocs网站，非常方便。</p>
+<p>一般来讲，这个非常适合写软件文档以及编写一些教程、电子书之类。对于一些一两篇文章就能写清楚的可以记笔记或写博客，
+但是如果要写成一个系列的，不如写成一本书的形式，更美观，也更系统。<a id="more"></a></p>
+<p>现有的写电子书的方式，有以下几个解决方案，优劣势也很明显：</p>
+<ul>
+<li>写博客，跟散文堆在一起，不便索引。</li>
+<li>GitHub Wiki，适合做知识整理，但排版一般，不方便查看。</li>
+<li>GitBook，样式不好看，访问速度慢。</li>
+</ul>
+<p>经过比较最后锁定Sphinx + GitHub + ReadtheDocs 作为文档写作工具，
+用 Sphinx 生成文档，GitHub 托管文档，再导入到 ReadtheDocs。</p>
+<h2 id="Sphinx"><a href="#Sphinx" class="headerlink" title="Sphinx"></a>Sphinx</h2><p>Sphinx是一个基于Python的文档生成项目，最早只是用来生成 Python 官方文档，随着工具的完善，
+越来越多的知名的项目也用他来生成文档，甚至完全可以用他来写书采用了reStructuredText作为文档写作语言,
+不过也可以通过模块支持其他格式，待会我会介绍怎样支持MarkDown格式。</p>
+<h3 id="安装Sphinx"><a href="#安装Sphinx" class="headerlink" title="安装Sphinx:"></a>安装Sphinx:</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install sphinx sphinx-autobuild sphinx_rtd_theme</span><br></pre></td></tr></table></figure>
+<p>这一步时间会安装很多python依赖，耐心等等..</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化:"></a>初始化:</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建文档根目录</span></span><br><span class="line">mkdir -p /root/work/scrapy-cookbook</span><br><span class="line"><span class="built_in">cd</span> scrapy-cookbook/</span><br><span class="line"><span class="comment"># 可以回车按默认配置来写</span></span><br><span class="line">sphinx-quickstart</span><br></pre></td></tr></table></figure>
+<p>下面是我填写的，其他基本上默认即可：</p>
+<blockquote>
+<p>Separate source and build directories (y/n) [n]:y
+Project name: scrapy-cookbook
+Author name(s): Xiong Neng
+Project version []: 0.2
+Project release [1.0]: 0.2.2
+Project language [en]: zh_CN</p>
+</blockquote>
+<p>安装软件tree查看目录树结构：
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install tree</span><br></pre></td></tr></table></figure></p>
+<p>然后运行 <code>tree -C .</code> 查看生成的sphinx结构:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── build</span><br><span class="line">├── make.bat</span><br><span class="line">├── Makefile</span><br><span class="line">└── source</span><br><span class="line">    ├── conf.py</span><br><span class="line">    ├── index.rst</span><br><span class="line">    ├── _static</span><br><span class="line">    └── _templates</span><br></pre></td></tr></table></figure></p>
+<p>添加一篇文章，在source目录下新建hello.rst，内容如下:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hello,world</span><br><span class="line">=============</span><br></pre></td></tr></table></figure></p>
+<p><code>index.rst</code> 修改如下:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Contents:</span><br><span class="line">.. toctree::</span><br><span class="line">   :maxdepth: 2</span><br><span class="line"></span><br><span class="line">   hello</span><br></pre></td></tr></table></figure></p>
+<h3 id="更改主题-sphinx-rtd-theme"><a href="#更改主题-sphinx-rtd-theme" class="headerlink" title="更改主题 sphinx_rtd_theme"></a>更改主题 sphinx_rtd_theme</h3><p>更改source/conf.py:
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sphinx_rtd_theme</span><br><span class="line">html_theme = <span class="string">"sphinx_rtd_theme"</span></span><br><span class="line">html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]</span><br></pre></td></tr></table></figure></p>
+<h3 id="预览效果"><a href="#预览效果" class="headerlink" title="预览效果"></a>预览效果</h3><p>然后在更目录执行<code>make html</code>，进入<code>build/html</code>目录后用浏览器打开<code>index.html</code>
+<img src="http://xnstatic-1253397658.cossh.myqcloud.com/rtd01.png" alt=""></p>
+<p>toctree 支持多级目录,比如要想将python.rst,java.rst笔记在不同的目录,toctree这样设置:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Contents:</span><br><span class="line"></span><br><span class="line">.. toctree::</span><br><span class="line"></span><br><span class="line">   python/python</span><br><span class="line">   swift/swift</span><br></pre></td></tr></table></figure></p>
+<p>注意中间的空行</p>
+<h2 id="支持markdown编写"><a href="#支持markdown编写" class="headerlink" title="支持markdown编写"></a>支持markdown编写</h2><p>通过<a href="https://recommonmark.readthedocs.io/en/latest/" target="_blank" rel="external">recommonmark</a> 来支持markdown
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install recommonmark</span><br></pre></td></tr></table></figure></p>
+<p>然后更改conf.py:
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> recommonmark.parser <span class="keyword">import</span> CommonMarkParser</span><br><span class="line">source_parsers = &#123;</span><br><span class="line">    <span class="string">'.md'</span>: CommonMarkParser,</span><br><span class="line">&#125;</span><br><span class="line">source_suffix = [<span class="string">'.rst'</span>, <span class="string">'.md'</span>]</span><br></pre></td></tr></table></figure></p>
+<h3 id="AutoStructify"><a href="#AutoStructify" class="headerlink" title="AutoStructify"></a>AutoStructify</h3><p>如果想使用高级功能，可以添加AutoStructify配置，在<code>conf.py</code>中添加:
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># At top on conf.py (with other import statements)</span></span><br><span class="line"><span class="keyword">import</span> recommonmark</span><br><span class="line"><span class="keyword">from</span> recommonmark.transform <span class="keyword">import</span> AutoStructify</span><br><span class="line"></span><br><span class="line"><span class="comment"># At the bottom of conf.py</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setup</span><span class="params">(app)</span>:</span></span><br><span class="line">    app.add_config_value(<span class="string">'recommonmark_config'</span>, &#123;</span><br><span class="line">            <span class="string">'url_resolver'</span>: <span class="keyword">lambda</span> url: github_doc_root + url,</span><br><span class="line">            <span class="string">'auto_toc_tree_section'</span>: <span class="string">'Contents'</span>,</span><br><span class="line">            &#125;, <span class="keyword">True</span>)</span><br><span class="line">    app.add_transform(AutoStructify)</span><br></pre></td></tr></table></figure></p>
+<p>网上有个详细配置: <a href="https://github.com/rtfd/recommonmark/blob/master/docs/conf.py" target="_blank" rel="external">https://github.com/rtfd/recommonmark/blob/master/docs/conf.py</a></p>
+<p>然后修改刚刚的<code>hello.rst</code>，改用熟悉的<code>hello.md</code>编写:
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="section">## hello world</span></span><br><span class="line"></span><br><span class="line"><span class="section">### test markdown</span></span><br></pre></td></tr></table></figure></p>
+<p>再次运行<code>make html</code>后看效果，跟前面一样。</p>
+<h2 id="GitHub托管"><a href="#GitHub托管" class="headerlink" title="GitHub托管"></a>GitHub托管</h2><p>一般的做法是将文档托管到版本控制系统比如github上面，push源码后自动构建发布到readthedoc上面，
+这样既有版本控制好处，又能自动发布到readthedoc，实在是太方便了。</p>
+<p>先在GitHub创建一个仓库名字叫scrapy-cookbook，
+然后在本地.gitignore文件中添加<code>build/</code>目录，初始化git，commit后，添加远程仓库。</p>
+<p>具体几个步骤非常简单，参考官方文档：<a href="https://github.com/rtfd/readthedocs.org" target="_blank" rel="external">https://github.com/rtfd/readthedocs.org</a>:</p>
+<ol>
+<li>在Read the Docs上面注册一个账号</li>
+<li>登陆后点击 “Import”.</li>
+<li>给该文档项目填写一个名字比如 “scrapy-cookbook”, 并添加你在GitHub上面的工程HTTPS链接, 选择仓库类型为Git</li>
+<li>其他项目根据自己的需要填写后点击 “Create”，创建完后会自动去激活Webhooks，不用再去GitHub设置</li>
+<li>一切搞定，从此只要你往这个仓库push代码，readthedoc上面的文档就会自动更新.</li>
+</ol>
+<p>注：在创建read the docs项目时候，语言选择”Simplified Chinese”</p>
+<p>在构建过程中出现任何问题，都可以登录readthedoc找到项目中的”构建”页查看构建历史，点击任何一条查看详细日志:
+<img src="http://xnstatic-1253397658.cossh.myqcloud.com/rtd02.png" alt=""></p>
+<p>我将自己以前博客里面的关于scrapy的文章都迁移至readthedoc，现在看看效果：
+<img src="http://xnstatic-1253397658.cossh.myqcloud.com/rtd03.png" alt=""></p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><p>build的时候出现错误：! Package inputenc Error: Unicode char 我 (U+6211)</p>
+<p>解决办法，在<code>conf.py</code>中添加:
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">latex_elements=&#123;<span class="comment"># The paper size ('letterpaper' or 'a4paper').</span></span><br><span class="line"><span class="string">'papersize'</span>:<span class="string">'a4paper'</span>,<span class="comment"># The font size ('10pt', '11pt' or '12pt').</span></span><br><span class="line"><span class="string">'pointsize'</span>:<span class="string">'12pt'</span>,<span class="string">'classoptions'</span>:<span class="string">',oneside'</span>,<span class="string">'babel'</span>:<span class="string">''</span>,<span class="comment">#必須</span></span><br><span class="line"><span class="string">'inputenc'</span>:<span class="string">''</span>,<span class="comment">#必須</span></span><br><span class="line"><span class="string">'utf8extra'</span>:<span class="string">''</span>,<span class="comment">#必須</span></span><br><span class="line"><span class="comment"># Additional stuff for the LaTeX preamble.</span></span><br><span class="line"><span class="string">'preamble'</span>: <span class="string">r"""</span><br><span class="line">\usepackage&#123;xeCJK&#125;</span><br><span class="line">\usepackage&#123;indentfirst&#125;</span><br><span class="line">\setlength&#123;\parindent&#125;&#123;2em&#125;</span><br><span class="line">\setCJKmainfont&#123;WenQuanYi Micro Hei&#125;</span><br><span class="line">\setCJKmonofont[Scale=0.9]&#123;WenQuanYi Micro Hei Mono&#125;</span><br><span class="line">\setCJKfamilyfont&#123;song&#125;&#123;WenQuanYi Micro Hei&#125;</span><br><span class="line">\setCJKfamilyfont&#123;sf&#125;&#123;WenQuanYi Micro Hei&#125;</span><br><span class="line">\XeTeXlinebreaklocale "zh"</span><br><span class="line">\XeTeXlinebreakskip = 0pt plus 1pt</span><br><span class="line">"""</span>&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/sphinx/" rel="tag"># sphinx</a>
+          
+            <a href="/tags/readthedocs/" rel="tag"># readthedocs</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/20/web/uwsgi.html" rel="next" title="Nginx+uWSGI部署Python Web应用">
+                <i class="fa fa-chevron-left"></i> Nginx+uWSGI部署Python Web应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/22/fullstack/readthedoc.html"
+           data-title="使用ReadtheDocs托管文档" data-url="https://www.xncoding.com/2017/01/22/fullstack/readthedoc.html">
+      </div>
+    
+    <script src="https://dn-hb0716.qbox.me/duoshuo.js"></script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="熊能" />
+          <p class="site-author-name" itemprop="name">熊能</p>
+           
+              <p class="site-description motion-element" itemprop="description">这里要写啥我不是很清楚 →_→</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">97</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yidao620c" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/yidao620" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item" style="margin-left: 8px; width:45%;">
+                  <a href="http://www.huxiu.com/" title="虎嗅网" target="_blank">虎嗅网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item" style="margin-left: 8px; width:45%;">
+                  <a href="http://www.infoq.com/cn/" title="InfoQ" target="_blank">InfoQ</a>
+                </li>
+              
+                <li class="links-of-blogroll-item" style="margin-left: 8px; width:45%;">
+                  <a href="http://blog.jobbole.com/" title="伯乐在线" target="_blank">伯乐在线</a>
+                </li>
+              
+                <li class="links-of-blogroll-item" style="margin-left: 8px; width:45%;">
+                  <a href="http://www.cnblogs.com/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sphinx"><span class="nav-number">1.</span> <span class="nav-text">Sphinx</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Sphinx"><span class="nav-number">1.1.</span> <span class="nav-text">安装Sphinx:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化"><span class="nav-number">1.2.</span> <span class="nav-text">初始化:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更改主题-sphinx-rtd-theme"><span class="nav-number">1.3.</span> <span class="nav-text">更改主题 sphinx_rtd_theme</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预览效果"><span class="nav-number">1.4.</span> <span class="nav-text">预览效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支持markdown编写"><span class="nav-number">2.</span> <span class="nav-text">支持markdown编写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AutoStructify"><span class="nav-number">2.1.</span> <span class="nav-text">AutoStructify</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GitHub托管"><span class="nav-number">3.</span> <span class="nav-text">GitHub托管</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FAQ"><span class="nav-number">4.</span> <span class="nav-text">FAQ</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">熊能</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"yidao620c"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("AXBtbvjnaMP2cE34U1CAjLqF-gzGzoHsz", "6CKwM1armacelKCp8mh4StM4");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+
+</body>
+</html>

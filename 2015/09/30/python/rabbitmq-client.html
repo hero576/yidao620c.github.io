@@ -1,0 +1,1085 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="rabbitmq," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="那年八月" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="测试环境：CentOS 6.2，参考了RabbitMQ网站上提供的英文版本入门指南: http://www.rabbitmq.com/getstarted.html
+测试环境准备
+
+安装python（一般系统都自带了python）
+安装RabbitMQ server可以参考前面的文章。
+安装pika">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用python开发RabbitMQ应用">
+<meta property="og:url" content="https://www.xncoding.com/2015/09/30/python/rabbitmq-client.html">
+<meta property="og:site_name" content="那年八月">
+<meta property="og:description" content="测试环境：CentOS 6.2，参考了RabbitMQ网站上提供的英文版本入门指南: http://www.rabbitmq.com/getstarted.html
+测试环境准备
+
+安装python（一般系统都自带了python）
+安装RabbitMQ server可以参考前面的文章。
+安装pika">
+<meta property="og:updated_time" content="2017-02-28T06:08:09.662Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用python开发RabbitMQ应用">
+<meta name="twitter:description" content="测试环境：CentOS 6.2，参考了RabbitMQ网站上提供的英文版本入门指南: http://www.rabbitmq.com/getstarted.html
+测试环境准备
+
+安装python（一般系统都自带了python）
+安装RabbitMQ server可以参考前面的文章。
+安装pika">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'OFNGCUOLOW',
+      apiKey: '2cd2edac28bf6f65be36c05bdfb1a245',
+      indexName: 'xnindex',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.xncoding.com/2015/09/30/python/rabbitmq-client.html"/>
+
+
+
+
+
+  <title> 使用python开发RabbitMQ应用 | 那年八月 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">那年八月</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Simple notes</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-comments"></i> <br />
+            
+            留言
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://www.xncoding.com/2015/09/30/python/rabbitmq-client.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="熊能">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="那年八月">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                使用python开发RabbitMQ应用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-09-30T11:21:34+08:00">
+                2015-09-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/09/30/python/rabbitmq-client.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/30/python/rabbitmq-client.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2015/09/30/python/rabbitmq-client.html" class="leancloud_visitors" data-flag-title="使用python开发RabbitMQ应用">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>测试环境：CentOS 6.2，参考了RabbitMQ网站上提供的英文版本入门指南: <a href="http://www.rabbitmq.com/getstarted.html" target="_blank" rel="external">http://www.rabbitmq.com/getstarted.html</a></p>
+<p>测试环境准备</p>
+<ul>
+<li>安装python（一般系统都自带了python）</li>
+<li>安装RabbitMQ server可以参考前面的文章。</li>
+<li>安装pika<a id="more"></a>
+</li>
+</ul>
+<p>使用pip安装的时候可能会报错：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">importerror no module named pkg_resources</span><br></pre></td></tr></table></figure></p>
+<p>请用下面命令解决这个问题：
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py | python</span><br></pre></td></tr></table></figure></p>
+<p>然后还可能出现：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pkg_resources.distributionnotfound pip==1.4.1</span><br></pre></td></tr></table></figure></p>
+<p>这时候先把pip卸载掉，执行：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum remove python-pip</span><br></pre></td></tr></table></figure></p>
+<p>然后去下载最新的get-pip.py文件，执行<code>python get-pip.py</code>安装</p>
+<p>在<code>/etc/profile</code>里面将<code>/usr/local/python27/bin</code>加入PATH最前面</p>
+<p>把rabbitmq server启动一下和准备好测试目录rabbitmq_app：
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ /usr/<span class="built_in">local</span>/rabbitmq/sbin/rabbitmq-server -detached</span><br><span class="line">$ <span class="built_in">cd</span> ~</span><br><span class="line">$ mkdir -p <span class="built_in">test</span> /rabbitmq_app</span><br><span class="line">$ <span class="built_in">cd</span> <span class="built_in">test</span> /rabbitmq_app</span><br><span class="line">$ mkdir tut1 tut2 tut3 tut4 tut5 tut6</span><br></pre></td></tr></table></figure></p>
+<h3 id="实例一：来个hello-world程序"><a href="#实例一：来个hello-world程序" class="headerlink" title="实例一：来个hello world程序"></a>实例一：来个hello world程序</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> tut1</span><br><span class="line">$ vim send.py (代码如下)</span><br><span class="line">$ vim receive.py (代码如下)</span><br></pre></td></tr></table></figure>
+<p>首先是消息发送程序 send.py
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(<span class="string">'localhost'</span>))</span><br><span class="line">channel = connection.channel()</span><br><span class="line">channel.queue_declare(queue = <span class="string">'hello'</span>)</span><br><span class="line"><span class="keyword">if</span> len (sys.argv) &lt; <span class="number">2</span> :</span><br><span class="line">     <span class="keyword">print</span> <span class="string">'message is empty!'</span></span><br><span class="line">     sys.exit(<span class="number">0</span>)</span><br><span class="line">message = sys.argv[<span class="number">1</span>]</span><br><span class="line">channel.basic_publish(exchange = <span class="string">''</span>, routing_key=<span class="string">'hello'</span>, body = message)</span><br><span class="line"><span class="keyword">print</span> <span class="string">"[x] sent: '"</span> + message + <span class="string">"'\n"</span></span><br><span class="line">connection.close()</span><br></pre></td></tr></table></figure></p>
+<p>跑一下send.py发送一个消息
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ python send.py ‘Hello World!’</span><br><span class="line">$ python send.py ‘你好刀哥’</span><br><span class="line">$ /usr/<span class="built_in">local</span>/rabbitmq/sbin/rabbitmqctl list_queues</span><br></pre></td></tr></table></figure></p>
+<p>结果如下面：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Listing queues …</span><br><span class="line">hello 2</span><br><span class="line">… done .</span><br></pre></td></tr></table></figure></p>
+<p>如果你也看到hello队列里面有一个消息的话，就证明可以发消息了。</p>
+<p>然后写一个接收消息脚本 receive.py
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters( <span class="string">'localhost'</span> ))</span><br><span class="line">channel = connection.channel()</span><br><span class="line">channel.queue_declare(queue = <span class="string">'hello'</span> )</span><br><span class="line"><span class="keyword">print</span> <span class="string">'[*] Waiting for messages. To exit press CTRL+C'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">     <span class="keyword">print</span> body</span><br><span class="line"></span><br><span class="line">channel.basic_consume(callback, queue = <span class="string">'hello'</span> , no_ack = <span class="keyword">True</span> )</span><br><span class="line">channel.start_consuming()</span><br></pre></td></tr></table></figure></p>
+<p>其中第12行的 no_ack=True 表示消费完了这个消息以后不主动把完成状态通知rabbitmq。</p>
+<p>然后开另外一个shell，执行一下receive.py
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python receive.py</span><br></pre></td></tr></table></figure></p>
+<p>结果：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[*] Waiting for messages. To exit press CTRL+C</span><br><span class="line">Hello World!</span><br><span class="line">你好刀哥</span><br></pre></td></tr></table></figure></p>
+<h3 id="实例二：工作队列（work-queue-task-queue）"><a href="#实例二：工作队列（work-queue-task-queue）" class="headerlink" title="实例二：工作队列（work queue / task queue）"></a>实例二：工作队列（work queue / task queue）</h3><p>一般应用于把比较耗时的任务从主线任务分离出来。比如一个http页面请求，
+里面需要发送带大附件的邮件、或者是要处理一张头像图片等。这类型工作队列的处理端一般有多个worker进程，
+分担队列里面的任务。这就有点负载均衡的策略在里面了。
+尽量做到每个进程的工作量比较平均，而且是完成了一个任务才接 第二个任务。看看我们的实现吧。
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> tut2</span><br><span class="line">$ vim manager.py (代码如下)</span><br><span class="line">$ vim worker.py (代码如下)</span><br></pre></td></tr></table></figure></p>
+<p>首先是消息发送程序 manager.py
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">parameters = pika.ConnectionParameters(host = <span class="string">'localhost'</span> )</span><br><span class="line">connection = pika.BlockingConnection(parameters)</span><br><span class="line">channel = connection.channel()</span><br><span class="line">channel.queue_declare(queue = <span class="string">'task_queue'</span> , durable = <span class="keyword">True</span> )</span><br><span class="line">message = <span class="string">' '</span> .join(sys.argv[ <span class="number">1</span> :]) <span class="keyword">or</span> <span class="string">"Hello World!"</span></span><br><span class="line">channel.basic_publish(exchange = <span class="string">''</span>,</span><br><span class="line">                       routing_key = <span class="string">'task_queue'</span> ,</span><br><span class="line">                       body = message,</span><br><span class="line">                       properties = pika.BasicProperties(</span><br><span class="line">                          delivery_mode = <span class="number">2</span> , <span class="comment"># make message persistent</span></span><br><span class="line">                       ))</span><br><span class="line"><span class="keyword">print</span> <span class="string">" [x] Sent %r"</span> % (message,)</span><br><span class="line">connection.close()</span><br></pre></td></tr></table></figure></p>
+<p>其中第8行的 durable=True 声明了队列需要持久化，第14行的 delivery_mode = 2 声明了队列的消息需要持久化。</p>
+<p>然后写一个接收消息脚本 worker.py
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">         host = <span class="string">'localhost'</span> ))</span><br><span class="line">channel = connection.channel()</span><br><span class="line">channel.queue_declare(queue = <span class="string">'task_queue'</span> , durable = <span class="keyword">True</span> )</span><br><span class="line"><span class="keyword">print</span> <span class="string">' [*] Waiting for messages. To exit press CTRL+C'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">     <span class="keyword">print</span> <span class="string">" [x] Received %r"</span> % (body,)</span><br><span class="line">     time.sleep( body.count( <span class="string">'.'</span> ) )</span><br><span class="line">     <span class="keyword">print</span> <span class="string">" [x] Done"</span></span><br><span class="line">     ch.basic_ack(delivery_tag = method.delivery_tag)</span><br><span class="line"></span><br><span class="line">channel.basic_qos(prefetch_count = <span class="number">1</span> )</span><br><span class="line">channel.basic_consume(callback,</span><br><span class="line">                       queue = <span class="string">'task_queue'</span> )</span><br><span class="line">channel.start_consuming()</span><br></pre></td></tr></table></figure></p>
+<p>其中第15行的 basic_ack 是执行完任务通知rabbitmq，
+第17行的basic_qos是告诉rabbitmq只有当worker完成了任务以后才分派1条新的消息，实现公平分派。</p>
+<p>测试方法，开3个bash，2个跑worker，1个跑manager：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ python manager.py task1.</span><br><span class="line">$ python manager.py task2..</span><br><span class="line">$ python manager.py task3…</span><br><span class="line">$ python manager.py task4….</span><br></pre></td></tr></table></figure></p>
+<p>点号数量决定worker工作的时间( 其实是睡觉时间，呵呵 time.sleep(body.count(‘.’)) )。
+而在worker那边，可以看到每个worker都处理了两个任务。
+这种分配机制就是所谓的循环调度（Round-robin dispatching）</p>
+<h3 id="实例三：发布和订阅"><a href="#实例三：发布和订阅" class="headerlink" title="实例三：发布和订阅"></a>实例三：发布和订阅</h3><p>发布订阅模式，简单来说就像是广播，一个消息发布出来以后，所有订阅者都能听到，
+至于接收到这个信息以后大家做什么就看具体个人了。</p>
+<p>啊！怎么忽然冒出个X，是什么玩意！这个X就是所谓的exchange，简单来说就是消息的管家，
+由他决定接收到的信息是放特定的队列，还是所有队列，还是直接丢弃。</p>
+<p>其实在前两个实例里面，已经用到了exchange （channel.basic_publish(exchange=”,…），
+这个exchange的名字为空，外号无名（人若无名，便可专心练剑~）。他会把你的消息都转达给routing_key指明的队列。
+当我们声明了exchange以后，我们需要为queue和exchange建立联系，这时候，就要用到绑定（binding）了。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd tut3</span><br><span class="line">$ vim emitlog.py (代码如下)</span><br><span class="line">$ vim recelog.py (代码如下)</span><br></pre></td></tr></table></figure></p>
+<p>日志生产者 emitlog.py
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">         host = <span class="string">'localhost'</span> ))</span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.exchange_declare(exchange = <span class="string">'logs'</span> ,</span><br><span class="line">                          type = <span class="string">'fanout'</span> )</span><br><span class="line"></span><br><span class="line">message = <span class="string">' '</span> .join(sys.argv[ <span class="number">1</span> :]) <span class="keyword">or</span> <span class="string">"info: Hello World!"</span></span><br><span class="line">channel.basic_publish(exchange = <span class="string">'logs'</span> ,</span><br><span class="line">                       routing_key = <span class="string">''</span>,</span><br><span class="line">                       body = message)</span><br><span class="line"><span class="keyword">print</span> <span class="string">" [x] Sent %r"</span> % (message,)</span><br><span class="line">connection.close()</span><br></pre></td></tr></table></figure></p>
+<p>然后是日志消费者 recelog.py
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">         host = <span class="string">'localhost'</span> ))</span><br><span class="line">channel = connection.channel()</span><br><span class="line">channel.exchange_declare(exchange = <span class="string">'logs'</span> ,</span><br><span class="line">                          type = <span class="string">'fanout'</span> )</span><br><span class="line">result = channel.queue_declare(exclusive = <span class="keyword">True</span> )</span><br><span class="line">queue_name = result.method.queue</span><br><span class="line">channel.queue_bind(exchange = <span class="string">'logs'</span> ,</span><br><span class="line">                    queue = queue_name)</span><br><span class="line"><span class="keyword">print</span> <span class="string">' [*] Waiting for logs. To exit press CTRL+C'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">     <span class="keyword">print</span> <span class="string">" [x] %r"</span> % (body,)</span><br><span class="line"></span><br><span class="line">channel.basic_consume(callback,</span><br><span class="line">                       queue = queue_name,</span><br><span class="line">                       no_ack = <span class="keyword">True</span> )</span><br><span class="line">channel.start_consuming()</span><br></pre></td></tr></table></figure></p>
+<p>测试：</p>
+<p>和前一个实例差不多。开3个bash，2个跑recelog，1个跑emitlog。
+查看recelog是否都收到emitlog发送的消息。代码里面用 了一个fanout(意思是成扇形展开)类型的exchange，
+只要和exchange绑定的queue都能收到一份消息的 copy，routing_key会被忽略掉。</p>
+<h3 id="路由模式-（选择接收信息）"><a href="#路由模式-（选择接收信息）" class="headerlink" title="路由模式 （选择接收信息）"></a>路由模式 （选择接收信息）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd tut4</span><br><span class="line">$ vim emitlog.py (代码如下)</span><br><span class="line">$ vim recelog.py (代码如下)</span><br></pre></td></tr></table></figure>
+<p>生产者 emitlog.py
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">         host = <span class="string">'localhost'</span> ))</span><br><span class="line">channel = connection.channel()</span><br><span class="line">channel.exchange_declare(exchange = <span class="string">'direct_logs'</span> ,</span><br><span class="line">                          type = <span class="string">'direct'</span> )</span><br><span class="line">severity = sys.argv[ <span class="number">1</span> ] <span class="keyword">if</span> len (sys.argv) &gt; <span class="number">1</span> <span class="keyword">else</span> <span class="string">'info'</span></span><br><span class="line">message = <span class="string">' '</span> .join(sys.argv[ <span class="number">2</span> :]) <span class="keyword">or</span> <span class="string">'Hello World!'</span></span><br><span class="line">channel.basic_publish(exchange = <span class="string">'direct_logs'</span> ,</span><br><span class="line">                       routing_key = severity,</span><br><span class="line">                       body = message)</span><br><span class="line"><span class="keyword">print</span> <span class="string">" [x] Sent %r:%r"</span> % (severity, message)</span><br><span class="line">connection.close()</span><br></pre></td></tr></table></figure></p>
+<p>这里声明exchange时类型定义为direct（直接匹配），就是说只有当一个信息的routing_key和队列的binding_key一 致时，
+信息才会被放入到这个队列。消息发布给exchange时必须带上routing_key。其实在消息生产端，队列这个概念是透明的。</p>
+<p>消费者 recelog.py
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">         host = <span class="string">'localhost'</span> ))</span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.exchange_declare(exchange = <span class="string">'direct_logs'</span> ,</span><br><span class="line">                          type = <span class="string">'direct'</span> )</span><br><span class="line">result = channel.queue_declare(exclusive = <span class="keyword">True</span> )</span><br><span class="line">queue_name = result.method.queue</span><br><span class="line">severities = sys.argv[ <span class="number">1</span> :]</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> severities:</span><br><span class="line">     <span class="keyword">print</span> &gt;&gt; sys.stderr, <span class="string">"Usage: %s [info] [warning] [error]"</span> % \</span><br><span class="line">                          (sys.argv[ <span class="number">0</span> ],)</span><br><span class="line">     sys.exit( <span class="number">1</span> )</span><br><span class="line"><span class="keyword">for</span> severity <span class="keyword">in</span> severities:</span><br><span class="line">     channel.queue_bind(exchange = <span class="string">'direct_logs'</span> ,</span><br><span class="line">                        queue = queue_name,</span><br><span class="line">                        routing_key = severity)</span><br><span class="line"><span class="keyword">print</span> <span class="string">' [*] Waiting for logs. To exit press CTRL+C'</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">     <span class="keyword">print</span> <span class="string">" [x] %r:%r"</span> % (method.routing_key, body,)</span><br><span class="line">channel.basic_consume(callback,</span><br><span class="line">                       queue = queue_name,</span><br><span class="line">                       no_ack = <span class="keyword">True</span> )</span><br><span class="line">channel.start_consuming()</span><br></pre></td></tr></table></figure></p>
+<p>这里首先定义exchange，和消息发送端是一样的。然后定义队列，队列是自动命名，
+并且只要进程终止，队列就会终止。然后把队列和 exchange绑定，绑定时的routing_key是用户输入的，
+如果输入多个key，就做多次的绑定。注意这里的队列还是一个。如果你需要建立两个 队列，就得跑两次这个python脚本。</p>
+<h3 id="topic和rpc"><a href="#topic和rpc" class="headerlink" title="topic和rpc"></a>topic和rpc</h3><p>官方tutorial还有两个高级一点的实例，topic和rpc，这里就不作说明了，留着大家学学英文吧 :)</p>
+<p>RabbitMQ提供了很多消息队列客户端代码，比如python，java，c等等，大家可以根据产品或项目的实际情况选择。关键是原理必须搞懂。</p>
+<h3 id="其他资源"><a href="#其他资源" class="headerlink" title="其他资源"></a>其他资源</h3><p>中文入门篇：<a href="http://adamlu.net/dev/2011/09/rabbitmq-get-started/" target="_blank" rel="external">http://adamlu.net/dev/2011/09/rabbitmq-get-started/</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/rabbitmq/" rel="tag"># rabbitmq</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/09/22/algorithm/merge-sort.html" rel="next" title="归并排序中对小数组采用插入排序">
+                <i class="fa fa-chevron-left"></i> 归并排序中对小数组采用插入排序
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/10/python/centos-python.html" rel="prev" title="centos6.x安装python2.7">
+                centos6.x安装python2.7 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/09/30/python/rabbitmq-client.html"
+           data-title="使用python开发RabbitMQ应用" data-url="https://www.xncoding.com/2015/09/30/python/rabbitmq-client.html">
+      </div>
+    
+    <script src="https://dn-hb0716.qbox.me/duoshuo.js"></script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="熊能" />
+          <p class="site-author-name" itemprop="name">熊能</p>
+           
+              <p class="site-description motion-element" itemprop="description">这里要写啥我不是很清楚 →_→</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">97</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yidao620c" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/yidao620" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item" style="margin-left: 8px; width:45%;">
+                  <a href="http://www.huxiu.com/" title="虎嗅网" target="_blank">虎嗅网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item" style="margin-left: 8px; width:45%;">
+                  <a href="http://www.infoq.com/cn/" title="InfoQ" target="_blank">InfoQ</a>
+                </li>
+              
+                <li class="links-of-blogroll-item" style="margin-left: 8px; width:45%;">
+                  <a href="http://blog.jobbole.com/" title="伯乐在线" target="_blank">伯乐在线</a>
+                </li>
+              
+                <li class="links-of-blogroll-item" style="margin-left: 8px; width:45%;">
+                  <a href="http://www.cnblogs.com/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#实例一：来个hello-world程序"><span class="nav-number">1.</span> <span class="nav-text">实例一：来个hello world程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例二：工作队列（work-queue-task-queue）"><span class="nav-number">2.</span> <span class="nav-text">实例二：工作队列（work queue / task queue）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例三：发布和订阅"><span class="nav-number">3.</span> <span class="nav-text">实例三：发布和订阅</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#路由模式-（选择接收信息）"><span class="nav-number">4.</span> <span class="nav-text">路由模式 （选择接收信息）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#topic和rpc"><span class="nav-number">5.</span> <span class="nav-text">topic和rpc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他资源"><span class="nav-number">6.</span> <span class="nav-text">其他资源</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">熊能</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"yidao620c"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("AXBtbvjnaMP2cE34U1CAjLqF-gzGzoHsz", "6CKwM1armacelKCp8mh4StM4");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+
+</body>
+</html>

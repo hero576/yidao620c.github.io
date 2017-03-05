@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>那年八月</title>
+  <subtitle>Simple notes</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://www.xncoding.com/"/>
+  <updated>2017-03-05T07:45:07.884Z</updated>
+  <id>https://www.xncoding.com/</id>
+  
+  <author>
+    <name>熊能</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>博客已经搬家了</title>
+    <link href="https://www.xncoding.com/2017/03/05/blog.html"/>
+    <id>https://www.xncoding.com/2017/03/05/blog.html</id>
+    <published>2017-03-05T01:47:53.000Z</published>
+    <updated>2017-03-05T07:45:07.884Z</updated>
+    
+    <content type="html">&lt;h1 id=&quot;博客已经搬家啦-新地址：https-www-xncoding-com&quot;&gt;&lt;a href=&quot;#博客已经搬家啦-新地址：https-www-xncoding-com&quot; class=&quot;headerlink&quot; title=&quot;博客已经搬家啦, 新地址：https://www.xncoding.com/&quot;&gt;&lt;/a&gt;博客已经搬家啦, 新地址：&lt;a href=&quot;https://www.xncoding.com/&quot;&gt;https://www.xncoding.com/&lt;/a&gt;&lt;/h1&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;</content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;博客已经搬家啦-新地址：https-www-xncoding-com&quot;&gt;&lt;a href=&quot;#博客已经搬家啦-新地址：https-www-xncoding-com&quot; class=&quot;headerlink&quot; title=&quot;博客已经搬家啦, 新地址：https://www.xncoding.com/&quot;&gt;&lt;/a&gt;博客已经搬家啦, 新地址：&lt;a href=&quot;https://www.xncoding.com/&quot;&gt;https://www.xncoding.com/&lt;/a&gt;&lt;/h1&gt;
+    
+    </summary>
+    
+      <category term="博客已经搬家了" scheme="https://www.xncoding.com/categories/%E5%8D%9A%E5%AE%A2%E5%B7%B2%E7%BB%8F%E6%90%AC%E5%AE%B6%E4%BA%86/"/>
+    
+    
+      <category term="hexo" scheme="https://www.xncoding.com/tags/hexo/"/>
+    
+  </entry>
+  
+</feed>
