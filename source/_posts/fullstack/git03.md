@@ -211,7 +211,19 @@ just for gitdemo test
 * 从远程抓取分支，使用`git pull`，如果有冲突，要先处理冲突。
 
 ## pull requests协作模式
+这个是GitHub上面最主要的协作开发模式，有了这个普通平民也能参与开发顶级项目了。
 
+如果你想对某个开源软件做贡献，就先fork这个仓库，这样就会在你自己的远程仓库中复制一份一模一样的仓库。
+
+GitHub官网指南上面有个官方的仓库，专门用来给大家fork用，就是<https://github.com/octocat/Spoon-Knife>
+
+我把它fork下来后，就是下面这样:
+![](http://xnstatic-1253397658.cossh.myqcloud.com/git14.png)
+
+然后你所有的修改就在自己的这个远程仓库上面完成，等你修改好以后。登陆GitHub，在项目主页，
+点击"Pull requests" 菜单，点击"New pull request"按钮，填写你的修改说明提交就可以了。
+
+至于你的这个Pull requests能不能被合并，就看该项目维护者的心情了。
 
 ## 标签管理
 最后还有标签就放这里讲吧，因为要涉及远程标签。
