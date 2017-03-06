@@ -3,7 +3,7 @@ title: "markdown语法详解"
 date: 2015-03-22 16:22:15 +0800
 comments: true
 toc: true
-categories: web
+categories: fullstack
 tags: [markdown]
 ---
 

@@ -3,7 +3,7 @@ layout: post
 title: "centos7安装gitlab8.9"
 date: 2016-09-09 22:22:22 +0800
 toc: true
-categories: linux
+categories: fullstack
 tags: [git]
 ---
 内部需要搭建一个源码管理控制环境，选择开源的gitlab，环境为centos7。这个平台类似于github，使用起来非常方便。

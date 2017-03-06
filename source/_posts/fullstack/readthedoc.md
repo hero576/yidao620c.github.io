@@ -173,6 +173,88 @@ def setup(app):
 我将自己以前博客里面的关于scrapy的文章都迁移至readthedoc，现在看看效果：
 ![](http://xnstatic-1253397658.cossh.myqcloud.com/rtd03.png)
 
+## 生成PDF
+
+首先要安装TeX Live，CentOS 7的yum库中的TeX Live版本比较老，所以直接安装官网上的版本。
+
+在[官网页面](http://tug.org/texlive/acquire-netinstall.html)
+下载安装包[install-tl-unx.tar.gz](http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz)
+
+``` bash
+tar zxf install-tl-unx.tar.gz
+cd install-tl-*
+./install-tl  # install-tl-windows on Windows
+[... messages omitted ...]
+Enter command: i
+[... when done, see below for post-install ...]
+```
+
+安装完后配置PATH，在`/etc/profile`后面添加:
+``` bash
+export PATH=/usr/local/texlive/2016/bin/x86_64-linux:$PATH
+```
+然后执行`source /etc/profile`即可
+
+如果要生成中文PDF，还需要确认安装了东亚语言包和字体包
+``` bash
+yum -y install fontconfig ttmkfdir
+# /usr/shared目录就可以看到fonts和fontconfig目录
+# 首先在/usr/shared/fonts目录下新建一个目录chinese：
+cd /usr/share/fonts
+mkdir chinese
+# 紧接着需要修改chinese目录的权限：
+chmod -R 755 /usr/share/fonts/chinese
+# 从C:/Windows/Fonts目录复制你想要的字体到某个文件夹
+# 然后从这个文件夹复制去chinese文件夹
+# msyh.ttf msyhbd.ttf simhei.ttf simsun.ttc
+# wqy-microhei.ttc YaHeiConsolas.ttf
+ttmkfdir -e /usr/share/X11/fonts/encodings/encodings.dir
+vi /etc/fonts/fonts.conf
+<!-- Font directory list -->
+<dir>/usr/share/fonts</dir>
+<dir>/usr/share/fonts/chinese</dir>
+
+fc-cache
+fc-list :zh
+```
+
+要用XeLaTeX 取代 pdflatex，我們需要修改`conf.py`:
+``` python
+latex_engine = 'xelatex'
+```
+
+然后执行：
+``` bash
+make clean
+make latexpdf
+```
+中间遇到卡住的警告什么的不管，直接按Enter键，在`build/latex`目录中即可找到生成的pdf文件了。
+
+1. ReadTheDocs可以自动生成中文PDF，但ReadTheDocs服务器里的TeXLive版本太老，
+导致只能使用pdflatex而不能使用xelatex编译，再加上服务器上中文字体的限制，
+所以生成的PDF效果较差，故不采用ReadTheDocs生成的PDF
+2. 本地安装TeXLive 2016，用xelatex编译，可生成更好效果的PDF，目前的策略是在本地生成PDF。
+
+## 生成繁体PDF
+
+写一个shell脚本来转换源码，然后生成步骤不变:
+``` bash
+#!/bin/bash
+# 将某个文件夹所有文件简体转换成繁体字
+# 先安装opencc：sudo apt-get install opencc
+
+curdir=`pwd`
+file_dir=${curdir}/$1
+for f in $(find $file_dir -type f); do
+    #echo $f
+    opencc -i "${f}" -o "${f}_"
+    mv -f "${f}_" "${f}"
+done
+
+# 简体转繁体
+./stot.sh scrapy-cookbook/source/
+```
+
 ## FAQ
 
 build的时候出现错误：! Package inputenc Error: Unicode char 我 (U+6211)
@@ -198,4 +280,65 @@ latex_elements={# The paper size ('letterpaper' or 'a4paper').
 """}
 ```
 
+-------------------
 
+WARNING: Pygments lexer name u'python run.py' is not known
+
+解决办法，写代码的时候别用''' python run.py这样的格式，不支持
+
+-------------------
+
+WARNING: nonlocal image URI found:
+
+解决办法，更改conf.py
+``` python
+import sphinx.environment
+from docutils.utils import get_source_line
+
+def _warn_node(self, msg, node, **kwargs):
+    if not msg.startswith('nonlocal image URI found:'):
+        self._warnfunc(msg, '%s:%s' % get_source_line(node), **kwargs)
+
+sphinx.environment.BuildEnvironment.warn_node = _warn_node
+```
+
+--------------------
+
+生成的PDF文件中图片不能显示的问题
+
+解决办法，因为文章里面引用的是外部图片链接，导致不能显示图片，
+将图片下载到source/images目录，然后改链接为相对路径。
+
+比如：![scrapy架构图](/images/scrapy.png)
+
+如要居中显示图片，使用:
+```
+<center>![scrapy架构图](/images/scrapy.png)</center>
+```
+
+--------------------
+
+自动生成标题问题
+
+修改`conf.py`讲manual改成howto
+```
+latex_documents = [
+    (master_doc, 'scrapy-cookbook.tex', u'scrapy-cookbook Documentation',
+     u'Xiong Neng', 'howto'),
+]
+```
+
+---------------------
+
+图片覆盖文字的问题
+
+养成一个好习惯就是新增图片一定要空一行
+``` md
+one line
+
+![scrapy架构图](/images/scrapy.png)
+
+two line
+```
+
+---------------------
