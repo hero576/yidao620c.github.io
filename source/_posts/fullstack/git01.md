@@ -33,6 +33,10 @@ yum install git
 ``` bash
 git config --global user.name "Your Name"
 git config --global user.email "email@example.com"
+# 彩色的 git 输出：
+git config --global color.ui true
+# 显示历史记录时，每个提交的信息只显示一行：
+git config --global format.pretty oneline
 ```
 
 ## 初始化
@@ -169,6 +173,16 @@ add something
 ```
 第一列是commit的一个id号(版本号)，是SHA1计算出来的一个非常大的数字，用十六进制表示。
 
+或者你想通过 ASCII 艺术的树形结构来展示所有的分支, 每个分支都标示了他的名字和标签:
+``` bash
+git log --graph --oneline --decorate --all
+```
+
+看看哪些文件改变了:
+```
+git log --name-status
+```
+
 假如你想回退到`modify readme`那个版本，可以通过`git reset`命令:
 ```
 [root@controller161 gitdemo]# git reset --hard 1d57c05ee44
@@ -282,15 +296,42 @@ dbf4ee5 Initial commit
 
 很奇怪，之前这个`ad6fa66 ok , I resolve confict`也被合并了，好神秘哦。有明白为什么的同学告我下。
 
+还有一种情况，就是当两个分支产生分叉，比如master和dev，
+最后你想让dev分支历史看起来像没有经过任何合并一样，你也许可以用 git rebase:
+
+``` bash
+$ git checkout dev
+$ git rebase master
+```
+
+这些命令会把你的dev分支里的每个提交(commit)取消掉，
+并且把它们临时保存为补丁(patch)(这些补丁放到".git/rebase"目录中),
+然后把dev分支更新到最新的master分支，最后把保存的这些补丁应用到master分支上。
+
+当dev分支更新之后，它会指向这些新创建的提交(commit),而那些老的提交会被丢弃。
+如果运行垃圾收集命令(pruning garbage collection), 这些被丢弃的提交就会删除
+
+同样和合并提交一样，在rebase的过程中，也许会出现冲突(conflict)，在这种情况，Git会停止rebase并会让你去解决冲突；
+在解决完冲突后，用`git add`命令去更新这些内容的索引(index), 然后，你无需执行`git commit`,只要执行:
+``` bash
+$ git rebase --continue
+```
+
+这样git会继续应用(apply)余下的补丁，
+同样，在任何时候，你可以用--abort参数来终止rebase的行动，并且dev分支会回到rebase开始前的状态:
+``` bash
+$ git rebase --abort
+```
+
 ## 工作区和暂存区
-在git里面有三个很重要的概念：工作区、暂存区、版本库。
+在git里面有三个很重要的概念：工作区、暂存区、HEAD。
 
 ### 工作区（Working Directory）
 就是你在电脑里能看到的目录，比如我的gitdemo文件夹就是一个工作区
 
 ### 版本库（Repository）
 工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库。
-里面存了很多东西，其中最重要的就是称为stage（或者叫index）的暂存区，
+里面存了很多东西，其中最重要的一个就是暂存区（对应指针index），
 还有Git为我们自动创建的第一个分支master，以及指向master的一个指针叫HEAD。
 
 ![](http://xnstatic-1253397658.cossh.myqcloud.com/git01.jpg)
@@ -372,25 +413,28 @@ nothing to commit, working directory clean
 * git diff --cache readme.txt -> 暂存区 和 版本库比较
 * git diff HEAD -- readme.txt -> 版本库 和 工作区比较
 
+如果`git diff`后面不加文件名readme.txt，表示要显示所有文件的差异。
+
 ## 撤销修改
 有时候你也会犯傻修改了不该改的东西，这样时候可以通过`git checkout`命令撤销修改。
 
 命令`git checkout -- readme.txt`意思就是，把readme.txt文件在工作区的修改全部撤销，这里有两种情况：
 
-一种是readme.txt自修改后还没有被放到暂存区，现在，撤销修改就回到和版本库一模一样的状态；
-
-一种是readme.txt已经添加到暂存区后，又作了修改，现在，撤销修改就回到添加到暂存区后的状态。
+1. readme.txt自从修改后还没有被放到暂存区，现在，撤销修改就回到和版本库一模一样的状态；
+2. readme.txt已经添加到暂存区后，又作了修改，现在，撤销修改就回到添加到暂存区时的状态。
 
 总之，就是让这个文件回到最近一次git commit或git add时的状态。
 
 `git checkout -- file` 命令中的--很重要，没有--，就变成了“切换到另一个分支”的命令，
 我们在后面的分支管理中会再次遇到`git checkout`命令。
 
-还有一种情况是，你想将暂存区的修改撤销掉，重新放回工作区:
+还有一种情况是，你想将暂存区的修改撤销掉:
 ```
 git reset HEAD readme.txt
 ```
-`git reset`命令既可以回退版本，也可以把暂存区的修改回退到工作区。当我们用HEAD时，表示最新的版本。
+`git reset`命令既可以回退版本，也可以把暂存区的修改撤销掉。当我们用HEAD时，表示最新的版本。
+
+注意：这里`git reset`并没有不会对工作区产生任何影响，只是撤销了暂存区的修改。
 
 还记得如何丢弃工作区的修改吗？
 ```
