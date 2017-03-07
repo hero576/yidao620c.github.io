@@ -6,9 +6,15 @@ toc: true
 categories: web
 tags: [nginx]
 ---
-nginx是一个优秀的 HTTP 和反向代理服务器，一个邮件代理服务器，一个通用TCP/UDP代理服务器，官网地址：<https://nginx.org/en/>
+nginx是一个优秀的 HTTP 和反向代理服务器，一个邮件代理服务器，
+一个通用TCP/UDP代理服务器，官网地址：<https://nginx.org/en/>
 
-之前写过一篇关于nginx的入门篇，nginx作为一款受欢迎的高性能 Web 服务器，有必要重新捣鼓一下，这次选择centos7演示。
+nginx由于出色的性能，在世界范围内受到了越来越多人的关注。其特点是占有内存少，并发能力强，
+事实上nginx的并发能力确实在同类型的网页伺服器中表现较好。
+目前中国大陆使用nginx网站用户有新浪、网易、腾讯，另外知名的微网志Plurk也使用nginx
+
+之前写过一篇关于nginx的入门篇，nginx作为一款受欢迎的高性能 Web 服务器，
+有必要重新捣鼓一下，这次选择centos7演示。<!--more-->
 
 ## 安装篇
 
@@ -26,7 +32,6 @@ systemctl status nginx
 ```
 打开浏览器，输入服务器的 IP 地址即可看到首页，就这么简单！
 ![](http://yidaospace.qiniudn.com/nginx-welcome.png)
-<!--more-->
 
 ### 源码安装
 我喜欢这种安装方式，可以控制的东西很多

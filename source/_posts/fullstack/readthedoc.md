@@ -309,8 +309,6 @@ sphinx.environment.BuildEnvironment.warn_node = _warn_node
 解决办法，因为文章里面引用的是外部图片链接，导致不能显示图片，
 将图片下载到source/images目录，然后改链接为相对路径。
 
-比如：![scrapy架构图](/images/scrapy.png)
-
 如要居中显示图片，使用:
 ```
 <center>![scrapy架构图](/images/scrapy.png)</center>
@@ -320,7 +318,7 @@ sphinx.environment.BuildEnvironment.warn_node = _warn_node
 
 自动生成标题问题
 
-修改`conf.py`讲manual改成howto
+修改`conf.py`将manual改成howto
 ```
 latex_documents = [
     (master_doc, 'scrapy-cookbook.tex', u'scrapy-cookbook Documentation',
