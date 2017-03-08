@@ -14,56 +14,47 @@ awk是一种样式扫描与处理工具。但其功能却大大强于sed和grep�
 简单来说awk就是把文件逐行的读入，以空格为默认分隔符将每行切片，切开的部分再进行各种分析处理。<!--more-->
 
 ## 基本用法
-从netstat命令中提取了如下信息作为用例：
+从`netstat -tnlp > netstat.txt`命令中提取了如下信息作为用例：
 ```
-$ cat netstat.txt
-Proto Recv-Q Send-Q Local-Address          Foreign-Address             State
-tcp        0      0 0.0.0.0:3306           0.0.0.0:*                   LISTEN
-tcp        0      0 0.0.0.0:80             0.0.0.0:*                   LISTEN
-tcp        0      0 127.0.0.1:9000         0.0.0.0:*                   LISTEN
-tcp        0      0 coolshell.cn:80        124.205.5.146:18245         TIME_WAIT
-tcp        0      0 coolshell.cn:80        61.140.101.185:37538        FIN_WAIT2
-tcp        0      0 coolshell.cn:80        110.194.134.189:1032        ESTABLISHED
-tcp        0      0 coolshell.cn:80        123.169.124.111:49809       ESTABLISHED
-tcp        0      0 coolshell.cn:80        116.234.127.77:11502        FIN_WAIT2
-tcp        0      0 coolshell.cn:80        123.169.124.111:49829       ESTABLISHED
-tcp        0      0 coolshell.cn:80        183.60.215.36:36970         TIME_WAIT
-tcp        0   4166 coolshell.cn:80        61.148.242.38:30901         ESTABLISHED
-tcp        0      1 coolshell.cn:80        124.152.181.209:26825       FIN_WAIT1
-tcp        0      0 coolshell.cn:80        110.194.134.189:4796        ESTABLISHED
-tcp        0      0 coolshell.cn:80        183.60.212.163:51082        TIME_WAIT
-tcp        0      1 coolshell.cn:80        208.115.113.92:50601        LAST_ACK
-tcp        0      0 coolshell.cn:80        123.169.124.111:49840       ESTABLISHED
-tcp        0      0 coolshell.cn:80        117.136.20.85:50025         FIN_WAIT2
-tcp        0      0 :::22                  :::*                        LISTEN
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:8778            0.0.0.0:*               LISTEN      2689/python
+tcp        0      0 0.0.0.0:3306            0.0.0.0:*               LISTEN      2265/mysqld
+tcp        0      0 0.0.0.0:139             0.0.0.0:*               LISTEN      18777/smbd
+tcp        0      0 127.0.0.1:35437         0.0.0.0:*               LISTEN      23842/python2
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      1916/nginx: master
+tcp        0      0 0.0.0.0:4369            0.0.0.0:*               LISTEN      1704/epmd
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      973/sshd
+tcp        0      0 127.0.0.1:58205         0.0.0.0:*               LISTEN      23681/python2
+tcp        0      0 0.0.0.0:445             0.0.0.0:*               LISTEN      18777/smbd
+tcp        0      0 0.0.0.0:33443           0.0.0.0:*               LISTEN      13976/phantomjs
+tcp        0      0 0.0.0.0:8008            0.0.0.0:*               LISTEN      2548/unicorn_rails
+tcp        0      0 192.168.217.161:5673    0.0.0.0:*               LISTEN      951/beam.smp
+tcp        0      0 0.0.0.0:25673           0.0.0.0:*               LISTEN      951/beam.smp
+tcp6       0      0 :::139                  :::*                    LISTEN      18777/smbd
+tcp6       0      0 :::4369                 :::*                    LISTEN      1704/epmd
+tcp6       0      0 :::22                   :::*                    LISTEN      973/sshd
+tcp6       0      0 :::3128                 :::*                    LISTEN      2268/(squid-1)
+tcp6       0      0 :::1017                 :::*                    LISTEN      988/xnServer
+tcp6       0      0 :::443                  :::*                    LISTEN      950/httpd
+tcp6       0      0 :::445                  :::*                    LISTEN      18777/smbd
 ```
 
-下面是最简单最常用的awk示例，其输出第1列和第4列：
+下面是最简单最常用的awk示例，比如要想输出第1列和第4列：
 ``` bash
 $ awk '{print $1, $4}' netstat.txt
 ```
+
 我们再来看看awk的格式化输出，和C语言的printf没什么两样：
 ``` bash
-$ awk '{printf "%-8s %-8s %-8s %-18s %-22s %-15s\n",$1,$2,$3,$4,$5,$6}' netstat.txt
-Proto    Recv-Q   Send-Q   Local-Address      Foreign-Address        State
-tcp      0        0        0.0.0.0:3306       0.0.0.0:*              LISTEN
-tcp      0        0        0.0.0.0:80         0.0.0.0:*              LISTEN
-tcp      0        0        127.0.0.1:9000     0.0.0.0:*              LISTEN
-tcp      0        0        coolshell.cn:80    124.205.5.146:18245    TIME_WAIT
-tcp      0        0        coolshell.cn:80    61.140.101.185:37538   FIN_WAIT2
-tcp      0        0        coolshell.cn:80    110.194.134.189:1032   ESTABLISHED
-tcp      0        0        coolshell.cn:80    123.169.124.111:49809  ESTABLISHED
-tcp      0        0        coolshell.cn:80    116.234.127.77:11502   FIN_WAIT2
-tcp      0        0        coolshell.cn:80    123.169.124.111:49829  ESTABLISHED
-tcp      0        0        coolshell.cn:80    183.60.215.36:36970    TIME_WAIT
-tcp      0        4166     coolshell.cn:80    61.148.242.38:30901    ESTABLISHED
-tcp      0        1        coolshell.cn:80    124.152.181.209:26825  FIN_WAIT1
-tcp      0        0        coolshell.cn:80    110.194.134.189:4796   ESTABLISHED
-tcp      0        0        coolshell.cn:80    183.60.212.163:51082   TIME_WAIT
-tcp      0        1        coolshell.cn:80    208.115.113.92:50601   LAST_ACK
-tcp      0        0        coolshell.cn:80    123.169.124.111:49840  ESTABLISHED
-tcp      0        0        coolshell.cn:80    117.136.20.85:50025    FIN_WAIT2
-tcp      0        0        :::22              :::*                   LISTEN
+$ awk '{printf "%-6s %-6s %-6s %-22s %-16s %-12s\n",$1,$2,$3,$4,$5,$6}' netstat.txt
+Proto  Recv-Q Send-Q Local                  Address          Foreign
+tcp    0      0      0.0.0.0:8778           0.0.0.0:*        LISTEN
+tcp    0      0      0.0.0.0:3306           0.0.0.0:*        LISTEN
+tcp    0      0      0.0.0.0:139            0.0.0.0:*        LISTEN
+tcp    0      0      127.0.0.1:35437        0.0.0.0:*        LISTEN
+tcp    0      0      0.0.0.0:80             0.0.0.0:*        LISTEN
+tcp    0      0      0.0.0.0:4369           0.0.0.0:*        LISTEN
+...
 ```
 
 ## 内置变量
@@ -73,59 +64,61 @@ awk经常会使用到一些内置变量，下面是它们的含义：
 --------------|---------------
 $0            | 当前记录（这个变量中存放着整个行的内容）
 $1~$n         | 当前记录的第n个字段，字段间由FS分隔
-FS            | 输入字段分隔符 默认是空格或Tab
+FS            | 输入字段分隔符，默认是空格或Tab
 NF            | 当前记录中的字段个数，就是有多少列
-NR            | 已经读出的记录数，就是行号，从1开始，如果有多个文件话，这个值也是不断累加中。
+NR            | 已经读出的记录数，就是行号，从1开始，如果有多个文件话，这个值也是不断累加中
 FNR           | 当前记录数，与NR不同的是，这个值会是各个文件自己的行号
-RS            | 输入的记录分隔符， 默认为换行符
-OFS           | 输出字段分隔符， 默认也是空格
+RS            | 输入的记录分隔符，默认为换行符
+OFS           | 输出字段分隔符，默认也是空格
 ORS           | 输出的记录分隔符，默认为换行符
 FILENAME      | 当前输入文件的名字
 
 ## 过滤记录
-如何过滤记录（下面过滤条件为：第三列的值为0 && 第6列的值为LISTEN）
+如何过滤记录（下面过滤条件为：第三列的值为0 && 第7列包含字符串'python'）
+
 ``` bash
-$ awk '$3==0 && $6=="LISTEN" ' netstat.txt
-tcp        0      0 0.0.0.0:3306               0.0.0.0:*              LISTEN
-tcp        0      0 0.0.0.0:80                 0.0.0.0:*              LISTEN
-tcp        0      0 127.0.0.1:9000             0.0.0.0:*              LISTEN
-tcp        0      0 :::22                      :::*                   LISTEN
+$ awk '$3==0 && $7 ~ /python/' netstat.txt
+tcp        0      0 0.0.0.0:8778            0.0.0.0:*    LISTEN      2689/python
+tcp        0      0 127.0.0.1:35437         0.0.0.0:*    LISTEN      23842/python2
+tcp        0      0 127.0.0.1:58205         0.0.0.0:*    LISTEN      23681/python2
 ```
 
-其中的“==”为比较运算符。其他比较运算符：!=, >, <, >=, <=
+其中的“==”为比较运算符，其他比较运算符：!=, >, <, >=, <=
 
-我们来看看各种过滤记录的方式：
-``` bash
-$ awk ' $3>0 {print $0}' netstat.txt
-Proto Recv-Q Send-Q Local-Address          Foreign-Address             State
-tcp        0   4166 coolshell.cn:80        61.148.242.38:30901         ESTABLISHED
-tcp        0      1 coolshell.cn:80        124.152.181.209:26825       FIN_WAIT1
-tcp        0      1 coolshell.cn:80        208.115.113.92:50601        LAST_ACK
-```
+还有”~“表示正则匹配，这个就相当强大了。
 
 如果我们需要表头的话，我们可以引入内建变量NR：
 ``` bash
 $ awk '$3==0 && $6=="LISTEN" || NR==1 ' netstat.txt
-Proto Recv-Q Send-Q Local-Address          Foreign-Address             State
-tcp        0      0 0.0.0.0:3306           0.0.0.0:*                   LISTEN
-tcp        0      0 0.0.0.0:80             0.0.0.0:*                   LISTEN
-tcp        0      0 127.0.0.1:9000         0.0.0.0:*                   LISTEN
-tcp        0      0 :::22                  :::*                        LISTEN
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:8778            0.0.0.0:*               LISTEN      2689/python
+tcp        0      0 0.0.0.0:3306            0.0.0.0:*               LISTEN      2265/mysqld
+tcp        0      0 0.0.0.0:139             0.0.0.0:*               LISTEN      18777/smbd
+tcp        0      0 127.0.0.1:35437         0.0.0.0:*               LISTEN      23842/python2
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      1916/nginx: master
+tcp        0      0 0.0.0.0:4369            0.0.0.0:*               LISTEN      1704/epmd
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      973/sshd
+tcp        0      0 127.0.0.1:58205         0.0.0.0:*               LISTEN      23681/python2
+...
 ```
 
 再加上格式化输出：
 ``` bash
 $ awk '$3==0 && $6=="LISTEN" || NR==1 {printf "%-20s %-20s %s\n",$4,$5,$6}' netstat.txt
-Local-Address        Foreign-Address      State
+Local                Address              Foreign
+0.0.0.0:8778         0.0.0.0:*            LISTEN
 0.0.0.0:3306         0.0.0.0:*            LISTEN
+0.0.0.0:139          0.0.0.0:*            LISTEN
+127.0.0.1:35437      0.0.0.0:*            LISTEN
 0.0.0.0:80           0.0.0.0:*            LISTEN
-127.0.0.1:9000       0.0.0.0:*            LISTEN
-:::22                :::*                 LISTEN
+0.0.0.0:4369         0.0.0.0:*            LISTEN
+0.0.0.0:22           0.0.0.0:*            LISTEN
+...
 ```
 
 ## 指定分隔符
 ``` bash
-$  awk  'BEGIN{FS=":"} {print $1,$3,$6}' /etc/passwd
+$ awk 'BEGIN{FS=":"} {print $1,$3,$6}' /etc/passwd
 root 0 /root
 bin 1 /bin
 daemon 2 /sbin
@@ -134,65 +127,58 @@ lp 4 /var/spool/lpd
 sync 5 /sbin
 shutdown 6 /sbin
 halt 7 /sbin
+mail 8 /var/spool/mail
+...
 ```
+
 上面的命令也等价于：（-F的意思就是指定分隔符）
 ``` bash
-$ awk  -F: '{print $1,$3,$6}' /etc/passwd
+$ awk -F: '{print $1,$3,$6}' /etc/passwd
 ```
+
 注：如果你要指定多个分隔符，你可以这样来：
 ``` bash
 awk -F '[;:]'
 ```
+
 再来看一个以\t作为分隔符输出的例子（下面使用了/etc/passwd文件，这个文件是以:分隔的）：
 ``` bash
-$ awk  -F: '{print $1,$3,$6}' OFS="\t" /etc/passwd
-root    0       /root
-bin     1       /bin
-daemon  2       /sbin
-adm     3       /var/adm
-lp      4       /var/spool/lpd
-sync    5       /sbin
+$ awk -F: '{print $1,$3,$6}' OFS="\t" /etc/passwd
+root    0    /root
+bin     1    /bin
+daemon  2    /sbin
+adm     3    /var/adm
+lp      4    /var/spool/lpd
+sync    5    /sbin
 ```
 
 ## 字符串匹配
 ``` bash
-$ awk '$6 ~ /FIN/ || NR==1 {print NR,$4,$5,$6}' OFS="\t" netstat.txt
-1       Local-Address   Foreign-Address State
-6       coolshell.cn:80 61.140.101.185:37538    FIN_WAIT2
-9       coolshell.cn:80 116.234.127.77:11502    FIN_WAIT2
-13      coolshell.cn:80 124.152.181.209:26825   FIN_WAIT1
-18      coolshell.cn:80 117.136.20.85:50025     FIN_WAIT2
-
-$ awk '$6 ~ /WAIT/ || NR==1 {print NR,$4,$5,$6}' OFS="\t" netstat.txt
-1       Local-Address   Foreign-Address State
-5       coolshell.cn:80 124.205.5.146:18245     TIME_WAIT
-6       coolshell.cn:80 61.140.101.185:37538    FIN_WAIT2
-9       coolshell.cn:80 116.234.127.77:11502    FIN_WAIT2
-11      coolshell.cn:80 183.60.215.36:36970     TIME_WAIT
-13      coolshell.cn:80 124.152.181.209:26825   FIN_WAIT1
-15      coolshell.cn:80 183.60.212.163:51082    TIME_WAIT
-18      coolshell.cn:80 117.136.20.85:50025     FIN_WAIT2
+$ awk '$7 ~ /python/ || NR==1 {print NR,$4,$5,$6}' OFS="\t" netstat.txt
+1	Local	Address	Foreign
+2	0.0.0.0:8778	0.0.0.0:*	LISTEN
+5	127.0.0.1:35437	0.0.0.0:*	LISTEN
+9	127.0.0.1:58205	0.0.0.0:*	LISTEN
 ```
 
-上面的第一个示例匹配FIN状态， 第二个示例匹配WAIT字样的状态。其实 ~ 表示模式开始。/ /中是模式。这就是一个正则表达式的匹配。
+上面示例第7列匹配”python“字符串，其实 ~ 表示模式开始。/ /中是模式，这就是一个正则表达式的匹配。
 
-其实awk可以像grep一样的去匹配第一行，就像这样：
+其实awk可以像grep一样的去匹配一整行，就像这样：
 ``` bash
-$ awk '/LISTEN/' netstat.txt
-tcp        0      0 0.0.0.0:3306            0.0.0.0:*               LISTEN
-tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN
-tcp        0      0 127.0.0.1:9000          0.0.0.0:*               LISTEN
-tcp        0      0 :::22                   :::*                    LISTEN
+$ awk '/python/' netstat.txt
+tcp   0      0 0.0.0.0:8778     0.0.0.0:*     LISTEN      2689/python
+tcp   0      0 127.0.0.1:35437  0.0.0.0:*     LISTEN      23842/python2
+tcp   0      0 127.0.0.1:58205  0.0.0.0:*     LISTEN      23681/python2
 ```
 
 再来看看模式取反的例子:
 ``` bash
-awk '!/WAIT/' netstat.txt
+awk '!/python/' netstat.txt
 ```
 
 ## 统计
-下面的命令计算所有的C文件，CPP文件和H文件的文件大小总和:
+下面的命令计算所有的.py文件和.txt文件大小总和:
 ``` bash
-$ ls -l  *.cpp *.c *.h | awk '{sum+=$5} END {print sum}'
-34343
+$ ls -l *.py *.txt | awk '{sum+=$5} END {print sum}'
+3369
 ```

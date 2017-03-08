@@ -38,7 +38,8 @@ $ git config --global user.email yidao620@gmail.com
 
 每个项目我们只需要初始化一次Git仓库（而且你从此不需要重新输入用户名和邮箱）
 
-Git会追踪这个目录下所有文件和文件夹的更改，但是有一些文件我们希望Git忽略它。为此，我们可以在系统根目录下创建一个命名为`.gitignore`的文件。打开编辑器，创建新文件并写入以下内容：
+Git会追踪这个目录下所有文件和文件夹的更改，但是有一些文件我们希望Git忽略它。
+为此，我们可以在系统根目录下创建一个命名为`.gitignore`的文件。打开编辑器，创建新文件并写入以下内容：
 ```
 myvenv
 .idea/
@@ -112,12 +113,15 @@ pip install django
 ### 设置 virtualenv
 你将会被带到 PythonAnywhere 上你的Web 应用程序的配置屏，那个页面是每次你想修改服务器上你的应用程序时候要去的页面。
 
-在“Virtualenv”一节，点击红色文字“Enter the path to a virtualenv"，然后键入：/home/<your-username>/simpleblog/myvenv/。前进之前，先点击有复选框的蓝色框以保存路径。
+在“Virtualenv”一节，点击红色文字“Enter the path to a virtualenv"，
+然后键入：`/home/<your-username>/simpleblog/myvenv/`。前进之前，先点击有复选框的蓝色框以保存路径。
 
 ### 配置 WSGI 文件
-Django使用“WSGI 协议”，它是用来服务Python网站的一个标准。PythonAnywhere支持这个标准。PythonAnywhere识别我们Django博客的方式是通过配置WSGI配置文件。
+Django使用“WSGI 协议”，它是用来服务Python网站的一个标准。PythonAnywhere支持这个标准。
+PythonAnywhere识别我们Django博客的方式是通过配置WSGI配置文件。
 
-点击 “WSGI configuration file”链接（在"Code"一节，它将被命名为如 /var/www/<your-username>_pythonanywhere_com_wsgi.py），然后跳转到一个编辑器。
+点击 “WSGI configuration file”链接
+（在"Code"一节，它将被命名为如 /var/www/<your-username>_pythonanywhere_com_wsgi.py），然后跳转到一个编辑器。
 
 删除所有的内容并用以下内容替换：
 ``` python

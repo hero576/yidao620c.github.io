@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "python进阶 - 浅谈coroutine和gevent"
+title: "浅谈coroutine和gevent"
 date: 2016-01-02 08:16:18 +0800
 toc: true
 categories: python
-tags: [python进阶]
+tags: [gevent]
 ---
 
 一般将coroutine称之为协程（或微线程，也有称纤程的）。

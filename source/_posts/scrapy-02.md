@@ -152,7 +152,8 @@ scrapy crawl huxiu -o items.json
 最好自己编写[Item Pipeline](http://doc.scrapy.org/en/latest/topics/item-pipeline.html#topics-item-pipeline)。
 
 ## 保存数据到数据库
-上面我们介绍了可以将抓取的Item导出为json格式的文件，不过最常见的做法还是编写Pipeline将其存储到数据库中。我们在`coolscrapy/pipelines.py`定义
+上面我们介绍了可以将抓取的Item导出为json格式的文件，不过最常见的做法还是编写Pipeline将其存储到数据库中。
+我们在`coolscrapy/pipelines.py`定义
 ``` python
 # -*- coding: utf-8 -*-
 import datetime
@@ -193,7 +194,8 @@ class ArticleDataBasePipeline(object):
     def close_spider(self, spider):
         pass
 ```
-上面我使用了python中的SQLAlchemy来保存数据库，这个是一个非常优秀的ORM库，我写了篇关于它的[入门教程](http://yidao620c.github.io/2016/03/07/sqlalchemy.html)，可以参考下。
+上面我使用了python中的SQLAlchemy来保存数据库，这个是一个非常优秀的ORM库，
+我写了篇关于它的[入门教程](https://www.xncoding.com/2016/03/07/python/sqlalchemy.html)，可以参考下。
 
 然后在`setting.py`中配置这个Pipeline，还有数据库链接等信息：
 ``` python

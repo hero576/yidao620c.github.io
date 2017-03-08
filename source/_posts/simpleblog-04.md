@@ -18,7 +18,7 @@ tags: django
 
 ### 什么是URL？
 URL就算一个WEB地址，你在浏览器输入这个地址，然后浏览器返回相应的网页给你。
-比如http://djangogirls.com是一个URL，而127.0.0.1:8000同样也是个URL，默认就是http协议的。
+比如`http://djangogirls.com`是一个URL，而`127.0.0.1:8000`同样也是个URL，默认就是http协议的。
 
 ### Django中的URL工作原理
 我们打开mysite/urls.py文件，会发现类似下面这样：
@@ -48,7 +48,7 @@ django默认已经为我们添加了admin的URL配置。
 django是通过正则式来匹配URL的。关于正则式这里不想展开太多。可以参考相关数据和教程。
 
 ### 第一个django url配置
-现在我们要将http://127.0.0.1:8000/这个首页地址映射到一个显示最新文章列表的页面上面去。一般的博客首页基本都是这样的。
+现在我们要将`http://127.0.0.1:8000/`这个首页地址映射到一个显示最新文章列表的页面上面去。一般的博客首页基本都是这样的。
 
 为了保持mysite/urls.py配置文件的简介，我们最好将博客的url配置放到单独的文件中。在mysite/urls.py中去将它引进来即可。
 
@@ -77,7 +77,7 @@ urlpatterns = patterns('',
 ```
 现在我们将r’^$’的url映射到视图views.post_list。
 
-不过你要是现在就访问首页http://127.0.0.1:8000/的话会报错的。
+不过你要是现在就访问首页`http://127.0.0.1:8000/`的话会报错的。
 
 ![](http://yidaospace.qiniudn.com/dj006.jpg)
 
@@ -121,7 +121,7 @@ def post_list(request):
 
 ![](http://yidaospace.qiniudn.com/dj007.jpg)
 
-这次报的错是模板blog/post_list.html找不到。这个是显而易见的，因为我们根本还没有定义这个html模板。
+这次报的错是模板`blog/post_list.html`找不到。这个是显而易见的，因为我们根本还没有定义这个html模板。
 
 别着急，继续沿着教程往下看就行…
 
@@ -160,7 +160,7 @@ blog
 </html>
 ```
 
-再次访问http://192.168.203.95:8000/：
+再次访问`http://192.168.203.95:8000/`：
 
 ![](http://yidaospace.qiniudn.com/dj009.jpg)
 

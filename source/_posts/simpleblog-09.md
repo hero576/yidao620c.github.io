@@ -7,7 +7,8 @@ categories: python
 tags: django
 ---
 
-你应该注意到了一点，当你去新建、修改和删除文章的时候并不需要登录，这样的话任何浏览网站的用户都能随时修改和删除我的文章。这个可不是我想要的！<!--more-->
+你应该注意到了一点，当你去新建、修改和删除文章的时候并不需要登录，
+这样的话任何浏览网站的用户都能随时修改和删除我的文章。这个可不是我想要的！<!--more-->
 
 ## 编辑和删除的认证
 我们需要保护post_new, post_edit和post_publish这三个视图，只有登录用户才有权去执行。
@@ -27,10 +28,10 @@ def post_new(request):
     [...]
 ```
 
-好的，现在你再去访问下http://localhost:8000/post/new/，看看有啥变化。
+好的，现在你再去访问下`http://localhost:8000/post/new/`，看看有啥变化。
 
 注：如果你仍然能正常进入新建页面，那可能是你之前在admin界面登陆过。
-那么你需要先退出，访问http://localhost:8000/admin/logout/可以退出，然后你再看下效果。
+那么你需要先退出，访问`http://localhost:8000/admin/logout/`可以退出，然后你再看下效果。
 
 我刚刚添加的@login_required装饰器检测到你尚未登陆的时候会重定向到login页面，
 但是我现在还没有定义login的模板页面，所以这时候会是404错误页面。
@@ -85,10 +86,10 @@ urlpatterns = patterns('',
     </form>
 {% endblock %}
 ```
-你可以看到我们仍然使用到了模板继承。这个时候可以定义一个mysite/templates/mysite/base.html，
-把blog/templates/blog/base.html的内容复制给它即可。
+你可以看到我们仍然使用到了模板继承。这个时候可以定义一个`mysite/templates/mysite/base.html`，
+把`blog/templates/blog/base.html`的内容复制给它即可。
 
-不过我们需要在mysite/settings.py中再添加一个urls配置：
+不过我们需要在`mysite/settings.py`中再添加一个urls配置：
 ``` python
 LOGIN_REDIRECT_URL = '/'
 ```
@@ -98,7 +99,7 @@ LOGIN_REDIRECT_URL = '/'
 现在的确只有登录用户才能修改和删除文章，但是未登录用户却能看到这些按钮，
 这个是很不好的体验。现在如果是未登录用户的话就把这些按钮给隐藏掉。
 
-因此我们修改mysite/templates/mysite/base.html如下：
+因此我们修改`mysite/templates/mysite/base.html`如下：
 ``` html
 <body>
     <div class="page-header">
@@ -176,7 +177,7 @@ urlpatterns = patterns('',
     url(r'', include('blog.urls')),
 )
 ```
-如果访问网站时出现模板找不到错误，那么你就在mysite/settings.py中添加如下配置：
+如果访问网站时出现模板找不到错误，那么你就在`mysite/settings.py`中添加如下配置：
 ``` python
 # TEMPLATE_DIRS
 TEMPLATE_DIRS = (
