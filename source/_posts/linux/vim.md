@@ -17,16 +17,177 @@ vim 是 Linux 系统上的最著名的文本/代码编辑器，也是早年的 V
 各种插件、语法高亮配色方案等多不胜数，无论作为代码编辑器或是文稿撰写工具都非常给力。<!--more-->
 
 ## 安装
+将来要支持python开发，先安装
+``` bash
+yum install python-devel
+```
 这一步比较简单，在centos上面一条命令:
 ``` bash
 yum install vim
+vim --version
+VIM - Vi IMproved 7.4
+```
+
+下载源码并进行编译安装(8.0有些问题，暂时不建议安装):
+``` bash
+wget https://github.com/vim/vim/archive/master.zip
+unzip master.zip
+cd vim-master
+# 下面的python版本支持根据需要删
+./configure --prefix=/usr/local/vim8
+make && make install
+
+# 卸载源码安装的vim,下面替换成你已经装好的vim命令路径
+make VIMRUNTIMEDIR=/usr/local/vim8/bin/vim
+make uninstall
 ```
 
 ## 配置
-我这里有一个比较优化的配置了，`vim ~/.vimrc`，输入如下内容
+
+Vim本身能够满足开发人员的很多需求，但是它的可扩展性也极强，并且已经有一些杀手级的扩展，
+可以让Vim拥有“现代”集成开发环境的特性。所以，你所需要的第一件东西就是一个好用的扩展管理器。
+
+Vim有多个扩展管理器，但是我们强烈推荐[Vundle](https://github.com/gmarik/Vundle.vim)，
+你可以把它想象成Vim的pip，有了Vundle，安装和更新包这种事情不费吹灰之力。
+
+我们现在来安装Vundle：
 ``` bash
-"这个文件的双引号 (") 是注释
+git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+```
+该命令将下载Vundle插件管理器，并将它放置在你的Vim编辑器bundles文件夹中。
+现在，你可以通过.vimrc配置文件来管理所有扩展了。
+
+我这里有一个比较优化的配置了，将vim打造成一个IDE， 编辑`~/.vimrc`，输入如下内容
+``` vim
+"vundle
+set nocompatible
+filetype off
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'VundleVim/Vundle.vim'
+"git interface
+Plugin 'tpope/vim-fugitive'
+"filesystem
+Plugin 'scrooloose/nerdtree'
+Plugin 'jistr/vim-nerdtree-tabs'
+Plugin 'kien/ctrlp.vim'
+
+"html
+"  isnowfy only compatible with python not python3
+Plugin 'isnowfy/python-vim-instant-markdown'
+Plugin 'jtratner/vim-flavored-markdown'
+Plugin 'suan/vim-instant-markdown'
+Plugin 'nelstrom/vim-markdown-preview'
+"python sytax checker
+Plugin 'nvie/vim-flake8'
+Plugin 'vim-scripts/Pydiction'
+Plugin 'vim-scripts/indentpython.vim'
+Plugin 'scrooloose/syntastic'
+
+"auto-completion stuff
+"Plugin 'klen/python-mode'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'klen/rope-vim'
+"Plugin 'davidhalter/jedi-vim'
+Plugin 'ervandew/supertab'
+""code folding
+Plugin 'tmhedberg/SimpylFold'
+
+"Colors!!!
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'jnurmine/Zenburn'
+
+call vundle#end()
+
+filetype plugin indent on    " enables filetype detection
+let g:SimpylFold_docstring_preview = 1
+
+"autocomplete
+let g:ycm_autoclose_preview_window_after_completion=1
+
+"custom keys
+let mapleader=" "
+map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"
+call togglebg#map("<F5>")
+"colorscheme zenburn
+"set guifont=Monaco:h14
+
+let NERDTreeIgnore=['\.pyc$', '\~$'] "ignore files in NERDTree
+
+"I don't like swap files
+set noswapfile
+
+"turn on numbering
+set nu
+
+"python with virtualenv support
+py << EOF
+import os.path
+import sys
+import vim
+if 'VIRTUA_ENV' in os.environ:
+  project_base_dir = os.environ['VIRTUAL_ENV']
+  sys.path.insert(0, project_base_dir)
+  activate_this = os.path.join(project_base_dir,'bin/activate_this.py')
+  execfile(activate_this, dict(__file__=activate_this))
+EOF
+
+"it would be nice to set tag files by the active virtualenv here
+":set tags=~/mytags "tags for ctags and taglist
+"omnicomplete
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+
+"------------Start Python PEP 8 stuff----------------
+" Number of spaces that a pre-existing tab is equal to.
+au BufRead,BufNewFile *py,*pyw,*.c,*.h set tabstop=4
+
+"spaces for indents
+au BufRead,BufNewFile *.py,*pyw set shiftwidth=4
+au BufRead,BufNewFile *.py,*.pyw set expandtab
+au BufRead,BufNewFile *.py set softtabstop=4
+
+" Use the below highlight group when displaying bad whitespace is desired.
+highlight BadWhitespace ctermbg=red guibg=red
+
+" Display tabs at the beginning of a line in Python mode as bad.
+au BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
+" Make trailing whitespace be flagged as bad.
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+
+" Wrap text after a certain number of characters
+au BufRead,BufNewFile *.py,*.pyw, set textwidth=100
+
+" Use UNIX (\n) line endings.
+au BufNewFile *.py,*.pyw,*.c,*.h set fileformat=unix
+
+" Set the default file encoding to UTF-8:
+set encoding=utf-8
+
+" For full syntax highlighting:
+let python_highlight_all=1
+syntax on
+
+" Keep indentation level from previous line:
+autocmd FileType python set autoindent
+
+" make backspaces more powerfull
+set backspace=indent,eol,start
+
+
+"Folding based on indentation:
+autocmd FileType python set foldmethod=indent
+"use space to open folds
+nnoremap <space> za
+"----------Stop python PEP 8 stuff--------------
+
+"js stuff"
+autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
+
 syntax on               "语法高亮显示。
+set encoding=utf-8
 set hlsearch            "高亮度反白
 set backspace=2         "可以用Backspace键删除
 set ts=4                "tab键等于4个空格
@@ -47,8 +208,40 @@ set lazyredraw
 set history=100         "历史记录条数
 set hlsearch            "高亮显示搜索结果
 set incsearch           "增量搜索，每次输入一个字母都自动搜
-vnoremap ,s y:%s/<C-R>=escape(@", '\\/.*$^~[]')<CR>/    "选中替换
+"choose and replace
+vnoremap ,s y:%s/<C-R>=escape(@", '\\/.*$^~[]')<CR>/
+
 ```
+
+注：把配置写进去后，要在vim里面执行`:PluginInstall`命令让Vundle自动帮你安装完所有插件。
+
+### 问题记录
+
+出现过问题"ouCompleteMe unavailable: No module named ycmd"
+
+解决办法:
+``` bash
+cd ~/.vim/bundle/YouCompleteMe
+git pull
+git submodule update --init --recursive
+```
+
+但是执行过程报错: `The remote end hung up unexpectedly`，这是因为网络不稳定，
+要下载的东西很多，多试几次耐心一点就可以了。
+
+----------------------------------
+
+The ycmd server SHUT DOWN (restart with ':YcmRestartServer')
+
+YCM需要手动编译才行，到`.vim/bundle/YouCompleteMe`下跑
+``` bash
+ ./install.sh --clang-completer
+```
+耐心等待大概1个小时可以下载并安装完...
+
+下面是我配置完成后的vim:
+
+![](http://xnstatic-1253397658.cossh.myqcloud.com/vim02.png)
 
 ## 入门
 
@@ -202,19 +395,47 @@ gt在不同的tab中切换，use 5gt to switch to tab 5，从1开始
 :tabclose或者:q关闭当前tab
 :tabmove将tab移动到指定的位置
 
-:tabedit {file}   edit specified file in a new tab
-:tabclose         close current tab
-:tabclose {i}     close i-th tab
-:tabonly          close all other tabs
-:tabs         list all tabs
-:tabm 0       move current tab to first
-:tabm         move current tab to last
-:tabm {i}     move current tab to position i+1
-:tabn         go to next tab
-:tabp         go to previous tab
-:tabfirst     go to first tab
-:tablast      go to last tab
+:tabe {file}   edit specified file in a new tab
+:tabc          close current tab
+:tabc {i}      close i-th tab
+:tabo          close all other tabs
+:tabs          list all tabs
+:tabm 0        move current tab to first
+:tabm          move current tab to last
+:tabm {i}      move current tab to position i+1
+:tabn          go to next tab
+:tabp          go to previous tab
+:tabfirst      go to first tab
+:tablast       go to last tab
 ```
+
+## 分割布局
+
+使用`sv <filename>`命令打开一个文件，你可以纵向分割布局（新文件会在当前文件下方界面打开），
+使用相反的命令`vs <filename>``你可以得到横向分割布局（新文件会在当前文件右侧界面打开）。
+
+![](http://xnstatic-1253397658.cossh.myqcloud.com/vim01.png)
+
+你还可以嵌套分割布局，所以你可以在分割布局内容再进行分割，纵向或横向都可以，
+直到你满意为止。众所周知，我们开发时经常需要同时查看多个文件。
+
+专业贴士：记得在输入完:sv后，利用tab补全功能，快速查找文件
+
+窗口跳转指令:
+```
+<Ctrl-w><Ctrl-j> 切换到下方的分割窗口
+<Ctrl-w><Ctrl-k> 切换到上方的分割窗口
+<Ctrl-w><Ctrl-l> 切换到右侧的分割窗口
+<Ctrl-w><Ctrl-h> 切换到左侧的分割窗口
+<Ctrl-ww>        切换到下一个分割窗口
+:q     关闭当前窗口
+:qall  关闭所有窗口并退出
+```
+
+## 缓冲区(Buffers)
+虽然Vim支持tab操作，仍有很多人更喜欢缓冲区和分割布局，你可以把缓冲区想象成最近打开的一个文件。
+Vim提供了方便访问近期缓冲区的方式，只需要输入`:b <buffer name or number>`
+就可以切换到一个已经开启的缓冲区（此处也可使用自动补全功能），你还可以通过`:ls`命令查看所有的缓冲区。
 
 ## FAQ
 不小心按到ctrl+s，结果就不动了
@@ -222,5 +443,82 @@ gt在不同的tab中切换，use 5gt to switch to tab 5，从1开始
 原来是Linux的一个快捷键呀，干什么用的？
 原来Ctrl+S在Linux里，是锁定屏幕的快捷键。如果要解锁，按下Ctrl+Q就可以了
 
+## NERDTree插件
+NERDTree的作用就是列出当前路径的目录树，一般IDE都是有的。
+可以方便的浏览项目的总体的目录结构和创建删除重命名文件或文件名。
+至于它的配置我做了如下修改:
+``` vim
+" NERDTree config
+map <F2> :NERDTreeToggle<CR>
+```
+使用F2键快速调出和隐藏它；
 
+如果想打开vim时自动打开NERDTree，可以如下设定:
+``` vim
+autocmd vimenter * NERDTree
+```
+下面总结一些命令,非常的多，只要记住一些你常用的就行了，后名添加！！！的是我常用的
+(原文地址：<http://yang3wei.github.io/blog/2013/01/29/nerdtree-kuai-jie-jian-ji-lu/>）
 
+最常用窗口跳转:
+```
+ctrl + w + h    光标 focus 左侧树形目录
+ctrl + w + l    光标 focus 右侧文件显示窗口
+ctrl + w + w    光标自动在左右侧窗口切换 #！！！
+ctrl + w + r    移动当前窗口的布局位置
+```
+
+主要命令集合:
+```
+o       在已有窗口中打开文件、目录或书签，并跳到该窗口
+go      在已有窗口 中打开文件、目录或书签，但不跳到该窗口
+t       在新 Tab 中打开选中文件/书签，并跳到新 Tab
+T       在新 Tab 中打开选中文件/书签，但不跳到新 Tab
+i       split 一个新窗口打开选中文件，并跳到该窗口
+gi      split 一个新窗口打开选中文件，但不跳到该窗口
+s       vsplit 一个新窗口打开选中文件，并跳到该窗口
+gs      vsplit 一个新 窗口打开选中文件，但不跳到该窗口
+!       执行当前文件
+O       递归打开选中 结点下的所有目录
+x       合拢选中结点的父目录
+X       递归 合拢选中结点下的所有目录
+e       Edit the current dif
+
+双击    相当于 NERDTree-o
+中键    对文件相当于 NERDTree-i，对目录相当于 NERDTree-e
+
+D       删除当前书签
+
+P       跳到根结点
+p       跳到父结点
+K       跳到当前目录下同级的第一个结点
+J       跳到当前目录下同级的最后一个结点
+k       跳到当前目录下同级的前一个结点
+j       跳到当前目录下同级的后一个结点
+
+C       将选中目录或选中文件的父目录设为根结点
+u       将当前根结点的父目录设为根目录，并变成合拢原根结点
+U       将当前根结点的父目录设为根目录，但保持展开原根结点
+r       递归刷新选中目录
+R       递归刷新根结点
+m       显示文件系统菜单 #！！！然后根据提示进行文件的操作如新建，重命名等
+cd      将 CWD 设为选中目录
+
+I       切换是否显示隐藏文件
+f       切换是否使用文件过滤器
+F       切换是否显示文件
+B       切换是否显示书签
+
+q       关闭 NerdTree 窗口
+?       切换是否显示 Quick Help
+```
+
+tab页操作:
+```
+:tabnew file 建立对指定文件新的tab
+:tabc        关闭当前的 tab
+:tabo        关闭所有其他的 tab
+:tabs        查看所有打开的 tab
+:tabp        前一个 tab
+:tabn        后一个 tab
+```

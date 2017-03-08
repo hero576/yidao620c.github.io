@@ -220,6 +220,7 @@ fc-list :zh
 
 要用XeLaTeX 取代 pdflatex，我們需要修改`conf.py`:
 ``` python
+# 注：在生成html的时候这句话要注释
 latex_engine = 'xelatex'
 ```
 
@@ -229,6 +230,7 @@ make clean
 make latexpdf
 ```
 中间遇到卡住的警告什么的不管，直接按Enter键，在`build/latex`目录中即可找到生成的pdf文件了。
+
 
 1. ReadTheDocs可以自动生成中文PDF，但ReadTheDocs服务器里的TeXLive版本太老，
 导致只能使用pdflatex而不能使用xelatex编译，再加上服务器上中文字体的限制，
