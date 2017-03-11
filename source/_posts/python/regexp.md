@@ -324,7 +324,8 @@ re.sub()替换   | \g<quote> 或 \g<1> 或 \1
 (?(id/name)yes-pattern|no-pattern)
 
 如果group id或name存在就匹配yes-pattern否则匹配no-pattern，no-pattern可以省略。
-比如,(<)?(\w+@\w+(?:\.\w+)+)(?(1)>|$)匹配email: aa@gmail.com或<aa@gmail.com>，但不匹配<aa@gmail.com
+比如,`(<)?(\w+@\w+(?:\.\w+)+)(?(1)>|$)`
+匹配email: `aa@gmail.com`或`<aa@gmail.com>`，但不匹配`<aa@gmail.com`
 
 注：上面使用不可捕获组语法(?:\.\w+)+，所以这个正则式只有两个group。永远记住上面写过的(?...)不创建分组group
 

@@ -21,5 +21,5 @@ comments: false
 
 ----------
 
-<center>微信扫一扫，请博主喝杯咖啡</center>
-<img src="http://7qn9a8.com1.z0.glb.clouddn.com/weixin1.png" />
+<center>![](http://7qn9a8.com1.z0.glb.clouddn.com/weixin1.png)</center>
+

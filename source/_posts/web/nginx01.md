@@ -453,6 +453,6 @@ server {
 
 测试一下 nginx 的配置 `/usr/local/nginx/sbin/nginx -t`，
 再重新加载 `systemctl reload nginx`， 成功以后，打开本地电脑上的浏览器
-![](http://yidaospace.qiniudn.com/nginx-blog.png)
 
+![](http://yidaospace.qiniudn.com/nginx-blog.png)
 
