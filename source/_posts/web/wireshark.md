@@ -18,7 +18,7 @@ wireshark能获取HTTP，也能获取HTTPS，但是不能解密HTTPS，所以wir
 直接去<https://www.wireshark.org/download.html>下载相应平台版本然后安装即可。
 
 wireshark是捕获机器上的某一块网卡的网络包，当你的机器上有多块网卡的时候，你需要选择一个网卡。
-点击Caputre->Options.. 选择正确的网卡，配置Capture Filter，然后点击"OK"按钮
+点击Caputre->Options.. 选择正确的网卡，配置Capture Filter，然后点击"Start"按钮
 
 ![](http://xnstatic-1253397658.cossh.myqcloud.com/wireshark01.png)
 
@@ -63,23 +63,20 @@ Protocol    |   Direction   |  Host(s)     |  Value  |  Logical Operations  |  O
 ------------|---------------|--------------|---------|----------------------|---------------------
 tcp         |dst            |10.10.202.254 |80       |and                   |tcp dst 10.2.2.2 3128
 
-
-<dl>
-  <dt><strong>Protocol（协议）</strong></dt>
-  <dd>可能的值: ether, fddi, ip, arp, rarp, decnet, lat, sca, moprc, mopdl, tcp and udp
-如果没有特别指明是什么协议，则默认使用所有支持的协议。</dd>
-  <dt><strong>Direction（方向）</strong></dt>
-  <dd>可能的值: src, dst, src and dst, src or dst
+> ***Protocol（协议）***<br/>
+> 可能的值: ether, fddi, ip, arp, rarp, decnet, lat, sca, moprc, mopdl, tcp and udp
+如果没有特别指明是什么协议，则默认使用所有支持的协议。<br/>
+> ***Direction（方向）***<br/>
+> 可能的值: src, dst, src and dst, src or dst
 如果没有特别指明来源或目的地，则默认使用 "src or dst" 作为关键字。
-例如，"host 10.2.2.2"与"src or dst host 10.2.2.2"是一样的。</dd>
-  <dt><strong>Host(s)</strong></dt>
-  <dd>可能的值： net, port, host, portrange
+例如，"host 10.2.2.2"与"src or dst host 10.2.2.2"是一样的。<br/>
+> ***Host(s)***<br/>
+> 可能的值： net, port, host, portrange
 如果没有指定此值，则默认使用"host"关键字。
-例如，"src 10.1.1.1"与"src host 10.1.1.1"相同。</dd>
-  <dt><strong>Logical Operations（逻辑运算）:</strong></dt>
-  <dd>可能的值：not, and, or
-否("not")具有最高的优先级。或("or")和与("and")具有相同的优先级，运算时从左至右进行。</dd>
-</dl>
+例如，"src 10.1.1.1"与"src host 10.1.1.1"相同。<br/>
+> ***Logical Operations（逻辑运算）***<br/>
+> 可能的值：not, and, or
+否("not")具有最高的优先级。或("or")和与("and")具有相同的优先级，运算时从左至右进行。
 
 例如:
 ```
@@ -87,8 +84,11 @@ tcp         |dst            |10.10.202.254 |80       |and                   |tcp
 "not tcp port 3128 and tcp port 23"与"not (tcp port 3128 and tcp port 23)"不同
 ```
 
-## 显示过滤器（Display Filter）
+### 显示过滤器（Display Filter）
 参考：https://wiki.wireshark.org/DisplayFilters
+
+显示过滤器就是在用来过滤封包列表的，它不影响捕获的日志文件，只是用来过滤显示列表中显示的项目用，
+是在运行时设置的随时可以更改。
 
 示例：
 ```
