@@ -241,7 +241,7 @@ YCM需要手动编译才行，到`.vim/bundle/YouCompleteMe`下跑
 
 下面是我配置完成后的vim:
 
-![](http://xnstatic-1253397658.cossh.myqcloud.com/vim02.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/vim02.png)
 
 ## 入门
 
@@ -414,7 +414,7 @@ gt在不同的tab中切换，use 5gt to switch to tab 5，从1开始
 使用`sv <filename>`命令打开一个文件，你可以纵向分割布局（新文件会在当前文件下方界面打开），
 使用相反的命令`vs <filename>``你可以得到横向分割布局（新文件会在当前文件右侧界面打开）。
 
-![](http://xnstatic-1253397658.cossh.myqcloud.com/vim01.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/vim01.png)
 
 你还可以嵌套分割布局，所以你可以在分割布局内容再进行分割，纵向或横向都可以，
 直到你满意为止。众所周知，我们开发时经常需要同时查看多个文件。

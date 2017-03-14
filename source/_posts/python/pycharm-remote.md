@@ -23,14 +23,14 @@ tags: [python]
 首先我们需要配置PyCharm通服务器的代码同步，打开Tools | Deployment | Configuration
 
 点击左边的“+”添加一个部署配置，输入名字，类型选SFTP
-![](http://yidaospace.qiniudn.com/pcr001.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pcr001.png)
 
 确定之后，再配置远程服务器的ip、端口、用户名和密码。root path是文件上传的根目录，注意这个目录必须用户名有权限创建文件。
-![](http://yidaospace.qiniudn.com/pcr002.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pcr002.png)
 
 然后配置映射，local path是你的工程目录，就是需要将本地这个目录同步到服务器上面，我填的是项目根目录。
 Deploy path on server 这里填写相对于root path的目录，下面那个web path不用管先
-![](http://yidaospace.qiniudn.com/pcr003.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pcr003.png)
 
 如果你还有一些文件或文件夹不想同步，那么在配置对话框的第三个tab页“Excluded path”里面添加即可，可同时指定本地和远程。
 
@@ -40,7 +40,7 @@ Deploy path on server 这里填写相对于root path的目录，下面那个web 
 有几种方法可以实现本地和远程文件的同步，手动和当文件保存后自动触发。这里我选择了手动，因为自动触发比如影响性能，PyCharm会卡，感觉不爽。
 
 手动上传方式很简单，选择需要同步的文件或文件夹，然后选择 Tools | Deployment | Upload to sftp(这个是刚刚配置的部署名称)
-![](http://yidaospace.qiniudn.com/pcr004.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pcr004.png)
 
 下载文件也是一样，选择 Tools | Deployment | Download from sftp
 
@@ -48,7 +48,7 @@ Deploy path on server 这里填写相对于root path的目录，下面那个web 
 有时候你并不确定远程和本地版本的完全一致，需要去比较看看。PyCharm提供了对比视图来为你解决这个问题。
 
 选择Tools | Deployment | Browse Remote Host，打开远程文件视图，在右侧窗口就能看到远程主机中的文件
-![](http://yidaospace.qiniudn.com/pcr005.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pcr005.png)
 
 选择一个你想要对比的文件夹，点击右键->Sync with Local，打开同步对比窗口，使用左右箭头来同步内容。
 
@@ -64,21 +64,21 @@ Deploy path on server 这里填写相对于root path的目录，下面那个web 
 
 #### 配置远程Python解释器
 选择File | Settings，选择Project | Project Interpreter，然后在右边，点击那个小齿轮设置，如下
-![](http://yidaospace.qiniudn.com/pcr006.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pcr006.png)
 
 然后点击"Add Remote"，填写主机的ssh配置
-![](http://yidaospace.qiniudn.com/pcr007.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pcr007.png)
 
 如果之前配置过SFTP的话就直接选“Deployment configuration”，然后选择刚刚的模板名称就可以了，由于我上面配置过就直接选模板，
 这里请仔细看我的Python解释器是虚拟环境virtualenv，这个要在服务器上面先创建好虚拟环境。
-![](http://yidaospace.qiniudn.com/pcr009.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pcr009.png)
 
 #### 开始调试
 完成之后选择这个远程的解释器作为工程的解释器即可,然后配置一个运行实例，打断点调试。
 这里我以另外一个django工程为例来说明，名字为zspace，因为用一个web工程来说明更具代表性。
 
 选择“Run/Debug Configuration”，添加一个“Django server”，然后配置像下面这样写
-![](http://yidaospace.qiniudn.com/pcr010.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pcr010.png)
 请注意图中标出的几个点，具体什么意思就不用多解释了吧，^_^
 
 然后你就可以像本地调试一样打断点做调试了。这个步骤太简单就不截图了，记得修改源码后同步到服务器继续下一次的调试。

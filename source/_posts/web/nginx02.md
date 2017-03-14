@@ -21,7 +21,7 @@ tags: [nginx]
 客户端向反向代理的命名空间中的内容发送普通请求，接着反向代理将判断向何处(原始服务器)转交请求，
 并将获得的内容返回给客户端，就像这些内容原本就是它自己的一样。如下图所示：
 
-![](http://xnstatic-1253397658.cossh.myqcloud.com/nginx-proxy.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/nginx-proxy.png)
 
 ## 应用场景
 
@@ -145,7 +145,7 @@ configure arguments: --prefix=/usr/local/nginx --with-http_ssl_module
 重启 nginx 后，我们打开浏览器，验证下反向代理的效果。
 在浏览器地址栏中输入`http://www.xiongneng.cc/README.md`，返回的结果是我的GitHub上面的README页面:
 
-![](http://xnstatic-1253397658.cossh.myqcloud.com/nginx-09.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/nginx-09.png)
 
 ## 虚拟主机
 有时候我们需要在同一台主机上面托管多个应用，每个应用访问域名不同，这里我们可以使用基于域名的虚拟主机来实现。

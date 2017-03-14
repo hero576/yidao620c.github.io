@@ -27,11 +27,11 @@ UTF-8编码把一个Unicode字符根据不同的数字大小编码成1-6个字�
 用记事本编辑的时候，从文件读取的UTF-8字符被转换为Unicode字符到内存里，
 编辑完成后，保存的时候再把Unicode转换为UTF-8保存到文件：
 
-![](http://yidaospace.qiniudn.com/pystr001.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pystr001.png)
 
 浏览网页的时候，服务器会把动态生成的Unicode内容转换为UTF-8再传输到浏览器：
 
-![](http://yidaospace.qiniudn.com/pystr002.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pystr002.png)
 
 所以你看到很多网页的源码上会有类似<meta charset="UTF-8" />的信息，表示该网页正是用的UTF-8编码
 
@@ -94,19 +94,19 @@ UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-1: ordin
 第二行注释是为了告诉Python解释器，按照UTF-8编码读取源代码，否则，你在源代码中写的中文输出可能会有乱码。
 
 申明了UTF-8编码并不意味着你的.py文件就是UTF-8编码的，必须并且要确保文本编辑器正在使用UTF-8 without BOM编码：
-![](http://yidaospace.qiniudn.com/pystr003.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pystr003.png)
 
 如果.py文件本身使用UTF-8编码，并且也申明了# -*- coding: utf-8 -*-，打开命令提示符测试就可以正常显示中文
 
 ### Python2和3的差异
 先准备两张图片
 
-![](http://yidaospace.qiniudn.com/unicode005.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/unicode005.png)
 
 第一张图片是几个特殊字符的unicode代码点（CODE POINT），
 用\uXXXX或者\xXX来表示，其中X都是十六进制字符，而\x表示前面一个字节为00就变成简写了。
 
-![](http://yidaospace.qiniudn.com/unicode006.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/unicode006.png)
 
 第二张图片是UTF-8怎样来通过可变字节来编码相应字符的代码点
 

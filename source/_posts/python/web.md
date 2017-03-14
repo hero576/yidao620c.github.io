@@ -115,7 +115,7 @@ if __name__ == '__main__':
 
 使用模板，我们需要预先准备一个HTML文档，这个HTML文档不是普通的HTML，
 而是嵌入了一些变量和指令，然后，根据我们传入的数据，替换后，得到最终的HTML，发送给用户：
-![](http://yidaospace.qiniudn.com/pyweb001.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pyweb001.png)
 这就是传说中的MVC：Model-View-Controller，中文名“模型-视图-控制器”。
 
 Python处理URL的函数就是C：Controller，Controller负责业务逻辑，比如检查用户名是否存在，取出用户信息等等；
@@ -205,7 +205,7 @@ pip install jinja2
 登录失败的模板呢？我们在form.html中加了一点条件判断，把form.html重用为登录失败的模板。
 
 最后，一定要把模板放到正确的templates目录下，templates和app.py在同级目录下：
-![](http://yidaospace.qiniudn.com/pyweb002.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pyweb002.png)
 
 启动python app.py，看看使用模板的页面效果，不重复演示了
 

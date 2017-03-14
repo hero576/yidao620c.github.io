@@ -33,7 +33,7 @@ Keepalived原理与实战精讲： <http://zhumeng8337797.blog.163.com/blog/stat
 
 系统架构图：
 
-![](http://yidaospace.qiniudn.com/0002.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/0002.png)
 
 ## 服务器的安装
 我们会用到4个服务器，横向分2层：

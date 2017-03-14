@@ -162,7 +162,7 @@ Running migrations:
 
 如果你看到下面这个页面，那么恭喜你，成功入门。
 
-![](http://yidaospace.qiniudn.com/dj001.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj001.jpg)
 
 [install-python3-on-centos6]: http://www.shayanderson.com/linux/install-python-3-on-centos-6-server.htm
 [virtualenv]: http://docs.python-guide.org/en/latest/dev/virtualenvs/

@@ -334,7 +334,7 @@ $ git rebase --abort
 里面存了很多东西，其中最重要的一个就是暂存区（对应指针index），
 还有Git为我们自动创建的第一个分支master，以及指向master的一个指针叫HEAD。
 
-![](http://xnstatic-1253397658.cossh.myqcloud.com/git01.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/git01.jpg)
 
 把文件往Git版本库里添加的时候，是分两步执行的：
 
@@ -386,7 +386,7 @@ Changes to be committed:
 	modified:   readme.txt
 ```
 现在，暂存区的状态就变成这样了:
-![](http://xnstatic-1253397658.cossh.myqcloud.com/git02.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/git02.jpg)
 
 所以，`git add`命令实际上就是把要提交的所有修改放到暂存区（Stage），
 然后，执行`git commit`就可以一次性把暂存区的所有修改提交到分支:
@@ -404,7 +404,7 @@ On branch master
 nothing to commit, working directory clean
 ```
 现在版本库变成了这样，暂存区就没有任何内容了：
-![](http://xnstatic-1253397658.cossh.myqcloud.com/git02.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/git02.jpg)
 
 ## 关于diff
 很多时候需要用diff命令来比较文件差异，总结一下:

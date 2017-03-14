@@ -33,7 +33,7 @@ web开发的过程中一定会遇到 cgi、wsgi 之类的名词，然后看着�
 用于接收前端服务器转发的动态请求并处理后发给 web 应用程序(这里也就是Flask应用程序)。
 
 下面一个图可以很清晰的展示三者之间的关系：
-![](http://yidaospace.qiniudn.com/uwsgi-01.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/uwsgi-01.png)
 
 对于CGI，我认为在 CGI 制定的时候也许没有考虑到现代的架构，所以他只是一个通用的规范，
 而后来的 WSGI 也好 Fastcgi 也好等等这些都是在 CGI 的基础上扩展并应用于现代Web Server不同地方的通信规范，

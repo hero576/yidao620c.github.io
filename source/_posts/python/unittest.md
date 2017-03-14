@@ -220,7 +220,7 @@ ssertNotRegexpMatches(s, r)        | not r.search(s)
 要理解unittest框架，有4个概念需要搞清楚：test fixture, test case, test suite, test runner
 
 下面是静态类图：
-![](http://yidaospace.qiniudn.com/pyunittest01.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pyunittest01.png)
 
 * 一个TestCase的实例就是一个测试用例。什么是测试用例呢？就是一个完整的测试流程，包括测试前准备环境的搭建(setUp)，
 执行测试代码(run)，以及测试后环境的还原(tearDown)。元测试(unit test)的本质也就在这里，
@@ -247,7 +247,7 @@ overriding the 'setUp' and 'tearDown' methods respectively.
 通过覆盖TestCase的setUp()和tearDown()方法来实现。
 
 下面这个图可以更加清晰的描述它们之间的关系：
-![](http://yidaospace.qiniudn.com/pyunittest02.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pyunittest02.png)
 
 下面通过简单的例子再来实践一下，就拿unittest文档上的例子吧：
 ``` python

@@ -178,19 +178,19 @@ fn:matches(string,pattern)             |如果 string 参数匹配指定的模�
 
 1. 先按F12打开chrome浏览器的调试窗口，然后通过邮件审查元素找到“Google 搜索”按钮，查看对应的html代码。
 
-![](http://yidaospace.qiniudn.com/x002.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/x002.png)
 
 *. 然后右键选择PsychoXPath->Test XPath(Highlight)
 
-![](http://yidaospace.qiniudn.com/x006.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/x006.png)
 
 *. 之后输入XPath路径
 
-![](http://yidaospace.qiniudn.com/x004.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/x004.png)
 
 *. 结果如下，被找到的页面元素会被高亮显示：
 
-![](http://yidaospace.qiniudn.com/x005.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/x005.png)
 
 *. 控制台模式：
 

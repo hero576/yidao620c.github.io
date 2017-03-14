@@ -48,5 +48,5 @@ tags: 笑话
 男假装思考：嗯……你输了的话做我女朋友，我输了的话做你男朋友。
 女的一般表现：会笑，并且打你。男的抓紧时间追问，并顺势抓住她的手。
 
-天下武功，唯快不破→_→ ![](http://yidaospace.qiniudn.com/rabbit.gif)
+天下武功，唯快不破→_→ ![](https://xnstatic-1253397658.file.myqcloud.com/rabbit.gif)
 

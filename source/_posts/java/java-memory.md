@@ -10,7 +10,7 @@ tags: java
 
 Java与C++之间有一堵由内存动态分配和垃圾收集技术所围成的高墙，墙外面的人想进去，墙里面的人却想出来。
 按照《Java虚拟机规范(第2版)》的规定，Java虚拟机所管理的内存将包括以下几个运行时数据区域，来个图更加直观点，如下图所示：
-![](http://7qn9a8.com1.z0.glb.clouddn.com/jvm.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/jvm.png)
 <!--more-->
 
 ### 程序计数器

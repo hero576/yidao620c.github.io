@@ -77,7 +77,7 @@ def post_detail(request, pk):
 
 OK，一切都已准备就绪，现在打开首页，然后点击任意一篇文章标题看下结果：
 
-![](http://yidaospace.qiniudn.com/dj017.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj017.jpg)
 
 搞定！！
 
@@ -191,7 +191,7 @@ def post_new(request):
 ```
 保存后，刷新首页，点击加号那个链接可以看到如下页面：
 
-![](http://yidaospace.qiniudn.com/dj018.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj018.jpg)
 
 但是当你写了文字后点击保存后会发现又跑到这个新建页面来了。
 因为这个是POST提交，但是URL还是一样的，又会跑到post_new那个视图中去，
@@ -222,13 +222,13 @@ def post_new(request):
 
 上面表示我添加完一篇文章后自动跳转到文章详情页面去，保存后效果：
 
-![](http://yidaospace.qiniudn.com/dj019.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj019.jpg)
 
 ### 表单验证
 由于我们在Post模型中已经定义了title和text是必需的，django会自动帮我们做验证。
 看下如果我们不输入title和text直接提交会怎样：
 
-![](http://yidaospace.qiniudn.com/dj020.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj020.jpg)
 
 django已经自动帮我们做了验证，是不是很酷呢？
 
@@ -282,11 +282,11 @@ def post_edit(request, pk):
 
 OK，现在让我们来测试下效果：
 
-![](http://yidaospace.qiniudn.com/dj021.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj021.jpg)
 
-![](http://yidaospace.qiniudn.com/dj022.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj022.jpg)
 
-![](http://yidaospace.qiniudn.com/dj023.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj023.jpg)
 
 完美，恭喜你！你的应用已经变得越来越酷了。
 

@@ -31,7 +31,7 @@ systemctl enable nginx
 systemctl status nginx
 ```
 打开浏览器，输入服务器的 IP 地址即可看到首页，就这么简单！
-![](http://yidaospace.qiniudn.com/nginx-welcome.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/nginx-welcome.png)
 
 ### 源码安装
 我喜欢这种安装方式，可以控制的东西很多
@@ -437,7 +437,7 @@ systemctl reload nginx
 ```
 
 完成以后，打开本地电脑上的浏览器，输入 `xiongneng.cc` 或者 `www.xiongneng.cc` 看看效果
-![](http://yidaospace.qiniudn.com/nginx-xnindex.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/nginx-xnindex.png)
 
 想再创建一个虚拟主机，可以在 conf.d 目录下面，再去创建一个 .conf 文件，
 这次把这个文件命名为 xnblog.dev.conf ，你也可以在同一个配置文件里定义多个 server 配置区块去定义多个服务器，
@@ -454,5 +454,5 @@ server {
 测试一下 nginx 的配置 `/usr/local/nginx/sbin/nginx -t`，
 再重新加载 `systemctl reload nginx`， 成功以后，打开本地电脑上的浏览器
 
-![](http://yidaospace.qiniudn.com/nginx-blog.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/nginx-blog.png)
 

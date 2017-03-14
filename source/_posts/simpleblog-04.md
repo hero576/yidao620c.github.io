@@ -79,7 +79,7 @@ urlpatterns = patterns('',
 
 不过你要是现在就访问首页`http://127.0.0.1:8000/`的话会报错的。
 
-![](http://yidaospace.qiniudn.com/dj006.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj006.jpg)
 
 为啥，因为你的视图views.post_list现在没有实现啊，找不到这个方法！
 
@@ -119,7 +119,7 @@ def post_list(request):
 
 接下来我们访问下首页，OMG，又出错了：
 
-![](http://yidaospace.qiniudn.com/dj007.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj007.jpg)
 
 这次报的错是模板`blog/post_list.html`找不到。这个是显而易见的，因为我们根本还没有定义这个html模板。
 
@@ -148,7 +148,7 @@ blog
 
 这时候再次访问首页，效果如下：
 
-![](http://yidaospace.qiniudn.com/dj008.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj008.jpg)
 
 一片空白，但没有报错了。
 
@@ -162,7 +162,7 @@ blog
 
 再次访问`http://192.168.203.95:8000/`：
 
-![](http://yidaospace.qiniudn.com/dj009.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj009.jpg)
 
 ### 动态模板
 不过目前为止我们还只能显示静态的网页。怎样将文章列表在首页显示出来呢？
@@ -226,7 +226,7 @@ HTML页面只识别HTML标签，那么怎样让生成动态的内容呢？答案
 
 现在再次访问首页，效果如下：
 
-![](http://yidaospace.qiniudn.com/dj010.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj010.jpg)
 
 ### 别忘了一件事
 别忘了把它push到pythonanywhere上面去。

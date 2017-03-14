@@ -14,7 +14,7 @@ tags: [python核心]
 
 ### 项目目录结构
 xnrpc项目的目录结果如下
-![](http://yidaospace.qiniudn.com/pysetup001.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pysetup001.png)
 
 项目最顶层的目录为“xnrpc”，其中与打包最相关的文件是setup.py，
 这里面最核心的文件就是这个setup.py了，我们看看里面写什么：<!--more-->
@@ -122,7 +122,7 @@ pip install wheel
 ```
 
 执行完后，在顶层项目目录下将产生几个新的目录：
-![](http://yidaospace.qiniudn.com/pysetup002.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pysetup002.png)
 
 ### 注册PyPI帐号
 如果没有账号需要先在PyPI网站上注册账号。
@@ -168,7 +168,7 @@ twine register dist/xnrpc-1.0.0-py2-none-any.whl
 twine upload dist/*
 ```
 通过上面.pypirc文件中的配置，上传打包文件，可以在PyPI上看到上传的项目文件：
-![](http://yidaospace.qiniudn.com/pysetup003.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/pysetup003.png)
 
 恭喜你成功将你的软件包上传至PyPI上面，全世界的人都可以通过pip来安装了：
 ```

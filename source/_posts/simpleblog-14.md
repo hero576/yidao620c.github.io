@@ -202,9 +202,9 @@ xadmin.site.register(Category)
 
 这些完成后，我们打开应用，访问`管理站点`链接，应该可以看到如下的登录页面
 
-![](http://yidaospace.qiniudn.com/dj110.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj110.png)
 
 登录后的效果
 
-![](http://yidaospace.qiniudn.com/dj111.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj111.jpg)
 

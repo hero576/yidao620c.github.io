@@ -57,7 +57,7 @@ def post_draft_list(request):
 
 刷新首页，点击那个草稿箱链接，看看效果。
 
-![](http://yidaospace.qiniudn.com/dj024.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj024.jpg)
 
 ## 发布功能
 在文章详情页面添加一个发布的按钮，如果觉得合适的时候就能发布文章了。
@@ -98,11 +98,11 @@ def post_publish(request, pk):
 
 刷新后看效果：
 
-![](http://yidaospace.qiniudn.com/dj025.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj025.jpg)
 
 发布之后的效果：
 
-![](http://yidaospace.qiniudn.com/dj026.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj026.jpg)
 
 注意观察发布前和发布后文章的发布日期那个位置的变化。并且发布后再去首页看看，文章已经可以正常显示了。
 
@@ -129,7 +129,7 @@ def post_remove(request, pk):
 
 OK，刷新页面看效果：
 
-![](http://yidaospace.qiniudn.com/dj027.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj027.jpg)
 
 删除后再去首页看，已经没有这篇文章了。
 

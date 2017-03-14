@@ -257,7 +257,7 @@ if __name__ == '__main__':
     caller()
 ```
 我用图片方式标注几个重要的执行点，然后分析一下整个执行流程：
-![](http://yidaospace.qiniudn.com/yield08.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/yield08.png)
 
 1. 执行到`result = c.next()`的时候，这个会执行这个生成器函数直到遇见`yield`语句，yield语句返回值111，控制权里面回到caller()里来，将返回值赋值给result，那么打印"(1) result=111"。
 2. 然后执行`c.send('Hello')`，这一步会跳到myfunc()的上次保存点，m接收值`Hello`（上一次是从`m = yield 111`那个地方跳出来的），然后打印"get m = Hello"，直到运行到又碰到yield语句`yield 222`。

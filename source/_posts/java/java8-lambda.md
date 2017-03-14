@@ -282,7 +282,7 @@ sum() -> 产生结果
 List<Integer> nums = Lists.newArrayList(1,null,3,4,null,6);
 nums.stream().filter(num -> num != null).count();
 ```
-![](http://yidaospace.qiniudn.com/0001.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/0001.jpg)
 
 图片就是对于Stream例子的一个解析，可以很清楚的看见：原本一条语句被三种颜色的框分割成了三个部分。
 红色框中的语句是一个Stream的生命开始的地方，负责创建一个Stream实例；

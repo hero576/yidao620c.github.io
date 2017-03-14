@@ -107,6 +107,6 @@ tags: django
 ```
 保存后刷新页面，看下是不是能正常工作：
 
-![](http://yidaospace.qiniudn.com/dj016.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj016.jpg)
 
 一切都OK…

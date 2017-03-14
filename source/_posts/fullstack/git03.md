@@ -30,7 +30,7 @@ Git是分布式版本控制系统，同一个Git仓库，可以分布到不同�
 大概20分钟就能看懂整个流程。
 
 看完之后就可以自己创建一个远程仓库了，比如我现在创建了一个叫"gitdemo"的repository
-![](http://xnstatic-1253397658.cossh.myqcloud.com/git13.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/git13.png)
 注意，我在初始化的时候还选择了创建一个README.md和一个LICENSE文件。
 
 ## 克隆远程仓库
@@ -218,7 +218,7 @@ just for gitdemo test
 GitHub官网指南上面有个官方的仓库，专门用来给大家fork用，就是<https://github.com/octocat/Spoon-Knife>
 
 我把它fork下来后，就是下面这样:
-![](http://xnstatic-1253397658.cossh.myqcloud.com/git14.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/git14.png)
 
 然后你所有的修改就在自己的这个远程仓库上面完成，等你修改好以后。登陆GitHub，在项目主页，
 点击"Pull requests" 菜单，点击"New pull request"按钮，填写你的修改说明提交就可以了。

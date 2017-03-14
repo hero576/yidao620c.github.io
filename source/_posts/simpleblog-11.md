@@ -19,11 +19,11 @@ TinyMCE的官方网站是：<http://www.tinymce.com/>
 
 TinyMCE的最新版本是4.1.9，下面是官网截屏：<!--more-->
 
-![](http://yidaospace.qiniudn.com/tinymce.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/tinymce.png)
 
 下载下来后，我们把它解压到工程的static/目录下面，如下图所示：
 
-![](http://yidaospace.qiniudn.com/dj101.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj101.png)
 
 ## 安装原理
 安装的原理很简单，只需要在使用编辑器的页面里引用tinymce.min.js文件并初始化就可以了。
@@ -151,11 +151,11 @@ tinymce.PluginManager.add("addmore", function (a) {
 
 下面是我创建文章时，插入了一段python代码的示例：
 
-![](http://yidaospace.qiniudn.com/dj102.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj102.png)
 
 这个是保存后的效果：
 
-![](http://yidaospace.qiniudn.com/dj103.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj103.png)
 
 ## 最后一件事
 别忘了部署到Heroku上面和别人分享你的成果。

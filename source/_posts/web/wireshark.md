@@ -20,11 +20,11 @@ wireshark能获取HTTP，也能获取HTTPS，但是不能解密HTTPS，所以wir
 wireshark是捕获机器上的某一块网卡的网络包，当你的机器上有多块网卡的时候，你需要选择一个网卡。
 点击Caputre->Options.. 选择正确的网卡，配置Capture Filter，然后点击"Start"按钮
 
-![](http://xnstatic-1253397658.cossh.myqcloud.com/wireshark01.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/wireshark01.png)
 
 开始抓包，最新的2.2.5抓包界面如下:
 
-![](http://xnstatic-1253397658.cossh.myqcloud.com/wireshark02.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/wireshark02.png)
 
 WireShark 主要分为这几个界面
 
@@ -100,13 +100,13 @@ ip.dst == 14.215.177.38 and ip.src == 10.10.111.230 and ssl
 
 这个在TCP/IP协议里面讲的太多了，就不多说了，直接给个图就能看得懂:
 
-![](http://xnstatic-1253397658.cossh.myqcloud.com/tcp01.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/tcp01.png)
 
 那么通过抓取一次HTTP访问例子来说明这个握手过程，
 比如要访问<http://www.cnblogs.com>，先通过ping命令拿到ip地址为"223.6.248.220"，
 然后新建一个Capture Filter，规则为`host 223.6.248.220`，运行后网页访问这个链接:
 
-![](http://xnstatic-1253397658.cossh.myqcloud.com/tcp02.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/tcp02.png)
 
 非常清楚的显示了三次TCP握手过程。
 
@@ -114,7 +114,7 @@ ip.dst == 14.215.177.38 and ip.src == 10.10.111.230 and ssl
 在wireshark中输入http过滤，然后选中GET / HTTP/1.1的那条记录，右键然后点击"Follow TCP Stream",
 这样做的目的是为了得到与浏览器打开网站相关的数据包
 
-![](http://xnstatic-1253397658.cossh.myqcloud.com/wireshark03.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/wireshark03.png)
 
 如果要跟踪HTTPS请求，先在Edit->Preferences->Protocols里面选择SSL
 

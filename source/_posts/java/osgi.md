@@ -78,7 +78,7 @@ Import-Package: org.osgi.framework;version="1.3.0"
 现在一切准备就绪了，你可以直接运行这个bundle。点击"Run Configuration"，新加一个OSGi Framework，把需要的bundle勾上，Run
 
 注意，请在Target Platform里面把下面这些依赖添加进去
-![](http://7qn9a8.com1.z0.glb.clouddn.com/20160512170036.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/20160512170036.png)
 
 运行之后会在控制台打印hello world，那么说明执行成功了。
 

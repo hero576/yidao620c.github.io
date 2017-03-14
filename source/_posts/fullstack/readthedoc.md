@@ -93,7 +93,7 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 ### 预览效果
 然后在更目录执行`make html`，进入`build/html`目录后用浏览器打开`index.html`
-![](http://xnstatic-1253397658.cossh.myqcloud.com/rtd01.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/rtd01.png)
 
 toctree 支持多级目录,比如要想将python.rst,java.rst笔记在不同的目录,toctree这样设置:
 ```
@@ -168,10 +168,10 @@ def setup(app):
 注：在创建read the docs项目时候，语言选择"Simplified Chinese"
 
 在构建过程中出现任何问题，都可以登录readthedoc找到项目中的"构建"页查看构建历史，点击任何一条查看详细日志:
-![](http://xnstatic-1253397658.cossh.myqcloud.com/rtd02.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/rtd02.png)
 
 我将自己以前博客里面的关于scrapy的文章都迁移至readthedoc，现在看看效果：
-![](http://xnstatic-1253397658.cossh.myqcloud.com/rtd03.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/rtd03.png)
 
 ## 生成PDF
 

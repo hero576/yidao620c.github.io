@@ -31,7 +31,7 @@ WSGI的全称是Web Server Gateway Interface，翻译过来就是Web服务器网
 在WSGI中定义了两个角色，Web服务器端称为server或者gateway，应用程序端称为application或者framework（因为WSGI的应用程序端的规范一般都是由具体的框架来实现的）。我们下面统一使用server和application这两个术语。
 
 server端会先收到用户的请求，然后会根据规范的要求调用application端，如下图所示：
-![](http://7qn9a8.com1.z0.glb.clouddn.com/wsgi01.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/wsgi01.png)
 调用的结果会被封装成HTTP响应后再发送给客户端。
 
 #### server如何调用application
@@ -148,7 +148,7 @@ WSGI Middleware（中间件）也是WSGI规范的一部分。我们之前讲过W
 对于server来讲它就是个application，而对于application来说，它就是个server。middleware并不修改server端和application端的规范，
 只是同时实现了这两种角色的功能而已。你可以将middleware形象比喻成批发商，对于厂商而已它是购买者，而对于零售店而已它是供应方。
 下面我用一张图来形象的说明这个中间件的工作原理：
-![](http://yidaospace.qiniudn.com/wsgi20.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/wsgi20.png)
 
 上图中最上面的三个彩色框表示角色，中间的白色框表示操作，操作的发生顺序按照1 ~ 5进行了排序，我们直接对着上图来说明middleware是如何工作的：
 
@@ -206,9 +206,9 @@ httpd.serve_forever()
 ```
 
 确保以上两个文件在同一个目录下，然后在命令行输入python server.py来启动WSGI服务器：
-![](http://7qn9a8.com1.z0.glb.clouddn.com/wsgi02.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/wsgi02.png)
 启动成功后，打开浏览器，输入`http://localhost:8000/xiongneng` 就可以看到结果了：
-![](http://7qn9a8.com1.z0.glb.clouddn.com/wsgi03.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/wsgi03.png)
 
 是不是有点Web App的感觉了？其实WSGI就是这么简单！
 

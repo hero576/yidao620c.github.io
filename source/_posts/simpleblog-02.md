@@ -213,7 +213,7 @@ admin.site.register(Post)
 
 看到下面的界面：
 
-![](http://yidaospace.qiniudn.com/dj002.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj002.jpg)
 
 ### 添加管理员
 
@@ -229,11 +229,11 @@ Superuser created successfully.
 
 我创建了一个admin/admin的账户。这时候登录
 
-![](http://yidaospace.qiniudn.com/dj003.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj003.jpg)
 
 点击Posts修改或者增加等等，确保里面至少2个又published_date，这个后面会用到。
 
-![](http://yidaospace.qiniudn.com/dj004.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj004.jpg)
 
 更多关于django admin的内容，参考官方文档：[admin](https://docs.djangoproject.com/en/1.9/ref/contrib/admin/)
 

@@ -27,7 +27,7 @@ css是一种用来描述某种标记语言写的web站点的样式语言。这�
 
 再次打开模板文件，效果如下：
 
-![](http://yidaospace.qiniudn.com/dj011.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj011.jpg)
 
 是不是感觉变美观了。^_^
 
@@ -108,7 +108,7 @@ h1 a是CSS选择器，上面的意思是在h1标签下的链接a的文字颜色�
 
 OK，保存并刷新后看看效果
 
-![](http://yidaospace.qiniudn.com/dj012.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj012.jpg)
 
 我想要文字左边的边距大一点，这样会好看些。那么在blog.css中添加如下内容：
 
@@ -119,7 +119,7 @@ body {
 ```
 刷新页面后效果：
 
-![](http://yidaospace.qiniudn.com/dj013.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj013.jpg)
 
 我还想自定义文字标题的字体，在post_list.html模板的中添加如下一句
 
@@ -136,7 +136,7 @@ h1 a {
 ```
 刷新后的效果：
 
-![](http://yidaospace.qiniudn.com/dj014.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj014.jpg)
 
 ### CSS中的class
 在CSS中有一个class的概念，它可以让你只改变HTML中某一部分的样式而不会影响到其他部分。
@@ -210,7 +210,7 @@ h1, h2, h3, h4 {
 ```
 保存这些文件后，刷新页面，看看，是不是很酷了：
 
-![](http://yidaospace.qiniudn.com/dj015.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/dj015.jpg)
 
 已经比较美观了。上面的css应该看起来不会那么难，可以自己试着去修改它，没关系的，反正出错了可以撤销。最好多练习才行。
 
