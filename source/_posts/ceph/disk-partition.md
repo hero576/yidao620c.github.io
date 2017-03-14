@@ -1,5 +1,5 @@
 ---
-title: "Linux磁盘分区笔记"
+title: "Linux磁盘分区总结"
 date: 2017-03-14 15:32:07 +0800
 comments: true
 toc: true
@@ -107,7 +107,7 @@ parted /dev/sdb mklabel label-type
 label-type可以是："bsd", "dvh", "gpt",  "loop","mac", "msdos", "pc98", or "sun"。
 一般的pc机都是msdos格式，如果分区大于2T则需要选用gpt格式的分区表。
 
-### MBR分区和GPT分区的转换
+### 分区转换
 转换成GPT:
 ``` bash
 parted /dev/sdb mklabel gpt
@@ -202,7 +202,7 @@ The operation has completed successfully.
 ### 创建分区
 创建某个分区前，请先查看这个磁盘分区表，查看扇区大小sector，然后算好起始扇区start和结束扇区end。
 
-比如我要创建第1个分区/dev/sdd1，大小1GiB，扇区数量为1*1024*1024*1024/512=2097152。
+比如我要创建第1个分区/dev/sdd1，大小1GiB，扇区数量为`1*1024*1024*1024/512=2097152`。
 起始扇区start=1，结束扇区end=2097152，type code为8300，分区名为"ceph journal"
 ```
 sgdisk -n 1:1:2097152 -t 1:8300 -c "ceph journal" -p /dev/sdd
