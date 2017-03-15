@@ -45,13 +45,13 @@ issue中输入冒号 : 添加表情
 ## 嵌入GitHub
 是否想在其他网页上面嵌入你自己的GitHub仓库页面，有个star或fork按钮。可以这样写:
 ``` html
-<iframe src="http://ghbtns.com/github-btn.html?user=yidao620c&amp;repo=python3-cookbook&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="156px" height="30px"></iframe>
-<iframe src="http://ghbtns.com/github-btn.html?user=yidao620c&amp;repo=python3-cookbook&amp;type=fork&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="156px" height="30px"></iframe>
+<iframe src="https://ghbtns.com/github-btn.html?user=yidao620c&amp;repo=python3-cookbook&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="156px" height="30px"></iframe>
+<iframe src="https://ghbtns.com/github-btn.html?user=yidao620c&amp;repo=python3-cookbook&amp;type=fork&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="156px" height="30px"></iframe>
 ```
 把user和repo改成你自己的就可以了，效果如下:
 
-<iframe src="http://ghbtns.com/github-btn.html?user=yidao620c&amp;repo=python3-cookbook&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="156px" height="30px"></iframe>
-<iframe src="http://ghbtns.com/github-btn.html?user=yidao620c&amp;repo=python3-cookbook&amp;type=fork&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="156px" height="30px"></iframe>
+<iframe src="https://ghbtns.com/github-btn.html?user=yidao620c&amp;repo=python3-cookbook&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="156px" height="30px"></iframe>
+<iframe src="https://ghbtns.com/github-btn.html?user=yidao620c&amp;repo=python3-cookbook&amp;type=fork&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="156px" height="30px"></iframe>
 
 ## 设置项目语言
 GitHub会根据相关文件代码的数量来自动识别你这个项目，如果你需要自己指定项目语言，可以在项目的根目录下添加如下`.gitattributes`文件，写入:
