@@ -318,20 +318,20 @@ http {
 proxy_cache_path path [levels=number] keys_zone=zone_name:zone_size [inactive=time] [max_size=size];
 ```
 
-> path是用来指定缓存在磁盘的路径地址。比如：/data/nginx/cache。那以后生存的缓存文件就会存在这个目录下。
+> path是用来指定缓存在磁盘的路径地址。比如：`/data/nginx/cache`。那以后生存的缓存文件就会存在这个目录下。
 >
 > levels用来指定缓存文件夹的级数，可以是：levels=1, levels=1:1, levels=1:2, levels=1:2:3
 > 可以使用任意的1位或2位数字作为目录结构分割符，如 X, X:X,或 X:X:X 例如: 2, 2:2, 1:1:2，但是最多只能是三级目录。
 
 那这个里面的数字是什么意思呢。表示取hash值的个数。比如：
 
-> 现在根据请求地址localhost/index.php?a=4 用md5进行哈希，得到e0bd86606797639426a92306b1b98ad9
+> 现在根据请求地址`localhost/index.php?a=4`用md5进行哈希，得到`e0bd86606797639426a92306b1b98ad9`
 >
 > levels=1:2 表示建立2级目录，把hash最后1位(9)拿出建一个目录，然后再把9前面的2位(ad)拿来建一个目录,
-> 那么缓存文件的路径就是/data/nginx/cache/9/ad/e0bd86606797639426a92306b1b98ad9
+> 那么缓存文件的路径就是`/data/nginx/cache/9/ad/e0bd86606797639426a92306b1b98ad9`
 >
 > 以此类推：levels=1:1:2表示建立3级目录，把hash最后1位(9)拿出建一个目录，然后再把9前面的1位(d)建一个目录,
-> 最后把d前面的2位(8a)拿出来建一个目录 那么缓存文件的路径就是/data/nginx/cache/9/d/8a/e0bd86606797639426a92306b1b98ad9
+> 最后把d前面的2位(8a)拿出来建一个目录 那么缓存文件的路径就是`/data/nginx/cache/9/d/8a/e0bd86606797639426a92306b1b98ad9`
 
 keys_zone 所有活动的key和元数据存储在共享的内存池中，这个区域用keys_zone参数指定。zone_name指的是共享池的名称，
 zone_size指的是共享池的大小。注意每一个定义的内存池必须是不重复的路径，例如：
