@@ -268,7 +268,7 @@ Repository name一定要写成username.github.io的形式，
 username是你刚注册的账号名称。其他的不用变。
 申请完毕后大约几分钟，域名https://username.github.io就可以访问了。
 
-#### 本地配置
+### 本地配置
 
 * 在Git官网下载git for windows并安装。安装完成后可在cmd输入git version来确认是否安装成功。
 * 在octopress的目录下输入命令rake setup_github_pages进行一系列自动的设置。
@@ -351,7 +351,7 @@ either $a=+\sqrt{2}$ or $a=-\sqrt{2}$.
 
 ### SEO
 
-##### 增加统计工具
+#### 增加统计工具
 
 博客搭建好了以后，大家一定很想知道每天都有多少的访问量。现在有很多工具都可以帮助我们做这件事，
 比如Google Analytics、百度统计、CNZZ 等
@@ -364,7 +364,7 @@ either $a=+\sqrt{2}$ or $a=-\sqrt{2}$.
 
 只需到百度统计官方网站申请一个账号，将获取的代码添加到source/_includes/custom/footer.html中，重新部署即可。
 
-##### 搜索优化
+#### 搜索优化
 
 为了让自己搭建的博客更容易被搜索引擎搜到，最好将网站地址提交给各大搜索引擎，下面有两个连接搜集了各个搜索引擎的网站提交入口：
 

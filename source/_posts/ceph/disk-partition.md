@@ -39,6 +39,10 @@ Number  Start   End     Size    File system  Name          Flags
 ```
 输出结果中的`Partition Table: gpt`表示gpt分区
 
+这里顺带解释下物理扇区和逻辑扇区的概念，上面的`Sector size (logical/physical): 512B/512B`，
+也就是硬盘的每个扇区实际大小是512B，不过我们做分区都是针对逻辑扇区的，也就是logical为单位，
+这里也是512B，一般来讲磁盘会将一个物理扇区划分成多个逻辑扇区，逻辑扇区才是分区最小单位。
+
 ## fdisk使用
 fdisk用来创建MBR分区，这个工具应该都会用了，这里只是简单介绍几个。
 
@@ -205,7 +209,7 @@ The operation has completed successfully.
 比如我要创建第1个分区/dev/sdd1，大小1GiB，扇区数量为`1*1024*1024*1024/512=2097152`。
 起始扇区start=1，结束扇区end=2097152，type code为8300，分区名为"ceph journal"
 ```
-sgdisk -n 1:1:2097152 -t 1:8300 -c "ceph journal" -p /dev/sdd
+sgdisk -n 1:1:2097152 -t 1:8300 -c 1:"ceph journal" -p /dev/sdd
 ```
 type code一般就是8300(Linux filesystem)，可通过`sgdisk -L`来查看所有。
 
@@ -247,10 +251,11 @@ The operation has completed successfully.
 不过你可用看到就是start扇区变成了2048，原因是需要分区对齐
 `Moved requested sector from 34 to 2048 in order to align on 2048-sector boundaries`
 
-修改分区名:
+如果忘记设置分区名了，就用下面命令:
 ``` bash
 sgdisk -c 1:"ceph journal" /dev/sdd
 ```
+
 查看下是否成功:
 ```
 [root@node200 ~]# sgdisk -p /dev/sdd
