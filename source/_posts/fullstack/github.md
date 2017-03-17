@@ -34,6 +34,46 @@ reply to
 
 issue中输入冒号 : 添加表情
 
+## 任务列表
+Issues 和 Pull requests 里可以添加复选框，语法如下（注意空白符）:
+```
+- [ ] Be awesome
+- [ ] Prepare dinner
+  - [ ] Research recipe
+  - [ ] Buy ingredients
+  - [ ] Cook recipe
+- [ ] Sleep
+```
+
+普通的markdown文件中可创建只读的任务列表，比如在README.md中添加 TODO list:
+```
+- [ ] Mercury
+- [x] Venus
+- [x] Earth
+  - [x] Moon
+- [x] Mars
+  - [ ] Deimos
+  - [ ] Phobos
+```
+
+## emoji图标
+在GitHub上面很多地方都可以使用emoji图标，比如:
+
+* issues
+* markdown files
+* pull requests
+* commit messages
+* and almost everywhere you find a textfield
+
+一个例子:
+```
+My :turtle: :heart: :watermelon:
+```
+
+GitHub可使用的emoji表情: https://github.com/leereilly/emoji
+
+Emoji 速查表: http://www.emoji-cheat-sheet.com
+
 ## 键盘快捷键
 这个就更强大了，在仓库页面上提供了快捷键方便快速导航
 
@@ -59,4 +99,5 @@ GitHub会根据相关文件代码的数量来自动识别你这个项目，如�
 *.html linguist-language=Java
 ```
 主要意思是把所有 html 文件后缀的代码识别成Java文件。
+
 
