@@ -40,8 +40,8 @@ menu:
   archives: /archives
   categories: /categories
   tags: /tags
-  guestbook: /guestbook
   about: /about
+#  guestbook: /guestbook
 #  sitemap: /sitemap.xml
   #commonweal: /404.html
 
@@ -288,7 +288,7 @@ mathjax:
 #baidu_analytics:
 
 # Duoshuo ShortName
-duoshuo_shortname: yidao620c
+#duoshuo_shortname: yidao620c
 
 # Disqus
 #disqus_shortname:
@@ -297,15 +297,15 @@ duoshuo_shortname: yidao620c
 #hypercomments_id:
 
 # Gentie productKey
-#gentie_productKey:
+#gentie_productKey: f2eacc1caaab4d6788c990c034cfbebb
 
 # Support for youyan comments system.
 # You can get your uid from http://www.uyan.cc
-#youyan_uid: your uid
+#youyan_uid: 2128604
 
 # Support for LiveRe comments system.
 # You can get your uid from https://livere.com/insight/myCode (General web site)
-#livere_uid: your uid
+#livere_uid: MTAyMC8yNzg4Mi80NDU5
 
 # Baidu Share
 # Available value:
@@ -343,10 +343,10 @@ duoshuo_shortname: yidao620c
 # Make duoshuo show UA
 # user_id must NOT be null when admin_enable is true!
 # you can visit http://dev.duoshuo.com get duoshuo user id.
-duoshuo_info:
-  ua_enable: true
-  admin_enable: false
-  user_id: 0
+#duoshuo_info:
+#  ua_enable: true
+#  admin_enable: false
+#  user_id: 0
   #admin_nickname: Author
 
 
