@@ -12,6 +12,26 @@ tags: [python核心]
 * github项目地址：<https://github.com/yidao620c/xnrpc>
 * pipi模块地址：<https://pypi.python.org/pypi/xnrpc>
 
+### 软件包归档格式
+
+Python的软件包一开始是没有官方的标准分发格式的。比如Java有jar包或者war包作为分发格式，Python则什么都没有。
+后来不同的工具都开始引入一些比较通用的归档格式。比如，setuptools引入了Egg格式。
+但是，这些都不是官方支持的，存在元数据和包结构彼此不兼容的问题。因此，为了解决这个问题，
+PEP 427定义了新的分发包标准，名为Wheel。目前pip和setuptools工具都支持Wheel格式。
+这里我们简单总结一下常用的分发格式：
+
+* tar.gz格式：这个就是标准压缩格式，里面包含了项目元数据和代码，可以使用Python setup.py sdist命令生成。
+* egg格式：这个本质上也是一个压缩文件，只是扩展名换了，里面也包含了项目元数据以及源代码。这个格式由setuptools项目引入。
+可以通过命令`Python setup.py bdist_egg`命令生成。
+* whl格式：这个是Wheel包，也是一个压缩文件，只是扩展名换了，里面也包含了项目元数据和代码，还支持免安装直接运行。
+whl分发包内的元数据和egg包是有些不同的。这个格式是由PEP 427引入的。可以通过命令`Python setup.py bdist_wheel`生成。
+
+[Python Wheels](http://pythonwheels.com/)网站展示了使用Wheels发行的python模块在PyPI上的占有率，推荐使用wheel包。
+
+### .egg-info和.dist-info目录
+如果你到系统中安装Python库的路径下看看，就能看到很多名称以.egg-info或者以.dist-info结尾的目录。这些目录的内容就是这个库的元数据，
+是从库的分发包中拷贝出来的。其中.egg-info类型的目录来自于Egg格式的分发包，.dist-info类型的目录来自于Wheel格式的分发包
+
 ### 项目目录结构
 xnrpc项目的目录结果如下
 ![](https://xnstatic-1253397658.file.myqcloud.com/pysetup001.png)
