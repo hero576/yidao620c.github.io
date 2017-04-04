@@ -214,7 +214,7 @@ this is dev line
 ```
 
 现在，master分支和feature1分支变成了下图所示:
-![](https://xnstatic-1253397658.file.myqcloud.com/git11.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/git12.png)
 
 查看合并图:
 ``` bash
@@ -247,7 +247,7 @@ git merge --no-ff -m "merge with no-ff" dev
 再把dev分支合并到master上，在master分支发布1.0版本；
 
 你和你的小伙伴们每个人都在dev分支上干活，每个人都有自己的分支，时不时地往dev分支上合并就可以了，类似这样:
-![](https://xnstatic-1253397658.file.myqcloud.com/git12.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/git121.png)
 
 ## Bug分支
 bug分支一般是那种时间短任务急的分支，修改完马上要合并提交的，就是临时分支。

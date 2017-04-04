@@ -409,11 +409,11 @@ chkconfig nginx on
 ```
 使用SSl
 ```
-cp lib/support/nginx/gitlab-ssl /etc/nginx/conf.d/gitlab.conf
+cp /home/git/gitlab/lib/support/nginx/gitlab-ssl /etc/nginx/conf.d/gitlab.conf
 ```
 不使用SSL
 ```
-cp lib/support/nginx/gitlab /etc/nginx/conf.d/gitlab.conf
+cp /home/git/gitlab/lib/support/nginx/gitlab /etc/nginx/conf.d/gitlab.conf
 ```
 我这里不使用SSL，编辑vim /etc/nginx/conf.d/gitlab.conf，将git.example.com替换成你的地址
 ```
@@ -434,23 +434,29 @@ upstream gitlab-workhorse {
   server unix:/home/git/gitlab/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
 }
 ```
+
+测试配置：
+```
+nginx -t
+```
+
 修改权限
 ```
 usermod -a -G git nginx
 chmod g+rx /home/git/
 ```
-将selinux关闭，否则会出现 nginx 访问错误 (13: Permission denied)，HTTP显示502
+
+去修改`/etc/selinux/conf`，将selinux关闭，否则会出现 nginx 访问错误 (13: Permission denied)，HTTP显示502
+
+将`SELINUX=enforcing` 改为 `SELINUX=disabled`,重启机器即可
+
+`setenforce 0` 只是临时关闭，重启后问题仍然出现
+
+然后执行：
 ```
-# 最好去修改/etc/selinux/conf
-# 将SELINUX=enforcing 改为 SELINUX=disabled,重启机器即可
-setenforce 0 # 只是临时关闭，重启后问题仍然出现
 service nginx start
 shutdown -r now
 service gitlab restart
-```
-测试下
-```
-nginx -t
 ```
 
 ## 配置防火墙

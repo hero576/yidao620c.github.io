@@ -225,6 +225,98 @@ GitHub官网指南上面有个官方的仓库，专门用来给大家fork用，�
 
 至于你的这个Pull requests能不能被合并，就看该项目维护者的心情了。
 
+## 保持fork之后的项目和上游同步
+团队协作，为了规范，一般都是fork组织的仓库到自己帐号下，再提交pr，组织的仓库一直保持更新，
+下面介绍如何保持自己fork之后的仓库与上游仓库同步。
+
+下面以我 fork 团队的博客仓库为例
+
+点击 fork 组织仓库到自己帐号下，然后就可以在自己的帐号下 clone 相应的仓库
+
+使用 git remote -v 查看当前的远程仓库地址，输出如下：
+```
+origin  git@github.com:ibrother/staticblog.github.io.git (fetch)
+origin  git@github.com:ibrother/staticblog.github.io.git (push)
+```
+
+可以看到从自己帐号 clone 下来的仓库，远程仓库地址是与自己的远程仓库绑定的（这不是废话吗）
+
+接下来运行
+```
+git remote add upstream https://github.com/staticblog/staticblog.github.io.git
+```
+
+这条命令就算添加一个别名为 upstream（上游）的地址，指向之前 fork 的原仓库地址。git remote -v 输出如下：
+```
+origin   git@github.com:ibrother/staticblog.github.io.git (fetch)
+origin   git@github.com:ibrother/staticblog.github.io.git (push)
+upstream https://github.com/staticblog/staticblog.github.io.git (fetch)
+upstream https://github.com/staticblog/staticblog.github.io.git (push)
+```
+
+之后运行下面几条命令，就可以保持本地仓库和上游仓库同步了
+```
+git fetch upstream
+git checkout master
+git merge upstream/master
+```
+
+或者更简单的命令：
+```
+git pull upstream {branch name}
+```
+
+接着就是熟悉的推送本地仓库到远程仓库
+```
+git push origin master
+```
+
+然后可以去github上自己的托管空间上创建pull request
+
+## git工作流
+这里讲最常见的三种工作流：
+
+### Centralized Workflow
+和svn类似，就一个master分支，push/pull循环
+![](https://xnstatic-1253397658.file.myqcloud.com/git51.png)
+
+### Feature Branch workflow
+所有的feature开发都必须在特定的branch下而不是直接在master分之下开发
+
+![](https://xnstatic-1253397658.file.myqcloud.com/git52.png)
+
+feature分支开发完成后，发起merge requests，项目经理在code review后合并
+
+Gitlab关于这种工作流的说明: <https://docs.gitlab.com/ee/workflow/workflow.html>
+
+### Forking workflow
+
+不同于使用唯一一个server-side repo作为中央库，这种工作流给每一个开发人员都定义分配一个server-side repo。
+这意味着每一个contributor都有两个git repo:一个local one，一个public server-side one；
+
+但是有个官方的official repo，大家的server-side repo都是从这个official repo通过fork操作获得。
+
+![](https://xnstatic-1253397658.file.myqcloud.com/git53.png)
+
+一般流程为：
+
+* 项目经理初始化"official repo“
+* 开发人员从official repo来做fork
+* 开发人员从他们forked repo来做clone到本地
+* 开发人员在他们自己的feature上进行开发工作
+* git pull upstream master
+* git push origin feature-branch
+* 提交一个pull requests
+* 项目经理合并开发人员申请的feature
+* 开发人员和official repo保持同步更新
+* 其他开发人员同步更新：git pull upstream master
+
+### 三种工作流使用场景
+
+1. Centralized Workflow     => 习惯了svn，团队很小，项目简单
+2. Feature Branch workflow  => 一般的内部团队项目开发
+3. Forking workflow         => 大型分布式协作开发，开源软件
+
 ## 标签管理
 最后还有标签就放这里讲吧，因为要涉及远程标签。
 发布一个版本时，我们通常先在版本库中打一个标签（tag），这样就唯一确定了打标签时刻的版本，标签也是版本库的一个快照。
