@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "centos7安装gitlab8.9"
+title: "centos7安装gitlab8.8"
 date: 2016-09-09 22:22:22 +0800
 toc: true
 categories: fullstack
@@ -571,6 +571,45 @@ user.password_confirmation = 'secret_password'
 user.save
 # 如果不知道具体邮箱，可以通过find来查找邮箱
 user = User.find(1)
+```
+
+## 中文汉化
+如果不习惯英文界面，可以汉化
+
+克隆 GitLab.com 仓库git clone
+```
+git clone https://gitlab.com/larryli/gitlab.git gitlab_cn
+```
+
+确认版本号，安装对应版本的汉化包：
+```
+cat /home/git/gitlab/VERSION
+```
+
+进入前面用git拉取的目录gitlab_cn
+```
+cd gitlab_cn
+```
+
+先停止gitlab
+```
+service gitlab stop
+```
+
+8.8 版本的汉化补丁（8-8-stable是英文稳定版，8-8-zh是中文版，两个 diff 结果便是汉化补丁）
+```
+git diff origin/8-8-stable origin/8-8-zh > /tmp/8.8.diff
+```
+
+应用汉化补丁
+```
+cd /home/git/gitlab/
+git apply /tmp/8.8.diff
+```
+
+启动gitlab
+```
+service gitlab start
 ```
 
 ## FAQ
