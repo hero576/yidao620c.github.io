@@ -614,9 +614,10 @@ service gitlab start
 
 ## FAQ
 
-1. 内网请使用SSH协议的地址来pull/push，profile settings中SSH Keys添加相应的pubkey
+1. 内网请使用SSH协议的地址来pull/push，profile settings中SSH Keys添加相应的pubkey，
+具体生成方法一定要带邮箱地址`ssh-keygen -t rsa -C "xiongneng@winhong.com"`
 2. 公网的话就使用https协议了，这个暂时还没研究
-3. win7上面push的时候报了一个libcurl-4.dll找不到，去网上下载后放到C:\Windows\SysWOW64\下面
+3. win7上面push的时候报了一个`libcurl-4.dll`找不到，去网上下载后放到`C:\Windows\SysWOW64\`下面
 
 ## 参考文档
 
