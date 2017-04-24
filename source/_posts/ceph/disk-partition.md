@@ -197,7 +197,7 @@ Partition name: 'ceph data'
 
 ### 删除磁盘所有分区
 ```
-[root@node200 ~]# sgdisk --zap-all --clear --mbrtogpt /dev/sdd
+[root@node200 ~]# sgdisk --zap-all --clear --mbrtogpt -g /dev/sdd
 GPT data structures destroyed! You may now partition the disk using fdisk or
 other utilities.
 The operation has completed successfully.

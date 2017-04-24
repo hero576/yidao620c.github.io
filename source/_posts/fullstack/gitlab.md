@@ -612,10 +612,30 @@ git apply /tmp/8.8.diff
 service gitlab start
 ```
 
+## 简单使用
+这里我使用的是SSH协议，需要复制你的ssh-key到gitlab上面。
+
+**客户端生成ssh-key**
+
+如果已经有sshkey，可用之前的。
+
+在客户端执行命令 ssh-keygen -t rsa -C "for xxx"，-C 选项后是备注，可随意。
+
+命令执行后会要求输入key存储的文件名和passphrase：
+
+输入一个特有的文件名，否则使用默认的 id_rsa。
+passphrase。不输入也可以。输入之后，提交的时候要输入这个passphrase
+完成后在 ~/.ssh/ 会生成2个文件。id_rsa 和 id_rsa.pub。前者是私钥，注意保管，后者是公钥。
+
+**添加ssh-key到gitlab**
+
+登录之后: Profile Settings => SSH-Keys => Add SSH key。
+
+输入之前生成的公钥，标题随意。
+
 ## FAQ
 
-1. 内网请使用SSH协议的地址来pull/push，profile settings中SSH Keys添加相应的pubkey，
-具体生成方法一定要带邮箱地址`ssh-keygen -t rsa -C "xiongneng@winhong.com"`
+1. 内网请使用SSH协议的地址来pull/push，profile settings中SSH Keys添加相应的pubkey
 2. 公网的话就使用https协议了，这个暂时还没研究
 3. win7上面push的时候报了一个`libcurl-4.dll`找不到，去网上下载后放到`C:\Windows\SysWOW64\`下面
 

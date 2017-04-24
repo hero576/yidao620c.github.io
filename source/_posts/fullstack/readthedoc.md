@@ -342,3 +342,16 @@ two line
 ```
 
 ---------------------
+
+2.0.0版的pdf文件中，每个章节都多了一层编号。
+
+我猜测这个问题的原因是sphinx将rst转为LaTex文件，再转为PDF的。sphinx生成的LaTex文件中，
+使用了\Section标记段落，默认情况下\Section是自动编号的章节，而\Section*才是不带自动编号的。
+
+为了解决这个问题，需要手工编辑sphinx生成的python3-cookbook.tex，
+在`\setcounter{tocdepth}{2}`下增加一行`\setcounter{secnumdepth}{-2}`
+
+这行代码关闭了章节编号的计数器，这样生成的PDF就是目录正确且章节不带自动编号。
+具体原理解释参见<http://liam0205.me/2015/04/10/how-to-list-unnumbered-section-in-the-table-of-contents/>
+
+---------------------
