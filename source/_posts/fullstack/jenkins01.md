@@ -286,7 +286,7 @@ git push origin master
 
 1. 主机上面先安装docker，不然会报命令找不到
 2. 我使用过的tomcat来运行jenkins，这个进程是使用tomcat用户启动，执行命令也是tomcat用户，
-所以需要确保tomcat用户可使用su - c 执行，也就是shell为`/bin/bash`而不是`/sbin/nologin`
+所以需要确保tomcat用户可使用`su - c`执行，也就是shell为`/bin/bash`而不是`/sbin/nologin`
 3. Cannot connect to the Docker daemon. Is the docker daemon running on this host?
 先切换到tomcat用户执行`docker pull python:3.5.1`命令发现报错一样，那么看看docker进程是否启动。
 ```
