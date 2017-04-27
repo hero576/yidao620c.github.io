@@ -91,10 +91,10 @@ ceph osd pool set {pool-name} {key} {value}
 
 列出一些比较常见的属性：
 
-* size           副本数
-* pg_num         pg数量
-* pgp_num        pg放置数量
-* crush_ruleset  规则id
+* size           - 副本数
+* pg_num         - pg数量
+* pgp_num        - pg放置数量
+* crush_ruleset  - 规则id
 
 ## 获取pool的空间使用情况
 

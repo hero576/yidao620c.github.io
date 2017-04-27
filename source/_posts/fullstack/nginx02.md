@@ -3,7 +3,7 @@ title: "nginx笔记 - 进阶篇"
 date: 2017-01-09 20:16:16 +0800
 comments: true
 toc: true
-categories: web
+categories: fullstack
 tags: [nginx]
 ---
 

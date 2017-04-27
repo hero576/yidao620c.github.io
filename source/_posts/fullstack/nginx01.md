@@ -3,7 +3,7 @@ title: "nginx笔记 - 配置和使用"
 date: 2017-01-08 12:22:15 +0800
 comments: true
 toc: true
-categories: web
+categories: fullstack
 tags: [nginx]
 ---
 nginx是一个优秀的 HTTP 和反向代理服务器，一个邮件代理服务器，
