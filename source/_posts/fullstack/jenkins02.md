@@ -286,4 +286,281 @@ pipeline {
 
 这个在前面一篇已经演示过怎样创建这样的Pipeline了，就不再多讲。
 
+## Pipeline语法
+最后一部分详解讲解下管道的定义语法。还是只以`Declarative Pipeline`来说明。
+
+所有声明式管道都必须包含在`pipeline`块中：
+```
+pipeline {
+    /* insert Declarative Pipeline here */
+}
+```
+块里面的语句和表达式都是Groovy语法，遵循以下规则：
+
+1. 最顶层规定就是`pipeline { }`
+2. 语句结束不需要分好，一行一条语句
+3. 块中只能包含`Sections`, `Directives`, `Steps`或者赋值语句
+4. 属性引用语句被当成是无参方法调用，比如`input`实际上就是方法`input()`调用
+
+接下来我详细讲解下`Sections`, `Directives`, `Steps`这三个东西
+
+### Sections
+
+`Sections`在声明式管道中包含一个或多个`Directives`, `Steps`
+
+#### post
+
+`post` section 定义了管道执行结束后要进行的操作。支持在里面定义很多`Conditions`块：
+`always`, `changed`, `failure`, `success` 和 `unstable`。
+这些条件块会根据不同的返回结果来执行不同的逻辑。
+
+* always：不管返回什么状态都会执行
+* changed：如果当前管道返回值和上一次已经完成的管道返回值不同时候执行
+* failure：当前管道返回状态值为"failed"时候执行，在Web UI界面上面是红色的标志
+* success：当前管道返回状态值为"success"时候执行，在Web UI界面上面是绿色的标志
+* unstable：当前管道返回状态值为"unstable"时候执行，通常因为测试失败，代码不合法引起的。在Web UI界面上面是黄色的标志
+
+```
+// Declarative //
+pipeline {
+    agent any
+    stages {
+        stage('Example') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+    }
+    post { ①
+        always { ②
+            echo 'I will always say Hello again!'
+        }
+    }
+}
+```
+
+#### stages
+由一个或多个`stage`指令组成，stages块也是核心逻辑的部分。
+我们建议对于每个独立的交付部分（比如`Build`,`Test`,`Deploy`）都应该至少定义一个`stage`指令。比如：
+```
+// Declarative //
+pipeline {
+    agent any
+    stages { ①
+        stage('Example') {
+        steps {
+            echo 'Hello World'
+        }
+        }
+    }
+}
+```
+
+#### steps
+在`stage`中定义一系列的`step`来执行命令。
+```
+// Declarative //
+pipeline {
+    agent any
+    stages {
+        stage('Example') {
+            steps { ①
+                echo 'Hello World'
+            }
+        }
+    }
+}
+```
+
+### Directives
+
+jenkins中的各种指令
+
+#### agent
+`agent`指令指定整个管道或某个特定的`stage`的执行环境。它的参数可用使用：
+
+1. any    - 任意一个可用的agent
+2. none   - 如果放在pipeline顶层，那么每一个`stage`都需要定义自己的`agent`指令
+3. label  - 在jenkins环境中指定标签的agent上面执行，比如`agent { label 'my-defined-label' }`
+4. node   - `agent { node { label 'labelName' } }` 和 label一样，但是可用定义更多可选项
+5. docker - 指定在docker容器中运行
+6. dockerfile - 使用源码根目录下面的`Dockerfile`构建容器来运行
+
+#### environment
+`environment`定义键值对的环境变量
+```
+// Declarative //
+pipeline {
+    agent any
+    environment { ①
+        CC = 'clang'
+    }
+    stages {
+        stage('Example') {
+            environment { ②
+                AN_ACCESS_KEY = credentials('my-prefined-secret-text') ③
+            }
+            steps {
+                sh 'printenv'
+            }
+        }
+    }
+}
+```
+
+#### options
+还能定义一些管道特定的选项，介绍几个常用的：
+
+* skipDefaultCheckout - 在`agent`指令中忽略源码`checkout`这一步骤。
+* timeout - 超时设置`options { timeout(time: 1, unit: 'HOURS') }`
+* retry - 直到成功的重试次数`options { retry(3) }`
+* timestamps - 控制台输出前面加时间戳`options { timestamps() }`
+
+#### parameters
+参数指令，触发这个管道需要用户指定的参数，然后在`step`中通过`params`对象访问这些参数。
+```
+// Declarative //
+pipeline {
+    agent any
+    parameters {
+        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+    }
+    stages {
+        stage('Example') {
+            steps {
+                echo "Hello ${params.PERSON}"
+            }
+        }
+    }
+}
+```
+
+#### triggers
+触发器指令定义了这个管道何时该执行，一般我们会将管道和GitHub、GitLab、BitBucket关联，
+然后使用它们的webhooks来触发，就不需要这个指令了。如果不适用`webhooks`，就可以定义两种`cron`和`pollSCM`
+
+* cron - linux的cron格式`triggers { cron('H 4/* 0 0 1-5') }`
+* pollSCM - jenkins的`poll scm`语法，比如`triggers { pollSCM('H 4/* 0 0 1-5') }`
+
+```
+// Declarative //
+pipeline {
+    agent any
+    triggers {
+        cron('H 4/* 0 0 1-5')
+    }
+    stages {
+        stage('Example') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+    }
+}
+```
+
+#### stage
+`stage`指令定义在`stages`块中，里面必须至少包含一个`steps`指令，一个可选的`agent`指令，以及其他stage相关指令。
+```
+// Declarative //
+pipeline {
+    agent any
+    stages {
+        stage('Example') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+    }
+}
+```
+
+#### tools
+定义自动安装并自动放入`PATH`里面的工具集合
+```
+// Declarative //
+pipeline {
+    agent any
+    tools {
+        maven 'apache-maven-3.0.1' ①
+    }
+    stages {
+        stage('Example') {
+            steps {
+                sh 'mvn --version'
+            }
+        }
+    }
+}
+```
+
+注：① 工具名称必须预先在Jenkins中配置好了 → Global Tool Configuration.
+
+#### 内置条件
+
+* branch - 分支匹配才执行 `when { branch 'master' }`
+* environment - 环境变量匹配才执行 `when { environment name: 'DEPLOY_TO', value: 'production' }`
+* expression - groovy表达式为真才执行 `expression { return params.DEBUG_BUILD } }`
+
+```
+// Declarative //
+pipeline {
+    agent any
+    stages {
+        stage('Example Build') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+        stage('Example Deploy') {
+            when {
+                branch 'production'
+            }
+            echo 'Deploying'
+        }
+    }
+}
+```
+
+### Steps
+定义执行步骤序列，声明式管道可以使用 [管道步骤指南](https://jenkins.io/doc/pipeline/steps/) 所有的东西。
+
+东西太多这里就不再展开说明。
+
+## 两种Pipeline比较
+`Declarative Pipeline`相对简单，而且不需要学习groovy语法，对于日常的一般任务完全够用，
+而`Scripted Pipeline`可通过Groovy语言的强大特性做任何你想做的事情。
+
+
+## Blue Ocean
+Jenkins最新整了个`Blue Ocean`出来，我觉得有必要用单独来介绍一下这个东西。
+
+`Blue Ocean`重新设计了用户使用Jenkins的方式，给我们带来极大的方便，同时也兼容自由风格的任务定义。
+
+### 安装
+
+可以在当前Jenkins环境下面安装`Blue Ocean`插件，具体步骤：
+
+1. 登录Jenkins服务器
+2. 侧边栏点击"Manage Jenkins" -> "Manage Plugins"
+3. 选择"Available"然后使用搜索框查找"Blue Ocean"
+4. 在安装列点击checkbox
+5. 选择"不重启安装"或"下载并重启后安装"
+
+### 启动
+安装好后会出现一个"Open Blue Ocean"的按钮，点击即可进入蓝色海洋：
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins17.png)
+
+界面如下：
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins18.png)
+
+蓝色海洋果真是蓝色的，^_^
+
+### Pipeline编辑器
+使用管道编辑器是最简单的方式，可以来创建多个并行执行的任务。
+编辑完保存后会自动保存为`Jenkinsfile`并放到源码管理系统中。
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins19.png)
 
