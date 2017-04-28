@@ -300,3 +300,8 @@ systemctl start docker
 ![](https://xnstatic-1253397658.file.myqcloud.com/jenkins06.png)
 
 说明已经在执行脚本了，那么耐心等待就行！
+
+## 升级
+Jenkins的升级非常简单，插件升级就去插件管理里面去在线升级，如果Jenkins本身要升级就下载最新war包替换，
+修改权限拥有者重启tomcat服务即可。
+

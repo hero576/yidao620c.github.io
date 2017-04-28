@@ -562,5 +562,19 @@ Jenkins最新整了个`Blue Ocean`出来，我觉得有必要用单独来介绍�
 使用管道编辑器是最简单的方式，可以来创建多个并行执行的任务。
 编辑完保存后会自动保存为`Jenkinsfile`并放到源码管理系统中。
 
+这里我演示一个在github中没有定义过`Jenkinsfile`的仓库，创建pipeline会默认写入`Jenkinsfile`文件。
+
+首先需要在GitHub上面生成你的`Personal access tokens`，然后创建一个关联GitHub的管道，可视化编辑任务。
+
 ![](https://xnstatic-1253397658.file.myqcloud.com/jenkins19.png)
+
+编辑完`pipeline`后保存会执行一次commit和push操作
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins20.png)
+
+个人感觉这种可视化简单点的倒可以，复杂的还是手动写吧。
+
+弄好后你想执行某个pipeline，就先点下那个五角星，上面就会出现执行按钮了。
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins21.png)
 
