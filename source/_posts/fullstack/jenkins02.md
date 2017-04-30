@@ -158,7 +158,7 @@ Pipeline支持两种形式，一种是`Declarative`管道，一个是`Scripted`�
 一个`Jenkinsfile`就是一个文本文件，里面定义了`Jenkins Pipeline`。
 将这个文本文件放到项目的根目录下面，纳入版本系统。
 
-简单起见，我现在只介绍`Declarative Pipeline`
+简单起见，我暂时只介绍`Declarative Pipeline`，实际上`Scripted Pipeline`功能更加强大。
 
 ### 部署三阶段
 
@@ -205,7 +205,8 @@ pipeline {
 
 ### 环境变量
 
-Jenkins定了很多内置的环境变量，可以通过`env`直接使用它们：
+Jenkins定了很多内置的环境变量，可在文档`localhost:8080/pipeline-syntax/globals#env`找到，
+通过`env`直接使用它们：
 ```
 echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
 ```
@@ -215,12 +216,12 @@ echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
 // Declarative //
 pipeline {
     agent any
-    environment { ①
+    environment {
         CC = 'clang'
     }
     stages {
         stage('Example') {
-            environment { ②
+            environment {
                 DEBUG_FLAGS = '-g'
             }
             steps {
@@ -527,10 +528,43 @@ pipeline {
 
 东西太多这里就不再展开说明。
 
+这里只讲一个特殊的step就是script，它可以让你在声明管道中执行脚本，使用groovy语法，这个非常有用：
+
+```
+// Declarative //
+pipeline {
+    agent any
+    stages {
+        stage('Example') {
+            steps {
+                echo 'Hello World'
+                script {
+                    def browsers = ['chrome', 'firefox']
+                    for (int i = 0; i < browsers.size(); ++i) {
+                        echo "Testing the ${browsers[i]} browser"
+                    }
+                }
+                script {
+                    // 一个优雅的退出pipeline的方法，这里可执行任意逻辑
+                    if( $VALUE1 == $VALUE2 ) {
+                       currentBuild.result = 'SUCCESS'
+                       return
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+if( $VALUE1 == $VALUE2 ) {
+   currentBuild.result = 'SUCCESS'
+   return
+}
+
 ## 两种Pipeline比较
 `Declarative Pipeline`相对简单，而且不需要学习groovy语法，对于日常的一般任务完全够用，
 而`Scripted Pipeline`可通过Groovy语言的强大特性做任何你想做的事情。
-
 
 ## Blue Ocean
 Jenkins最新整了个`Blue Ocean`出来，我觉得有必要用单独来介绍一下这个东西。
