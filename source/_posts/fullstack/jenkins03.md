@@ -144,9 +144,233 @@ ssh-copy-id root@192.168.217.233
 2. [update back]
 3. [update all]
 
-## 重新安装
+## 重新打包
+仅仅执行打包任务，也就是使用最新的源码构建安装包上传至samba服务器。
+对应的commit为：`[package]`
+
+## 重新打包并安装
 先执行打包任务，然后将samba上面的安装包复制到安装节点执行自动化安装。
 对应的commit为：`[reinstall]`
+
+## 更新脚本文件
+一些shell脚本没有包含在上面，这里我用一个新的提交注释叫`[update shell]`
+
+最终的`Jenkinsfile`文件如下：
+```
+#!groovy
+
+node {
+    // 安装节点
+    def install_node = "192.168.217.231"
+    // 集群节点列表
+    def cluster_nodes_str = "192.168.217.231 192.168.217.232"
+    def cluster_nodes = ["192.168.217.231","192.168.217.232"]
+    // 默认忽略所有push请求，除非commit说明包含特定字符串
+    def skip = '-1'
+    def workspace = pwd()
+    stage('Check') {
+        checkout scm
+        // 一个优雅的退出pipeline的方法，这里可执行任意逻辑
+        def resultUpdateshell = sh script: 'git log -1 --pretty=%B | grep "\\[update shell\\]"', returnStatus: true
+        def resultUpdateweb = sh script: 'git log -1 --pretty=%B | grep "\\[update web\\]"', returnStatus: true
+        def resultUpdateback = sh script: 'git log -1 --pretty=%B | grep "\\[update back\\]"', returnStatus: true
+        def resultUpdateall = sh script: 'git log -1 --pretty=%B | grep "\\[update all\\]"', returnStatus: true
+        def resultPackage = sh script: 'git log -1 --pretty=%B | grep "\\[package\\]"', returnStatus: true
+        def resultReinstall = sh script: 'git log -1 --pretty=%B | grep "\\[reinstall\\]"', returnStatus: true
+        echo "resultUpdateshell=${resultUpdateshell}"
+        echo "resultUpdateweb=${resultUpdateweb}"
+        echo "resultUpdateback=${resultUpdateback}"
+        echo "resultUpdateall=${resultUpdateall}"
+        echo "resultPackage=${resultPackage}"
+        echo "resultReinstall=${resultReinstall}"
+        if (resultUpdateshell == 0) {
+            skip = '0'
+            return
+        }
+        if (resultUpdateweb == 0) {
+            skip = '1'
+            return
+        }
+        if (resultUpdateback == 0) {
+            skip = '2'
+            return
+        }
+        if (resultUpdateall == 0) {
+            skip = '3'
+            return
+        }
+        if (resultPackage == 0) {
+            skip = '4'
+            return
+        }
+        if (resultReinstall == 0) {
+            skip = '5'
+            return
+        }
+        echo "Skipping ci build..."
+        return
+    }
+    stage('Build') {
+        if (skip == '-1') {
+            echo "skipping building. lalala,"
+            return
+        }
+        if (skip == '0') {
+            echo "Build Updateshell only... "
+            for (node in cluster_nodes) {
+                echo "Updateshell ${node}"
+                sh """
+                    cd resource/winstore/tools
+                    sudo tar zcf configure.tar.gz configure/
+                    sudo ssh root@${node} "rm -rf /opt/winstore/tools/configure/" 2>/dev/null
+                    sudo scp configure.tar.gz root@"${node}":/opt/winstore/tools/ 2>/dev/null
+                    sudo ssh root@${node} "cd /opt/winstore/tools/; tar zxf configure.tar.gz; chown -R sdsadmin:sdsadmin *; chmod +x configure/*; rm -f configure.tar.gz" 2>/dev/null
+
+                    cd ${workspace}
+                    sudo ssh root@${node} "rm -f /opt/winstore/venv/bin/query_wwid_disk.sh" 2>/dev/null
+                    sudo scp update_resource/winstore/scripts/query_wwid_disk.sh root@"${node}":/opt/winstore/venv/bin/ 2>/dev/null
+                    sudo ssh root@${node} "chown sdsadmin:sdsadmin /opt/winstore/venv/bin/query_wwid_disk.sh; chmod +x /opt/winstore/venv/bin/query_wwid_disk.sh" 2>/dev/null
+                """
+            }
+            return
+        }
+        if (skip == '1') {
+            echo "Build Updateweb only... "
+            sh '''
+                echo "Updateweb ..........."
+            '''
+            for (node in cluster_nodes) {
+                echo "Updateweb ${node}"
+                sh """
+                    cd resource/winstore/webapp/
+                    sudo tar zcf winstore-web.tar.gz winstore-web/
+                    sudo ssh root@${node} "rm -rf /opt/winstore/webapp/winstore-web/" 2>/dev/null
+                    sudo scp winstore-web.tar.gz root@"${node}":/opt/winstore/webapp/ 2>/dev/null
+                    sudo ssh root@${node} "cd /opt/winstore/webapp/; tar zxf winstore-web.tar.gz; chown -R sdsadmin:sdsadmin *; rm -f winstore-web.tar.gz; /etc/init.d/winstore-httpd restart" 2>/dev/null
+                """
+            }
+            return
+        }
+        if (skip == '2') {
+            echo "Build Updateback only... "
+            sh '''
+                echo "Updateback ..........."
+            '''
+            for (node in cluster_nodes) {
+                echo "Updateback ${node}"
+                sh """
+                    cd update_resource/winstore/
+                    sudo tar zcf winstore.tar.gz winstore/
+                    sudo ssh root@${node} "rm -rf /opt/winstore/venv/lib/python2.7/site-packages/winstore-3.6-py2.7.egg/winstore/" 2>/dev/null
+                    sudo scp winstore.tar.gz root@"${node}":/opt/winstore/venv/lib/python2.7/site-packages/winstore-3.6-py2.7.egg/ 2>/dev/null
+                    sudo ssh root@${node} "cd /opt/winstore/venv/lib/python2.7/site-packages/winstore-3.6-py2.7.egg/; tar zxf winstore.tar.gz; chown -R sdsadmin:sdsadmin *; rm -f winstore.tar.gz" 2>/dev/null
+                    sudo ssh root@${node} "/etc/init.d/winstore-db restart; /etc/init.d/winstore-agent restart; /etc/init.d/winstore-operation restart; /etc/init.d/winstore-master restart" 2>/dev/null
+                """
+            }
+            return
+        }
+        if (skip == '3') {
+            echo "Build Updateall only... "
+            sh '''
+                echo "Updateall ..........."
+            '''
+            for (node in cluster_nodes) {
+                echo "Updateweb ${node}"
+                sh """
+                    cd resource/winstore/webapp/
+                    sudo tar zcf winstore-web.tar.gz winstore-web/
+                    sudo ssh root@${node} "rm -rf /opt/winstore/webapp/winstore-web/" 2>/dev/null
+                    sudo scp winstore-web.tar.gz root@"${node}":/opt/winstore/webapp/ 2>/dev/null
+                    sudo ssh root@${node} "cd /opt/winstore/webapp/; tar zxf winstore-web.tar.gz; chown -R sdsadmin:sdsadmin *; rm -f winstore-web.tar.gz; /etc/init.d/winstore-httpd restart" 2>/dev/null
+                    cd ${workspace}
+                """
+
+                echo "Updateback ${node}"
+                sh """
+                    cd update_resource/winstore/
+                    sudo tar zcf winstore.tar.gz winstore/
+                    sudo ssh root@${node} "rm -rf /opt/winstore/venv/lib/python2.7/site-packages/winstore-3.6-py2.7.egg/winstore/" 2>/dev/null
+                    sudo scp winstore.tar.gz root@"${node}":/opt/winstore/venv/lib/python2.7/site-packages/winstore-3.6-py2.7.egg/ 2>/dev/null
+                    sudo ssh root@${node} "cd /opt/winstore/venv/lib/python2.7/site-packages/winstore-3.6-py2.7.egg/; tar zxf winstore.tar.gz; chown -R sdsadmin:sdsadmin *; rm -f winstore.tar.gz" 2>/dev/null
+                    sudo ssh root@${node} "/etc/init.d/winstore-db restart; /etc/init.d/winstore-agent restart; /etc/init.d/winstore-operation restart; /etc/init.d/winstore-master restart" 2>/dev/null
+                    cd ${workspace}
+                """
+            }
+            return
+        }
+        if (skip == '4') {
+            echo "Build package only... "
+            sh """
+                echo "package ..........."
+                sudo su root
+                cd /root/winstore_git/
+                ./winstore_deploy.sh 4.0 mysql
+                wait
+                exit
+            """
+            return
+        }
+        if (skip == '5') {
+            echo "Build reinstall only... "
+            sh """
+                echo "reinstall ..........."
+                sudo su root
+                cd /root/winstore_git/
+                ./winstore_deploy.sh 4.0 mysql
+                wait
+                //install_node
+                //cluster_nodes
+                mount -t cifs -o username="samba",password="samba" //10.10.161.99/public /mnt/ -o rw
+                cd /mnt/winstore-liuhua/winstore4.0Beta/
+                sudo ssh root@${install_node} "rm -rf /root/mysql-ansible"
+                sudo ssh root@${install_node} "rm -rf /root/mysql_install*"
+                sudo ssh root@${install_node} "rm -rf /root/winstore4.0_install*"
+                sudo ssh root@${install_node} "rm -rf /root/winstore-ansible"
+                mysql_tar=`ll mysql_install* |tail -n1 |awk '{print $NF}'`
+                winstore_tar=`ll winstore4.0* |tail -n1 |awk '{print $NF}'`
+                scp ${mysql_tar} root@${install_node}:/root/
+                scp ${winstore_tar} root@${install_node}:/root/
+                cd /root/
+                umount /mnt/
+                sudo ssh root@${install_node} "cd /root; tar zxf ${winstore_tar}"
+                sudo ssh root@${install_node} "echo '' > /root/winstore-ansible/hosts"
+                sudo ssh root@${install_node} "echo '[localhost]' >> /root/winstore-ansible/hosts"
+                sudo ssh root@${install_node} "echo 'localhost ansible_connection=local' >> /root/winstore-ansible/hosts"
+
+                for i in `echo $cluster_nodes_str` do
+                    if [[ "$i" -ne "$install_node" ]];
+                        sudo ssh root@${install_node} 'echo "$i ansible_connection=ssh ansible_user=root" >> /root/winstore-ansible/hosts'
+                    fi
+                done
+                sudo ssh root@${install_node} "cd /root/winstore-ansible; ./install_winstore_simple.sh"
+                exit
+            """
+            echo "Build reinstall successfully..."
+            return
+        }
+    }
+    stage('Test') {
+        echo "Test do nothing..."
+    }
+    stage('Deploy') {
+        if (skip == '-5') {
+            echo "step deploying..."
+            return
+        }
+        echo "Deploy do nothing..."
+    }
+}
+```
+
+我测试下`[update shell]`，随便改点什么，在提交时候前面加上`[update shell]`
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins23.png)
+
+点击构建查看详细构建日志：
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins24.png)
+
+成功，其他的情况我就一一演示了！
 
 ## 更进一步
 
@@ -155,4 +379,17 @@ ssh-copy-id root@192.168.217.233
 
 这里我的任务都比较简单，并且就一个jenkins单节点，而且并没有涉及到繁重的任务，没用到agent节点，
 权限和安全控制暂时还没做，以后会逐渐补全这些。
+
+## FAQ
+构建历史太多了咋办，写个脚本清空下：
+``` groovy
+def jobName = "winstore-pipeline"
+def job = Jenkins.instance.getItem(jobName)
+job.getBuilds().each { it.delete() }
+// uncomment these lines to reset the build number to 1:
+job.nextBuildNumber = 1
+job.save()
+println('clear succesfully...')
+```
+在系统管理->脚本命令行里面输入上面的脚本。点击运行即可
 
