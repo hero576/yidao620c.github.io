@@ -186,18 +186,18 @@ IFS=',' read -r -a cluster_nodes <<< "$cluster_nodes_str"
 
 mount -t cifs -o username="samba",password="samba" //10.10.161.99/public /mnt/ -o rw
 cd /mnt/winstore-liuhua/winstore4.0Beta/
-ssh root@${install_node} "rm -rf /root/mysql-ansible" 2>/dev/null || true
-ssh root@${install_node} "rm -rf /root/mysql_install*" 2>/dev/null || true
-ssh root@${install_node} "rm -rf /root/winstore4.0_install*" 2>/dev/null || true
-ssh root@${install_node} "rm -rf /root/winstore-ansible" 2>/dev/null || true
+ssh root@${install_node} "rm -rf /root/mysql-ansible" >/dev/null || true
+ssh root@${install_node} "rm -rf /root/mysql_install*" >/dev/null || true
+ssh root@${install_node} "rm -rf /root/winstore4.0_install*" >/dev/null || true
+ssh root@${install_node} "rm -rf /root/winstore-ansible" >/dev/null || true
 mysql_tar=`ls -l mysql_install* |tail -n1 |awk '{print $NF}'`
 winstore_tar=`ls -l winstore4.0* |tail -n1 |awk '{print $NF}'`
-cp ${mysql_tar} root@${install_node}:/root/ &>/dev/null || true
-scp ${winstore_tar} root@${install_node}:/root/ &>/dev/null || true
+scp ${mysql_tar} root@${install_node}:/root/ || true
+scp ${winstore_tar} root@${install_node}:/root/ || true
 cd /root/
 umount /mnt/
-ssh root@${install_node} "cd /root; tar zxf ${winstore_tar}" 2>/dev/null || true
-ssh root@${install_node} "echo '[localhost]' > /root/winstore-ansible/hosts" 2>/dev/null || true
+ssh root@${install_node} "cd /root; tar zxf ${winstore_tar}" >/dev/null || true
+ssh root@${install_node} "echo '[localhost]' > /root/winstore-ansible/hosts" >/dev/null || true
 ssh root@${install_node} "echo 'localhost ansible_connection=local' >> /root/winstore-ansible/hosts" 2>/dev/null || true
 for i in "${cluster_nodes[@]}"; do
     if [[ "$i" != "$install_node" ]]; then
@@ -205,9 +205,8 @@ for i in "${cluster_nodes[@]}"; do
         ssh root@${install_node} "echo \"$i ansible_connection=ssh ansible_user=root\" >> /root/winstore-ansible/hosts" 2>/dev/null || true
     fi
 done
-
 echo "start to install winstore"
-ssh root@${install_node} "cd /root/winstore-ansible; ./install_winstore_simple.sh" &>/dev/null || true
+ssh root@${install_node} "cd /root/winstore-ansible; ./install_winstore_simple.sh" >/dev/null || true
 echo "end to install winstore"
 exit 0
 ```
@@ -222,8 +221,8 @@ node {
     // 安装节点
     def install_node = "192.168.217.231"
     // 集群节点列表
-    def cluster_nodes_str = "192.168.217.231,192.168.217.232"
-    def cluster_nodes = ["192.168.217.231","192.168.217.232"]
+    def cluster_nodes_str = "192.168.217.231,192.168.217.232,192.168.217.233"
+    def cluster_nodes = ["192.168.217.231","192.168.217.232","192.168.217.233"]
     // 默认忽略所有push请求，除非commit说明包含特定字符串
     def skip = '-1'
     def workspace = pwd()
@@ -367,7 +366,7 @@ node {
             sh """
                 echo "package winstore ..........."
                 chmod +x resource/shell/jk_*.sh
-                sudo resource/shell/jk_package.sh winstore &>/dev/null || true
+                sudo resource/shell/jk_package.sh winstore || true
                 echo "package winstore finished..."
             """
             currentBuild.result = 'SUCCESS'
@@ -378,7 +377,7 @@ node {
             sh """
                 echo "reinstall ..........."
                 chmod +x resource/shell/jk_*.sh
-                sudo resource/shell/jk_package.sh all &>/dev/null || true
+                sudo resource/shell/jk_package.sh all || true
                 echo "package all finished..."
             """
             echo "Build reinstall successfully..."
@@ -390,7 +389,7 @@ node {
             sh """
                 echo "package all ..........."
                 chmod +x resource/shell/jk_*.sh
-                sudo resource/shell/jk_package.sh all &>/dev/null || true
+                sudo resource/shell/jk_package.sh all || true
                 echo "package all finished..."
             """
             currentBuild.result = 'SUCCESS'
@@ -406,7 +405,7 @@ node {
             echo "step deploying..."
             sh """
                 echo "Deploy reinstall ..........."
-                sudo resource/shell/jk_install.sh "${install_node}" "${cluster_nodes_str}" &>/dev/null || true
+                sudo resource/shell/jk_install.sh "${install_node}" "${cluster_nodes_str}" || true
                 echo "Deploy reinstall finished..."
             """
             currentBuild.result = 'SUCCESS'
