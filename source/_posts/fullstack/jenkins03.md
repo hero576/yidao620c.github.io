@@ -32,7 +32,7 @@ tags: [jenkins]
 ```
 #!groovy
 
-node {
+node("master") {
     // 默认忽略所有push请求，除非commit说明指定了[update]或[reinstall]
     def skip = '1'
     stage('Check') {
@@ -168,9 +168,9 @@ ssh-copy-id root@192.168.217.233
 param="$1"
 cd /root/winstore_git/
 if [[ "$param" -eq "winstore" ]]; then
-    ./winstore_deploy.sh 4.0
+    ./winstore_deploy.sh 4.0 >/dev/null
 elif [[ "$param" -eq "all" ]]; then
-    ./winstore_deploy.sh 4.0 mysql
+    ./winstore_deploy.sh 4.0 mysql >/dev/null
 fi
 exit 0
 ```
@@ -192,21 +192,23 @@ ssh root@${install_node} "rm -rf /root/winstore4.0_install*" >/dev/null || true
 ssh root@${install_node} "rm -rf /root/winstore-ansible" >/dev/null || true
 mysql_tar=`ls -l mysql_install* |tail -n1 |awk '{print $NF}'`
 winstore_tar=`ls -l winstore4.0* |tail -n1 |awk '{print $NF}'`
+echo "mysql_tar=${mysql_tar}, winstore_tar=${winstore_tar}"
 scp ${mysql_tar} root@${install_node}:/root/ || true
 scp ${winstore_tar} root@${install_node}:/root/ || true
 cd /root/
 umount /mnt/
-ssh root@${install_node} "cd /root; tar zxf ${winstore_tar}" >/dev/null || true
-ssh root@${install_node} "echo '[localhost]' > /root/winstore-ansible/hosts" >/dev/null || true
-ssh root@${install_node} "echo 'localhost ansible_connection=local' >> /root/winstore-ansible/hosts" 2>/dev/null || true
+ssh root@${install_node} "cd /root; tar zxf ${winstore_tar} &>/dev/null" || true
+ssh root@${install_node} "echo '[localhost]' > /root/winstore-ansible/hosts" || true
+ssh root@${install_node} "echo 'localhost ansible_connection=local' >> /root/winstore-ansible/hosts" || true
 for i in "${cluster_nodes[@]}"; do
     if [[ "$i" != "$install_node" ]]; then
         echo "install node ip = ${i}"
-        ssh root@${install_node} "echo \"$i ansible_connection=ssh ansible_user=root\" >> /root/winstore-ansible/hosts" 2>/dev/null || true
+        ssh root@${install_node} "echo \"$i ansible_connection=ssh ansible_user=root\" >> /root/winstore-ansible/hosts" || true
     fi
 done
+
 echo "start to install winstore"
-ssh root@${install_node} "cd /root/winstore-ansible; ./install_winstore_simple.sh" >/dev/null || true
+ssh root@${install_node} "cd /root/winstore-ansible; ./install_winstore_simple.sh" || true
 echo "end to install winstore"
 exit 0
 ```
@@ -217,7 +219,7 @@ exit 0
 ```
 #!groovy
 
-node {
+node("master") {
     // 安装节点
     def install_node = "192.168.217.231"
     // 集群节点列表

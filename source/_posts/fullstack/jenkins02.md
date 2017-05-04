@@ -63,7 +63,7 @@ node {
 
 几个重要的名词，讲一下它们是什么意思：
 
-* Step 一个简单的任务，比如执行一个sh脚本
+* Step 一个简单的执行步骤，比如执行一个sh脚本
 * Stage 将你的命令组织成一个更高一层的逻辑单元
 * Node 指定这些任务在哪执行
 
@@ -157,8 +157,6 @@ Pipeline支持两种形式，一种是`Declarative`管道，一个是`Scripted`�
 
 一个`Jenkinsfile`就是一个文本文件，里面定义了`Jenkins Pipeline`。
 将这个文本文件放到项目的根目录下面，纳入版本系统。
-
-简单起见，我暂时只介绍`Declarative Pipeline`，实际上`Scripted Pipeline`功能更加强大。
 
 ### 部署三阶段
 
@@ -281,16 +279,15 @@ pipeline {
 上面的例子，在任一台机器上面做Build操作，并通过`stash`命令保存文件，然后分别在两台agent机器上面做测试。
 注意这里所有步骤都是串行执行的。
 
-## Multibranch Pipeline
+### Multibranch Pipeline
 
 多分支管道可以让你在同一个项目中，对每个分支定义一个执行管道。Jenkins或自动发现、管理并执行包含`Jenkinsfile`文件的分支。
 
 这个在前面一篇已经演示过怎样创建这样的Pipeline了，就不再多讲。
 
 ## Pipeline语法
-最后一部分详解讲解下管道的定义语法。还是只以`Declarative Pipeline`来说明。
 
-所有声明式管道都必须包含在`pipeline`块中：
+先讲`Declarative Pipeline`，所有声明式管道都必须包含在`pipeline`块中：
 ```
 pipeline {
     /* insert Declarative Pipeline here */
@@ -524,11 +521,15 @@ pipeline {
 ```
 
 ### Steps
-定义执行步骤序列，声明式管道可以使用 [管道步骤指南](https://jenkins.io/doc/pipeline/steps/) 所有的东西。
 
-东西太多这里就不再展开说明。
+这里就是实实在在的执行步骤了，每个步骤step都具体干些什么东西，
+前面的`Sections`、`Directives`算控制逻辑和环境准备，这里的就是真实执行步骤。
 
-这里只讲一个特殊的step就是script，它可以让你在声明管道中执行脚本，使用groovy语法，这个非常有用：
+这部分内容最多不可能全部讲完，[官方Step指南](https://jenkins.io/doc/pipeline/steps/) 包含所有的东西。
+
+`Declared Pipeline`和`Scripted Pipeline`都能使用这些step，除了下面这个特殊的`script`。
+
+一个特殊的step就是`script`，它可以让你在声明管道中执行脚本，使用groovy语法，这个非常有用：
 
 ```
 // Declarative //
@@ -557,12 +558,30 @@ pipeline {
 }
 ```
 
-if( $VALUE1 == $VALUE2 ) {
-   currentBuild.result = 'SUCCESS'
-   return
-}
+最后列出来一个典型的`Scripted Pipeline`：
+```
+node('master') {
+    checkout scm
 
-## 两种Pipeline比较
+    stage('Build') {
+        docker.image('maven:3.3.3').inside {
+            sh 'mvn --version'
+        }
+    }
+
+    stage('Deploy') {
+        if (env.BRANCH_NAME == 'master') {
+            echo 'I only execute on the master branch'
+        } else {
+            echo 'I execute elsewhere'
+        }
+    }
+}
+```
+可以看到，`Scripted Pipeline`没那么多东西，就是定义一个`node`，
+里面多个`stage`，里面就是使用Groovy语法执行各个`step`了，非常简单和清晰，也非常灵活。
+
+### 两种Pipeline比较
 `Declarative Pipeline`相对简单，而且不需要学习groovy语法，对于日常的一般任务完全够用，
 而`Scripted Pipeline`可通过Groovy语言的强大特性做任何你想做的事情。
 
