@@ -217,17 +217,22 @@ exit 0
 
 最终的`Jenkinsfile`文件如下：
 ```
-#!groovy
 
 node("master") {
-    // 安装节点
-    def install_node = "192.168.217.231"
-    // 集群节点列表
+    // -------------------------------配置部分start----------------------------------
+    // 集群节点列表，安装节点放第一个
     def cluster_nodes_str = "192.168.217.231,192.168.217.232,192.168.217.233"
-    def cluster_nodes = ["192.168.217.231","192.168.217.232","192.168.217.233"]
+    //def cluster_nodes_str = "192.168.212.200,192.168.212.201,192.168.212.202,192.168.212.203"
+    // -------------------------------配置部分end---------------------------------
+
+    // 集群节点
+    def cluster_nodes = cluster_nodes_str.split(",")
+    // 安装节点
+    def install_node = cluster_nodes[0]
     // 默认忽略所有push请求，除非commit说明包含特定字符串
     def skip = '-1'
     def workspace = pwd()
+
     stage('Check') {
         checkout scm
         // 一个优雅的退出pipeline的方法，这里可执行任意逻辑
@@ -276,9 +281,11 @@ node("master") {
             currentBuild.result = 'SUCCESS'
             return
         }
+        def node = null
         if (skip == '0') {
             echo "Build Updateshell only... "
-            for (node in cluster_nodes) {
+            for (int i = 0; i < cluster_nodes.size(); i++) {
+                node = cluster_nodes[i]
                 echo "Updateshell ${node}"
                 sh """
                     cd resource/winstore/tools
@@ -301,7 +308,8 @@ node("master") {
             sh '''
                 echo "Updateweb ..........."
             '''
-            for (node in cluster_nodes) {
+            for (int i = 0; i < cluster_nodes.size(); i++) {
+                node = cluster_nodes[i]
                 echo "Updateweb ${node}"
                 sh """
                     cd resource/winstore/webapp/
@@ -319,7 +327,8 @@ node("master") {
             sh '''
                 echo "Updateback ..........."
             '''
-            for (node in cluster_nodes) {
+            for (int i = 0; i < cluster_nodes.size(); i++) {
+                node = cluster_nodes[i]
                 echo "Updateback ${node}"
                 sh """
                     cd update_resource/winstore/
@@ -338,7 +347,8 @@ node("master") {
             sh '''
                 echo "Updateall ..........."
             '''
-            for (node in cluster_nodes) {
+            for (int i = 0; i < cluster_nodes.size(); i++) {
+                node = cluster_nodes[i]
                 echo "Updateweb ${node}"
                 sh """
                     cd resource/winstore/webapp/

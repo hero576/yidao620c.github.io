@@ -631,3 +631,11 @@ Jenkins最新整了个`Blue Ocean`出来，我觉得有必要用单独来介绍�
 
 ![](https://xnstatic-1253397658.file.myqcloud.com/jenkins21.png)
 
+## FAQ
+如果遇见`for (item : items)`报错`NotSerializableException`或者`Unserializable iterator`等等错误，
+就将`foreach`循环改成传统C语言的循环：
+```
+for (int i = 0; i < cluster_nodes.size(); i++) {
+    node = cluster_nodes[i]
+}
+```
