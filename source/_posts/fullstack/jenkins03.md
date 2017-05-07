@@ -107,7 +107,13 @@ node("master") {
 
 ![](https://xnstatic-1253397658.file.myqcloud.com/jenkins28.png)
 
-如果单元测试不通过，构建就会失败，修改一下单元测试，
+成功后打开`http://192.168.217.161:8083`看首页是否正常显示：
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins31.png)
+
+然后，修改首页页面内容，再次提交后push上去，再看看是否更新过来。
+
+另外，如果单元测试不通过，构建就会失败，修改一下单元测试，
 ``` java
 @Test
 public void testIndex() {
@@ -255,7 +261,7 @@ exit 0
 
 ### 最后的Jenkinsfile
 
-最终的`Jenkinsfile`文件如下：
+最终的`Jenkinsfile`文件如下，简单起见我只写了2种指令：
 ```
 node("master") {
     // -------------------------------配置部分start----------------------------------
@@ -277,11 +283,6 @@ node("master") {
         // 一个优雅的退出pipeline的方法，这里可执行任意逻辑
         def resultUpdateshell = sh script: 'git log -1 --pretty=%B | grep "\\[update shell\\]" &>/dev/null', returnStatus: true
         def resultUpdateweb = sh script: 'git log -1 --pretty=%B | grep "\\[update web\\]" &>/dev/null', returnStatus: true
-        def resultUpdateback = sh script: 'git log -1 --pretty=%B | grep "\\[update back\\]" &>/dev/null', returnStatus: true
-        def resultUpdateall = sh script: 'git log -1 --pretty=%B | grep "\\[update all\\]" &>/dev/null', returnStatus: true
-        def resultReinstall = sh script: 'git log -1 --pretty=%B | grep "\\[reinstall\\]" &>/dev/null', returnStatus: true
-        def resultPackageWinstore = sh script: 'git log -1 --pretty=%B | grep "\\[package\\]" &>/dev/null', returnStatus: true
-        def resultPackageAll = sh script: 'git log -1 --pretty=%B | grep "\\[package all\\]" &>/dev/null', returnStatus: true
         currentBuild.result = 'SUCCESS'
         if (resultUpdateshell == 0) {
             skip = '0'
@@ -289,26 +290,6 @@ node("master") {
         }
         if (resultUpdateweb == 0) {
             skip = '1'
-            return
-        }
-        if (resultUpdateback == 0) {
-            skip = '2'
-            return
-        }
-        if (resultUpdateall == 0) {
-            skip = '3'
-            return
-        }
-        if (resultPackageWinstore == 0) {
-            skip = '4'
-            return
-        }
-        if (resultReinstall == 0) {
-            skip = '5'
-            return
-        }
-        if (resultPackageAll == 0) {
-            skip = '6'
             return
         }
         echo "Skipping ci build..."
@@ -339,110 +320,6 @@ node("master") {
                     sudo ssh root@${node} "chown sdsadmin:sdsadmin /opt/winstore/venv/bin/query_wwid_disk.sh; chmod +x /opt/winstore/venv/bin/query_wwid_disk.sh" 2>/dev/null || true
                 """
             }
-            currentBuild.result = 'SUCCESS'
-            return
-        }
-        if (skip == '1') {
-            echo "Build Updateweb only... "
-            sh '''
-                echo "Updateweb ..........."
-            '''
-            for (int i = 0; i < cluster_nodes.size(); i++) {
-                node = cluster_nodes[i]
-                echo "Updateweb ${node}"
-                sh """
-                    cd resource/winstore/webapp/
-                    sudo tar zcf winstore-web.tar.gz winstore-web/
-                    sudo ssh root@${node} "rm -rf /opt/winstore/webapp/winstore-web/" 2>/dev/null || true
-                    sudo scp winstore-web.tar.gz root@"${node}":/opt/winstore/webapp/ 2>/dev/null || true
-                    sudo ssh root@${node} "cd /opt/winstore/webapp/; tar zxf winstore-web.tar.gz; chown -R sdsadmin:sdsadmin *; rm -f winstore-web.tar.gz" 2>/dev/null || true
-                """
-            }
-            currentBuild.result = 'SUCCESS'
-            return
-        }
-        if (skip == '2') {
-            echo "Build Updateback only... "
-            sh '''
-                echo "Updateback ..........."
-            '''
-            for (int i = 0; i < cluster_nodes.size(); i++) {
-                node = cluster_nodes[i]
-                echo "Updateback ${node}"
-                sh """
-                    cd update_resource/winstore/
-                    sudo tar zcf winstore.tar.gz winstore/
-                    sudo ssh root@${node} "rm -rf /opt/winstore/venv/lib/python2.7/site-packages/winstore-3.6-py2.7.egg/winstore/" 2>/dev/null || true
-                    sudo scp winstore.tar.gz root@"${node}":/opt/winstore/venv/lib/python2.7/site-packages/winstore-3.6-py2.7.egg/ 2>/dev/null || true
-                    sudo ssh root@${node} "cd /opt/winstore/venv/lib/python2.7/site-packages/winstore-3.6-py2.7.egg/; tar zxf winstore.tar.gz; chown -R sdsadmin:sdsadmin *; rm -f winstore.tar.gz" 2>/dev/null || true
-                    sudo ssh root@${node} "/etc/init.d/winstore-db restart; /etc/init.d/winstore-agent restart; /etc/init.d/winstore-operation restart; /etc/init.d/winstore-master restart; /etc/init.d/winstore-httpd restart" 2>/dev/null || true
-                """
-            }
-            currentBuild.result = 'SUCCESS'
-            return
-        }
-        if (skip == '3') {
-            echo "Build Updateall only... "
-            sh '''
-                echo "Updateall ..........."
-            '''
-            for (int i = 0; i < cluster_nodes.size(); i++) {
-                node = cluster_nodes[i]
-                echo "Updateweb ${node}"
-                sh """
-                    cd resource/winstore/webapp/
-                    sudo tar zcf winstore-web.tar.gz winstore-web/
-                    sudo ssh root@${node} "rm -rf /opt/winstore/webapp/winstore-web/" 2>/dev/null || true
-                    sudo scp winstore-web.tar.gz root@"${node}":/opt/winstore/webapp/ 2>/dev/null || true
-                    sudo ssh root@${node} "cd /opt/winstore/webapp/; tar zxf winstore-web.tar.gz; chown -R sdsadmin:sdsadmin *; rm -f winstore-web.tar.gz" 2>/dev/null || true
-                    cd ${workspace}
-                """
-
-                echo "Updateback ${node}"
-                sh """
-                    cd update_resource/winstore/
-                    sudo tar zcf winstore.tar.gz winstore/
-                    sudo ssh root@${node} "rm -rf /opt/winstore/venv/lib/python2.7/site-packages/winstore-3.6-py2.7.egg/winstore/" 2>/dev/null || true
-                    sudo scp winstore.tar.gz root@"${node}":/opt/winstore/venv/lib/python2.7/site-packages/winstore-3.6-py2.7.egg/ 2>/dev/null || true
-                    sudo ssh root@${node} "cd /opt/winstore/venv/lib/python2.7/site-packages/winstore-3.6-py2.7.egg/; tar zxf winstore.tar.gz; chown -R sdsadmin:sdsadmin *; rm -f winstore.tar.gz" 2>/dev/null || true
-                    sudo ssh root@${node} "/etc/init.d/winstore-db restart; /etc/init.d/winstore-agent restart; /etc/init.d/winstore-operation restart; /etc/init.d/winstore-master restart; /etc/init.d/winstore-httpd restart" 2>/dev/null || true
-                    cd ${workspace}
-                """
-            }
-            currentBuild.result = 'SUCCESS'
-            return
-        }
-        if (skip == '4') {
-            echo "Build package only... "
-            sh """
-                echo "package winstore ..........."
-                chmod +x resource/shell/jk_*.sh
-                sudo resource/shell/jk_package.sh winstore || true
-                echo "package winstore finished..."
-            """
-            currentBuild.result = 'SUCCESS'
-            return
-        }
-        if (skip == '5') {
-            echo "Build reinstall only... "
-            sh """
-                echo "reinstall ..........."
-                chmod +x resource/shell/jk_*.sh
-                sudo resource/shell/jk_package.sh all || true
-                echo "package all finished..."
-            """
-            echo "Build reinstall successfully..."
-            currentBuild.result = 'SUCCESS'
-            return
-        }
-        if (skip == '6') {
-            echo "Build package only... "
-            sh """
-                echo "package all ..........."
-                chmod +x resource/shell/jk_*.sh
-                sudo resource/shell/jk_package.sh all || true
-                echo "package all finished..."
-            """
             currentBuild.result = 'SUCCESS'
             return
         }
