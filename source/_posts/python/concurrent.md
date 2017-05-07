@@ -98,10 +98,16 @@ def print_result(request, result):
 
 data = [random.randint(1,10) for i in range(20)]
 # Make the Pool of workers
-pool = ThreadPool(20)
+pool = ThreadPool(6)
 # Open the urls in their own threads
 # and return the results
 results = pool.map(hello, data)
+# callback
+results = pool.map_async(hello, data, chunksize=None, callback=callback)
+# apply
+result = pool.apply(hello, data[0])
+result = pool.apply_async(hello, data[0], callback=callback)
+
 #close the pool and wait for the work to finish
 pool.close()
 pool.join()
@@ -204,9 +210,9 @@ return p2.returncode, stdout, stderr
 以上限制了我们将subprocess包应用到更广泛的多进程任务。
 这样的比较实际是不公平的，因为subprocessing本身就是设计成为一个shell，而不是一个多进程管理包。
 
-multiprocessing包是Python中的多进程管理包。它可以利用multiprocessing.Process对象来创建一个进程，
-该进程可以运行在Python程序内部编写的函数。该Process对象与Thread对象的用法相同，也有start(), run(), join()的方法。
-此外multiprocessing包中也有Lock/Event/Semaphore/Condition类
+`multiprocessing`包是Python中的多进程管理包。它可以利用`multiprocessing.Process`对象来创建一个进程，
+该进程可以运行在Python程序内部编写的函数。该Process对象与Thread对象的用法相同，也有`start()`, `run()`, `join()`的方法。
+此外`multiprocessing`包中也有`Lock/Event/Semaphore/Condition`类
 (这些对象可以像多线程那样，通过参数传递给各个进程)，用以同步进程，其用法与threading包中的同名类一致。
 所以，multiprocessing的很大一部份与threading使用同一套API，只不过换到了多进程的情境。
 
@@ -214,7 +220,7 @@ multiprocessing包是Python中的多进程管理包。它可以利用multiproces
 
 1. 在UNIX平台上，当某个进程终结之后，该进程需要被其父进程调用wait，否则进程成为僵尸进程(Zombie)。
 所以，有必要对每个Process对象调用join()方法 (实际上等同于wait)。对于多线程来说，由于只有一个进程，所以不存在此必要性。
-2. multiprocessing提供了threading包中没有的IPC(比如Pipe和Queue)，效率上更高。应优先考虑Pipe和Queue
+2. `multiprocessing`提供了threading包中没有的IPC(比如Pipe和Queue)，效率上更高。应优先考虑Pipe和Queue
 3. 多进程应该避免共享资源，比如全局变量或者传递参数
 
 下面演示下它的基本用法：
@@ -267,6 +273,8 @@ if __name__=='__main__':
 ### 进程间通信
 multiprocessing包中有Pipe类和Queue类来分别支持管道和消息队列这两种IPC机制。
 
+#### Pipe方式
+
 Pipe可以是单向(half-duplex)，也可以是双向(duplex)。mutiprocessing.Pipe(duplex=False)创建单向管道，
 一个进程从PIPE一端输入对象，然后被PIPE另一端的进程接收。
 ``` python
@@ -295,6 +303,40 @@ p2.join()
 
 Pipe对象建立的时候，返回一个含有两个元素的表，每个元素代表Pipe的一端(Connection对象)。
 我们对Pipe的某一端调用send()方法来传送对象，在另一端使用recv()来接收。
+
+下面一个程序演示如何使用一个PIPE来获取`multiprocessing.Process`进程返回值，让人也可以通过Queue来达到同样效果。
+``` python
+import multiprocessing
+
+def worker(procnum, send_end):
+    '''worker function'''
+    result = str(procnum) + ' represent!'
+    print(result)
+    send_end.send(result)
+
+def main():
+    jobs = []
+    pipe_list = []
+    for i in range(5):
+        # 单向管道返回的是(接受端，发送端)
+        recv_end , send_end = multiprocessing.Pipe(False)
+        p = multiprocessing.Process(target=worker, args=(i, send_end))
+        jobs.append(p)
+        pipe_list.append(recv_end)
+        p.start()
+
+    for proc in jobs:
+        proc.join()
+    result_list = [x.recv() for x in pipe_list]
+    print(result_list)
+    for x in pipe_list:
+        x.close()
+
+if __name__ == '__main__':
+    main()
+```
+
+#### Queue方式
 
 Queue与Pipe相类似，都是先进先出的结构。但Queue允许多个进程放入，多个进程从队列取出对象。
 Queue使用mutiprocessing.Queue(maxsize)创建，maxsize表示队列中可以存放对象的最大数量。
@@ -330,36 +372,49 @@ if __name__ == '__main__':
     pr.terminate()
 ```
 
-下面一个程序演示如何使用一个PIPE来获取multiprocessing.Process进程返回值，让人也可以通过Queue来达到同样效果。
+#### 共享变量方式
+
+几个进程之间的都拥有自己独立的命名空间和地址空间，无法通过一些全局变量来实现，
+`multiprocessing`提供了一些特殊的函数来实现共享变量：
+
+**`Value`,`Array`的方式**
+
 ``` python
-import multiprocessing
+from multiprocessing import Process,Value,Array
+def f(n,a):
+    n.value = 3.1415926
+    for i in range(len(a)):
+            a[i] = -a[i]
+if __name__ == "__main__":
+    num = Value('d',0.0)
+    arr = Array('i',range(10))
+    p = Process(target=f,args=(num,arr))
+    p.start()
+    p.join()
+    print num.value
+    print arr[:]
+```
 
-def worker(procnum, send_end):
-    '''worker function'''
-    result = str(procnum) + ' represent!'
-    print(result)
-    send_end.send(result)
+`Value()`和`Array()`都有两个参数第一个参数代表存放的值的类型，第二个参数代表其值。
 
-def main():
-    jobs = []
-    pipe_list = []
-    for i in range(5):
-        # 单向管道返回的是(接受端，发送端)
-        recv_end , send_end = multiprocessing.Pipe(False)
-        p = multiprocessing.Process(target=worker, args=(i, send_end))
-        jobs.append(p)
-        pipe_list.append(recv_end)
-        p.start()
-
-    for proc in jobs:
-        proc.join()
-    result_list = [x.recv() for x in pipe_list]
-    print(result_list)
-    for x in pipe_list:
-        x.close()
-
-if __name__ == '__main__':
-    main()
+**Manager的方式**
+这个方式支持的类型更多，灵活性更大，但是速度要慢于`Value`, `Array`
+``` python
+from multiprocessing import Process,Manager
+def f(d,l):
+    d[1] = '1'
+    d['2'] = 2
+    d[0.25] = None
+    l.reverse()
+if __name__ == "__main__":
+    manager = Manager()
+    d = manager.dict()
+    l = manager.list(range(10))
+    p = Process(target=f,args=(d,l))
+    p.start()
+    p.join()
+    print d
+    print l
 ```
 
 ### 异步I/O

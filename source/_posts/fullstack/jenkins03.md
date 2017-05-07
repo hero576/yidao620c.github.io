@@ -7,19 +7,134 @@ categories: fullstack
 tags: [jenkins]
 ---
 
-这篇演示实际使用案例，我们组开发的项目名称叫分布式存储winstore，使用的python语言开发。
+这一篇我通过两个实际的真实例子来演示Jenkins常见使用案例。
+第一个例子演示一个标准的`SpringMVC`这个Java Web工程怎样自动抓取最新源码、测试、打包和部署，
+第二个例子演示目前我做的`Winstore`这个Python项目怎样实现自定义构建指令、在线升级、自动打包和自动部署。<!--more-->
+
+## SpringMVC
+
+关于怎样写`SpringMVC`项目我这里就不去讲了，这里我构建了一个最简单的Web工程，把它放到开源中国码云上面了，大家可以下载下来测试。
+地址：<http://git.oschina.net/yidao620/javaweb>
+
+### 环境准备
+
+当然，在跟Jenkins集成的时候我还是使用的内部gitlab源码管理系统，
+这个项目的git地址为：`git@192.168.217.161:xiongneng/javaweb.git`
+
+在Jenkins机器上面安装JDK8，并设置好环境变量`JAVA_HOME`。
+
+安装sqlite3：
+``` bash
+yum install -y sqlite sqlite-devel
+```
+
+由于Jenkins要单独占用一个tomcat，所以我将`/opt/tomcat`复制出来一份`/opt/tomcat1`用来作为测试这个java web工程的环境，
+并修改里面多个端口号，通过8083端口访问。
+
+另外，还有修改`catalina.sh`，指定3个环境变量，否则会影响到主tomcat：
+```
+export CATALINA_BASE=/opt/tomcat1
+export CATALINA_HOME=/opt/tomcat1
+export CATALINA_PID=/opt/tomcat1/temp/tomcat.pid
+```
+
+安装maven-3.5.0，同时配置好`M2_HOME`和PATH
+
+### 配置Jenkins
+通过`系统设置`->`Global Tool Configuration`配置JDK、Git、Maven，就是设置环境变量，
+并且每个配置都会有一个名字，这个名字后面的Pipeline可以用到。
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins25.png)
+
+然后新建一个Job，名字叫做`javaweb`， 类型选择`Pipeline`，触发器选择`GitLab Push`。
+然后在Pipeline定义中配置`Repository URL`，同时指定私钥，这些步骤在前面一篇已经讲得很详细了。
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins26.png)
+
+GitLab里面设置好Web Hook
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins27.png)
+
+### 定义Pipeline
+环境都准备好之后，就可以定义这个Pipeline了，还是通过`Jenkinsfile`使用代码方式定义，
+在项目根目录下面添加这个`Jenkinsfile`文件
+
+最主要步骤是：拉取最新源码、测试、部署。看看内容其实很简单：
+
+```
+
+node("master") {
+    checkout scm
+    def workspace = pwd()
+    def TOMCAT_HOME = "/opt/tomcat1"
+    def MVN_HOME = tool 'maven-3.5.0'
+    def MVN_BIN = "${MVN_HOME}/bin/mvn"
+    stage('InitDB') {
+        echo "InitDB start..."
+        sh 'sh dbinit.sh'
+        return
+    }
+    stage('Build') {
+        echo "InitDB start..."
+        return
+    }
+    stage('Test') {
+        echo "Test start..."
+        sh """
+            ${MVN_BIN} clean && ${MVN_BIN} test
+        """
+    }
+    stage('Deploy') {
+        echo "Deploy start..."
+        sh """
+            ${MVN_BIN} package -Dmaven.test.skip=true
+            ${TOMCAT_HOME}/bin/catalina.sh stop || true
+            rm -rf ${TOMCAT_HOME}/webapps/ROOT/*
+            cp target/javaweb.war ${TOMCAT_HOME}/webapps/ROOT/
+            unzip ${TOMCAT_HOME}/webapps/ROOT/javaweb.war -d ${TOMCAT_HOME}/webapps/ROOT >/dev/null
+            rm -f ${TOMCAT_HOME}/webapps/ROOT/javaweb.war
+            ${TOMCAT_HOME}/bin/catalina.sh start
+        """
+    }
+}
+```
+
+稍微解释一下：`InitDB`这一构建阶段提前初始化数据库，这里使用的是文件数据库`sqlite3`。
+`tool 'maven-3.5.0'`这一行就是通过之前配置的maven名称来获得`MAVEN_HOME`的。
+
+### 验证
+最后首页随便改点东西，push上去后看看效果，大概十几秒就能完成。
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins28.png)
+
+如果单元测试不通过，构建就会失败，修改一下单元测试，
+``` java
+@Test
+public void testIndex() {
+    assertEquals("www", "www1");
+}
+```
+再次push后看看结果：
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins29.png)
+
+看看详细日志：
+
+![](https://xnstatic-1253397658.file.myqcloud.com/jenkins30.png)
+
+可以非常清楚直观告诉我们哪里出错了。
+
+## Winstore
+
+我们组开发的项目名称叫分布式存储winstore，使用的python语言开发。
 之前的开发流程为：用最新的安装包在服务器集群上面安装并初始化配置。配置好和服务器源码映射后进行相应开发，
 结果没有问题后，提交至版本管理系统，然后去某台机器上面执行`winstore_install.sh`脚本，
-发布最新的安装包至某个samba服务器。最后将这个新包复制到安装服务器上面进行安装。<!--more-->
+发布最新的安装包至某个samba服务器。最后将这个新包复制到安装服务器上面进行安装。
 
 这时候还要分两种情况，一种是不需要重新安装和配置的在线升级，只需覆盖相应文件重启服务器即可。
 另一种是必须重新卸载再安装，要完整的执行整个安装配置流程。
 
 现在想将整个过程通过Jenkins做自动化，并通过提交注释来控制是否在线升级或者重新安装。
-
-## Scripted Pipeline
-前面一篇文章我都是用的`Declared Pipeline`来说明，对于简单的任务没问题，
-但是涉及到更加复杂的就需要使用`Scripted Pipeline`了，本章我将使用脚本管道来完成。
 
 这里我先定义一个大致框图，分4个阶段：
 
@@ -28,79 +143,7 @@ tags: [jenkins]
 * `Test`阶段暂时保留用作测试
 * `Deploy`阶段依据不同的情况进行远程文件更新或重新安装，以及后续的处理
 
-初始`Jekinsfile`如下：
-```
-#!groovy
-
-node("master") {
-    // 默认忽略所有push请求，除非commit说明指定了[update]或[reinstall]
-    def skip = '1'
-    stage('Check') {
-        checkout scm
-        // 一个优雅的退出pipeline的方法，这里可执行任意逻辑
-        def result1 = sh script: 'git log -1 --pretty=%B | grep "\\[update\\]"', returnStatus: true
-        def result2 = sh script: 'git log -1 --pretty=%B | grep "\\[reinstall\\]"', returnStatus: true
-        echo "check update = ${result1} , check reinstall = ${result2}"
-        if (result1 == 0) {
-            skip = '2'
-            return
-        }
-        if (result2 == 0) {
-            skip = '3'
-            return
-        }
-        echo "Skipping ci build..."
-        return
-    }
-    stage('Build') {
-        if (skip == '1') {
-            echo "skipping building. lalala,"
-            return
-        }
-        if (skip == '2') {
-            echo "Build update only... "
-            sh '''
-                echo "update ..........."
-                echo "update ..........."
-            '''
-            return
-        }
-        if (skip == '3') {
-            echo "Build reinstall only... "
-            sh '''
-                echo "reinstall ..........."
-                echo "reinstall ..........."
-            '''
-            return
-        }
-        /* 不断重试直到成功，最多尝试3次 */
-        /*
-        * retry(3) {
-        *     sh '/opt/zz.sh'
-        * }
-        * timeout(time: 3, unit: 'MINUTES') {
-        *     sh '/opt/zz.sh'
-        * }
-        */
-    }
-    stage('Test') {
-        if (skip == '1') {
-            echo "skipping testing. lalala,"
-            return
-        }
-        echo "step testing..."
-    }
-    stage('Deploy') {
-        if (skip == '1') {
-            echo "skipping deploying. lalala,"
-            return
-        }
-        echo "step deploying..."
-    }
-}
-```
-
-## 前期准备
+### 前期准备
 有几个工作需要预先准备好
 
 jenkins主机上面，编辑visudo，将tomcat用户加入`sudo`组并且可免密码执行"sudo"。
@@ -126,37 +169,34 @@ ssh-copy-id root@192.168.217.233
 新建一个名字为`winstore-ansible`的项目，在项目根目录添加之前的`Jenkinsfile`，
 同时将本地最新项目push上来。
 
-## 创建一个job
-创建一个`Pipeline`类型的job，同时设置它的git仓库地址，
-然后在gitlab上面配置刚刚创建好的`winstore-ansible`项目，指定其`webhook`。
+### 创建job
+创建一个`Pipeline`类型的job，同时设置它的git仓库地址，添加相应的私钥。
+然后在gitlab上面配置`winstore-ansible`项目的`webhook`即可。
 
-做一个实验，随便修改点什么，push到远程仓库，看看是否触发刚刚的构建动作，我的演示成功：
+### 自定义构建指令
+这里我通过push的注释部分来自定义构建指令。
 
-![](https://xnstatic-1253397658.file.myqcloud.com/jenkins22.png)
+在线升级指令：
+对每台主机执行替换操作，这里分替换前端web，还是替换后台代码，再或者是两个都修改了替换。
+另外还有一个更新shell脚本。
 
-## 仅仅更新
-仅仅更新就是对每台主机执行替换操作，
-这里分替换前端web，还是替换后台代码，再或者是两个都修改了替换。
-
-我用三种commit来表示这三种情况：
+我用四种commit来表示这三种情况：
 
 1. [update web]
 2. [update back]
 3. [update all]
+4. [update shell]
 
-## 打包
-仅仅执行打包任务，也就是使用最新的源码构建安装包上传至samba服务器。
-对应的commit为：`[package]`
+打包指令：
+也就是使用最新的源码构建安装包上传至samba服务器。
+对应的commit为`[package]`和`[package all]`，后者连mysql包也一起打。
 
-## 打包并安装
+打包并安装指令：
 先执行打包任务，然后将samba上面的安装包复制到安装节点执行自动化安装。
 对应的commit为：`[reinstall]`
 
-## 更新脚本文件
-一些shell脚本没有包含在上面，这里我用一个新的提交注释叫`[update shell]`
-
-## Jenkinsfile执行shell
-在`Jinekinsfile`中通过`sh`执行shell脚本有很多现在，最好不要在里面写复杂逻辑，
+### Pipeline中执行shell
+在Pipeline中通过`sh`执行shell脚本有很多现在，最好不要在里面写复杂逻辑，
 可以将复杂逻辑拿出来写到一个单独的脚本文件中，比如我的打包和安装写到单独的`sh`文件中,
 并且将它们纳入版本管理中。
 
@@ -213,11 +253,10 @@ echo "end to install winstore"
 exit 0
 ```
 
-## 最后的Jenkinsfile
+### 最后的Jenkinsfile
 
 最终的`Jenkinsfile`文件如下：
 ```
-
 node("master") {
     // -------------------------------配置部分start----------------------------------
     // 集群节点列表，安装节点放第一个
