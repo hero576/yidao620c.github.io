@@ -210,7 +210,7 @@ add something
 50f5fdc HEAD@{3}: commit (initial): readme file
 ```
 
-## 合并多个commit
+## 利用rebase合并多个commit
 在使用Git作为版本控制的时候，我们可能会由于各种各样的原因提交了许多临时的 commit，
 而这些 commit 拼接起来才是完整的任务。那么我们为了避免太多的 commit 而造成版本控制的混乱，
 通常我们推荐将这些 commit 合并成一个
@@ -296,7 +296,9 @@ dbf4ee5 Initial commit
 
 很奇怪，之前这个`ad6fa66 ok , I resolve confict`也被合并了，好神秘哦。有明白为什么的同学告我下。
 
-还有一种情况，就是当两个分支产生分叉，比如master和dev，
+## 两个分支rebase
+
+rebase还有一种用法，就是当两个分支产生分叉，比如master和dev，
 最后你想让dev分支历史看起来像没有经过任何合并一样，你也许可以用 git rebase:
 
 ``` bash

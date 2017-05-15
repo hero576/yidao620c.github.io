@@ -209,7 +209,7 @@ The operation has completed successfully.
 比如我要创建第1个分区/dev/sdd1，大小1GiB，扇区数量为`1*1024*1024*1024/512=2097152`。
 起始扇区start=1，结束扇区end=2097152，type code为8300，分区名为"ceph journal"
 ```
-sgdisk -n 1:1:2097152 -t 1:8300 -c 1:"ceph journal" -p /dev/sdd
+sgdisk -n 1:1:2097152 -t 1:8300 -c 1:"ceph journal" -g -p /dev/sdd
 ```
 type code一般就是8300(Linux filesystem)，可通过`sgdisk -L`来查看所有。
 

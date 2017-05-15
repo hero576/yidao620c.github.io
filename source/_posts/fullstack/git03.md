@@ -415,3 +415,11 @@ To https://github.com/yidao620c/gitdemo.git
 * 命令`git tag -d <tagname>`可以删除一个本地标签；
 * 命令`git push origin :refs/tags/<tagname>`可以删除一个远程标签。
 
+## FAQ
+
+怎样不合并拉取远程服务器最新的某个文件：
+```
+git fetch {remote}
+git checkout FETCH_HEAD -- {file}
+```
+
