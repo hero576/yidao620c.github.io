@@ -200,7 +200,7 @@ flush privileges;
 restart mysql
 ```
 
-然后mysql -u root -p登陆，使用刚刚的密码，为gitlab创建一个数据库用户git：
+然后`mysql -u root -p`登陆，使用刚刚的密码，为gitlab创建一个数据库用户git：
 ``` bash
 CREATE USER 'git'@'localhost' IDENTIFIED BY 'git';
 SET storage_engine=INNODB;
@@ -213,9 +213,9 @@ GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON
 sudo -u git -H mysql -u git -p -D gitlabhq_production
 \q
 ```
-配置 MySQL max_allowed_packet 的大小，避免POST太大的内容导致出现 500 错误，
-例如 GitLab 发出 MergeRequest 的时候返回 500 错误。vim /etc/my.cnf，
-在 mysqld 中添加 max_allowed_packet，调整值，加大为一个合适的数字即可。
+配置 `MySQL max_allowed_packet` 的大小，避免POST太大的内容导致出现 500 错误，
+例如 GitLab 发出 `MergeRequest` 的时候返回 500 错误。`vim /etc/my.cnf`，
+在 `mysqld` 中添加 `max_allowed_packet`，调整值，加大为一个合适的数字即可。
 ```
 [mysqld]
 max_allowed_packet=512M

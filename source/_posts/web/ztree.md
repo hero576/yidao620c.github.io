@@ -132,7 +132,7 @@ var nodes2 = treeObj2.getCheckedNodes(true);
 // 如果是叶子节点就把id拿出来
 var idlist = [];
 $.each(nodes2, function (i, item) {
-    if (!c.isParent && c.dtype !== 'HDD') {
+    if (!item.isParent) {
         //alert(item.id + ","  + item.name);
         idlist.push(item.id);
     }
