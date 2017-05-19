@@ -423,3 +423,13 @@ git fetch {remote}
 git checkout FETCH_HEAD -- {file}
 ```
 
+git 获取某个提交变更的文件，如果不加commit id表示最后一次提交：
+```
+# git show -r --pretty="" --name-status
+M       README.md
+A       image/dd.txt
+D       test.json
+```
+
+
+
