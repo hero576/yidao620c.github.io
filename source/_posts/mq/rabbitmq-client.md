@@ -4,7 +4,7 @@ title: "使用python开发RabbitMQ应用"
 date: 2015-09-30 11:21:34 +0800
 comments: true
 toc: true
-categories: python
+categories: mq
 tags: rabbitmq
 ---
 

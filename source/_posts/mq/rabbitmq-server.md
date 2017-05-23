@@ -4,7 +4,7 @@ title: "CentOS6.4安装rabbitmq-server"
 date: 2015-04-26 10:55:13 +0800
 comments: true
 toc: true
-categories: linux
+categories: mq
 tags: rabbitmq
 ---
 

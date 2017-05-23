@@ -121,7 +121,7 @@ scrapy runspider stackoverflow_spider.py -o top-stackoverflow-questions.json
 
 处理流程图：
 
-![scrapy架构图](http://7qn9a8.com1.z0.glb.clouddn.com/scrapy.png)
+![scrapy架构图](https://xnstatic-1253397658.file.myqcloud.com/scrapy.png)
 
 Scrapy的一个好处是所有请求都是被调度并异步处理，就算某个请求出错也不影响其他请求继续被处理。
 
