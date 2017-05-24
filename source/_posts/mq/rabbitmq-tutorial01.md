@@ -17,10 +17,14 @@ RabbitMQ是一个出色的消息代理中间件（Message Broker）：接受和�
 
 ## 几个术语
 
-* producer: 消息发送者
-* queue: 就是RabbitMQ里面的邮筒，消息只能存储在队列里面
-* consumer: 消息接受者
-* exchange: 消息路由器，所有的消息发送都需要经过路由器
+1. Broker - 简单来说就是消息队列服务器的实体。
+2. Exchange - 消息路由器，转发消息到绑定的队列上，指定消息按什么规则，路由到哪个队列。
+3. Queue - 消息队列，用来存储消息，每个消息都会被投入到一个或多个队列。
+4. Binding - 绑定，它的作用就是把 Exchange 和 Queue 按照路由规则绑定起来。
+5. RoutingKey - 路由关键字，Exchange 根据这个关键字进行消息投递。
+6. Producter - 消息生产者，产生消息的程序。
+7. Consumer - 消息消费者，接收消息的程序。
+8. Channel - 消息通道，在客户端的每个连接里可建立多个Channel，每个channel代表一个会话。
 
 ## 安装
 这里选择最简单的yum安装方式，其他安装方式请参考官网<https://www.rabbitmq.com/install-rpm.html>

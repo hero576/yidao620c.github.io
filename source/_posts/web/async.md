@@ -1,6 +1,6 @@
 ---
-title: "异步任务的几种实现"
-date: 2017-05-20 09:07:13 +0800
+title: "使用Ajax实现异步任务"
+date: 2017-05-02 09:07:13 +0800
 comments: true
 toc: true
 categories: web
@@ -12,7 +12,9 @@ tags: [ajax, async]
 大部分情况是我们还得知道异步任务返回结果，然后调用回调函数来更新页面结果。
 
 目前常见的三种方式是Ajax轮训、Ajax长连接（long polling）、WebSocket方式。
-这里我只讲前面两个，WebSocket方式单独写。通过一个实际例子来演示下。<!--more-->
+这里我只讲Ajax的两种方式，因为更好的WebSocket方式我已经单独写了一篇文章来介绍。
+
+通过一个实际例子来演示下。<!--more-->
 
 ## 服务器实现
 这里通过一个SpringMVC项目，实现服务器长时间任务部分：
