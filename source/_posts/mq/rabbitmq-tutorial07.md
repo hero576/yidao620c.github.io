@@ -8,7 +8,7 @@ categories: mq
 tags: rabbitmq
 ---
 
-之前写过一篇[使用Ajax实现异步任务](https://www.xncoding.com/2017/05/02/web/async.html)的文章，
+之前写过一篇 [使用Ajax实现异步任务](https://www.xncoding.com/2017/05/02/web/async.html) 的文章，
 介绍了对于需要知道异步处理返回结果的情况，使用Ajax的轮训和长连接方式实现。
 但是这两种方式都会生成大量的HTTP连接，对服务器资源是一种巨大的浪费，
 这里正式介绍如果通过`WebSocket` + `RabbitMQ`来优雅的实现。<!--more-->
@@ -186,8 +186,8 @@ client.subcribe(destination,callback);
 
 这里需要详细讲解`destination`的含义，根据使用场景的不同，主要有以下4种：
 
-```
-1./exchange/<exchangeName>
+1. /exchange/<exchangeName>
+
 对于 SUBCRIBE frame，destination 一般为/exchange/<exchangeName>/[/pattern] 的形式。
 该 destination 会创建一个唯一的、自动删除的随机queue，
 并根据 pattern 将该 queue 绑定到所给的 exchange，实现对该队列的消息订阅。
@@ -195,34 +195,38 @@ client.subcribe(destination,callback);
 对于 SEND frame，destination 一般为/exchange/<exchangeName>/[/routingKey] 的形式。
 这种情况下消息就会被发送到定义的 exchange 中，并且指定了 routingKey。
 
-2./queue/<queueName>
+2. /queue/<queueName>
+
 对于 SUBCRIBE frame，destination 会定义<queueName>的共享 queue，并且实现对该队列的消息订阅。
 
 对于 SEND frame，destination 只会在第一次发送消息的时候会定义<queueName>的共享 queue。
 该消息会被发送到默认的 exchange 中，routingKey 即为<queueName>。
 
-3./amq/queue/<queueName>
+3. /amq/queue/<queueName>
+
 这种情况下无论是 SUBCRIBE frame 还是 SEND frame 都不会产生 queue。
 但如果该 queue 不存在，SUBCRIBE frame 会报错。
 
 对于 SUBCRIBE frame，destination 会实现对队列<queueName>的消息订阅。
 对于 SEND frame，消息会通过默认的 exhcange 直接被发送到队列<queueName>中。
 
-4./topic/<topicName>
+4. /topic/<topicName>
+
 对于 SUBCRIBE frame，destination 创建出自动删除的、非持久的 queue 并根据 routingkey 为<topicName>
 绑定到 amq.topic exchange 上，同时实现对该 queue 的订阅。
 
 对于 SEND frame，消息会被发送到 amq.topic exchange 中，routingKey 为<topicName>。
-```
+
 
 对于在页面发送消息的例子跟订阅类似，这里就不再演示。
 
-## 小结
+## 最后建议
 
 WebSocket 作为 HTML5 提供的新一代客户端-服务器异步通信方法，能够轻松完成前端与后台的双向通信。
 RabbitMQ 服务提供了一个 STOMP 插件，能够实现与 WebSocket 的桥接，这样既能够实现消息的主动推送，
-同时也能够实现消息的异步处理。在传统的 Web 开发中存在许多状态变更实时性的需求，
-比如资源被占用后需要广播它的实时状态，利用本文提出的解决方案，可以方便将其推送到所有监听的客户端。
-因此在新 J2EE 开发项目中，建议使用本文提出的方案替代原来 ajax 轮询方法刷新状态。
+同时也能够实现消息的异步处理。
 
+在传统的 Web 开发中存在许多状态变更实时性的需求，比如资源被占用后需要广播它的实时状态，
+利用本文提出的解决方案，可以方便将其推送到所有监听的客户端。
+因此在开发新的 Web 项目中，建议使用本文提出的方案替代原来 ajax 轮询或长连接刷新状态。
 
