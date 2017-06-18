@@ -66,11 +66,16 @@ start.jar | Jetty的启动文件。在命令行环境下以 java -jar start.jar 
 修改端口号现在jetty9是修改`start.ini`文件中的`jetty.port=8001`
 
 ## 发布
-自己写的web项目，直接解压到webapps目录或者里面一个子目录myapp，通过命令：
+默认的webapps目录下面没有ROOT目录，最好先创建一个。
+自己写的web项目，直接解压到webapps目录下面的ROOT目录，或者另外一个名字叫myapp的目录，通过命令：
 ```
 java -jar start.jar jetty.port=8002
 ```
-来启动项目，然后访问url: localhost:8002/myapp 就可以了。
+来启动项目
+
+对于发布到ROOT目录的访问URL：localhost:8002
+
+对于发布到myapp目录的访问URL：localhost:8002/myapp
 
 ## 与IDEA的集成
 最好的方式就是使用maven的插件`jetty-maven-plugin`来集成：
