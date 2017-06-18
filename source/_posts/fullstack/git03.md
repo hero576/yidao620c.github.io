@@ -96,6 +96,8 @@ dev branch add by "自己"
 ```
 mkdir -p /root/work1 && cd /root/work1
 git clone https://github.com/yidao620c/gitdemo.git
+# 克隆单个分支
+git clone -b mybranch --single-branch git://sub.domain.com/repo.git
 ```
 
 现在我本地有两个仓库:
