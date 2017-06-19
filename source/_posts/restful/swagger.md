@@ -37,7 +37,7 @@ Swagger是一个简单但功能强大的API表达工具。它具有地球上最�
 </dependency>
 ```
 
-## 修改web.xml配置
+## 修改资源配置类
 
 (1) 修改自定义的`ResourceConfig`配置类，其中`com.enzhico.epay.action`是所有接口所在的包
 ``` java
