@@ -136,6 +136,35 @@ url = "http://localhost:8080/api/swagger.json";
 
 还有一种方法是使用`swagger editor`，将`swagger.json`或`swagger.yaml`导入即可。
 
+方法如下：修改`index.html`，如下：
+
+``` html
+<script>
+    window.onload = function () {
+        var resourceNames = window.location.href.split('?');
+        if (resourceNames.length > 1) {
+            var url = "http://localhost:8080/yaml/" + resourceNames[1] + ".yaml";
+            // Build a system
+            const ui = SwaggerUIBundle({
+                url: url,
+                dom_id: '#swagger-ui',
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout"
+            });
+            window.ui = ui
+        }
+    }
+</script>
+```
+
+然后在webroot目录下面创建子目录yaml，把各个版本的yaml配置文件放到这里面即可，比如api1.yaml、api2.yaml等。
+
 ## API开发规约
 
 使用swagger2提供的swagger core功能，通过代码注解的方式自动生成api文档。
@@ -154,3 +183,34 @@ url = "http://localhost:8080/api/swagger.json";
 * [简单例子](https://jakubstas.com/spring-jersey-swagger-create-documentation/#.WMj-khJ95E4)
 * [官方接口文档](http://docs.swagger.io/swagger-core/current/apidocs/index.html)
 
+## 多个版本的API文档
+使用一段时间后，感觉这种方式，在代码里面的注解配置实在太多，对代码入侵太大了，所以放弃这种方式。
+改成老老实实用`Swagger Editor`编辑yaml文件，然后放到webroot/yaml/子目录下面，可以放多个版本的定义。
+
+## Swagger Editor使用
+Swagger Editor是个用Angular开发的WEB小程序，它可以让你用YAML来定义你的接口规范，并实时验证和现实成接口文档。
+
+此外，它还可以通过接口文档帮你生成不同框架的服务端和客户端，方便你mock和契约测试。
+最后导出JSON格式的API规范，通过Swagger UI对外发布。
+
+先clone项目：
+```
+git clone https://github.com/swagger-api/swagger-editor.git
+```
+如果在本地，解压后直接打开里面的index.html即可。
+
+如果在服务器上面，可先安装http-server：
+```
+npm install -g http-server
+```
+
+启动该项目，默认为8080端口，可自定义端口号：
+```
+http-server –p 2017 swagger-editor
+```
+
+界面效果如下：
+
+![](https://xnstatic-1253397658.file.myqcloud.com/swagger02.png)
+
+写完文档后可导出yaml格式的文件，这个文件可在swagger ui中使用生成漂亮的HTML页面的API文档。
