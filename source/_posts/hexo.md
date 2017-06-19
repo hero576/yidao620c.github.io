@@ -51,7 +51,7 @@ alias cnpm="npm --registry=https://registry.npm.taobao.org \
 ### 安装hexo
 利用 npm 命令即可安装。打开窗口控制台，输入安装hexo命令：
 ``` bash
-npm install -g hexo
+cnpm install -g hexo
 ```
 
 ### 初始化
@@ -62,7 +62,7 @@ hexo init
 
 安装依赖包：
 ``` bash
-npm install
+cnpm install
 ```
 
 一切准备就绪让我们试验下，在D:\hexo内执行以下命令：
