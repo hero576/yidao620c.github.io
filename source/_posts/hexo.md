@@ -6,18 +6,47 @@ categories: 朝花夕拾
 tags: hexo
 ---
 
-最今天我又折腾了我的博客，将它从octopress迁移到hexo上来。之前还专门写了一篇怎样利用octopress搭建博客的文章，最近试用了一下hexo，毫不犹豫的迁移过来了，实在是忍受不了octopress的速度，还有稳定性，经常莫名其妙的出错。
+最今天我又折腾了我的博客，将它从octopress迁移到hexo上来。之前还专门写了一篇怎样利用octopress搭建博客的文章，
+最近试用了一下hexo，毫不犹豫的迁移过来了，实在是忍受不了octopress的速度，还有稳定性，经常莫名其妙的出错。
 
-hexo是一个台湾人做的基于Node.js的静态博客程序，优势是生成静态文件的速度非常快，支持markdown，我最终选定它的原因是它速度快而且不容易出错，并且可以一键部署到github或者其它静态服务器上去。折腾了一天总算搞定。<!--more-->
+hexo是一个台湾人做的基于Node.js的静态博客程序，优势是生成静态文件的速度非常快，支持markdown，
+我最终选定它的原因是它速度快而且不容易出错，并且可以一键部署到github或者其它静态服务器上去。折腾了一天总算搞定。<!--more-->
 
 ## 安装
 
 我这个教程是基于window 64系统，Hexo3版本
 
 ### 安装依赖软件
-[Node.js](https://nodejs.org/en): node.js用来创建hexo博客框架的，我安装的node-v5.7.1-x64
+[Node.js](https://nodejs.org/en): node.js用来创建hexo博客框架的
 
-[Git客户端](http://git-scm.com/download/win): 把本地的hexo内容提交到github上去，我安装的Git-2.7.1-64-bit
+```
+wget https://nodejs.org/dist/v6.10.0/node-v6.10.0.tar.gz
+tar xzvf node-v* && cd node-v*
+yum install gcc gcc-c++
+./configure --prefix=/usr/local/nodejs
+make && make install  #这步时间很久20分钟
+node --version  # 如果命令找不到就将/usr/local/nodejs/bin加入PATH中
+```
+
+最新的node.js已经集成了npm，不过需要经常更新：
+```
+npm install npm@latest -g
+npm --version
+```
+
+## 换淘宝源
+```
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+```
+之后使用cnpm命令代替npm命令，或者你直接通过添加 npm 参数 alias 一个新命令:
+```
+alias cnpm="npm --registry=https://registry.npm.taobao.org \
+--cache=$HOME/.npm/.cache/cnpm \
+--disturl=https://npm.taobao.org/dist \
+--userconfig=$HOME/.cnpmrc"
+```
+
+[Git客户端](http://git-scm.com/download/win): 把本地的hexo内容提交到github上去
 
 ### 安装hexo
 利用 npm 命令即可安装。打开窗口控制台，输入安装hexo命令：
@@ -128,22 +157,23 @@ tags: [文章, 测试] #文章标签，多于一项时用这种格式，只有�
 ## hexo主题及其配置
 
 如果你不喜欢默认主题，那么可以去hexo官网找更多的[主题](https://hexo.io/themes/)。
-我这里选择maupassant-hexo主题说明一下，这个是一个非常简洁的主题，我喜欢简单的东西。
+我这里选择NexT主题说明一下，这个是一个非常简洁的主题，我喜欢简单的东西。
+
+Next主题官网：<http://theme-next.iissnan.com/>
 
 ### 安装主题
 
 ``` bash
-$ git clone https://github.com/tufu9441/maupassant-hexo.git themes/maupassant
-$ npm install hexo-renderer-jade --save
-$ npm install hexo-renderer-sass --save
+$ cd your-hexo-site
+$ git clone https://github.com/iissnan/hexo-theme-next themes/next
 ```
 
 ### 启用主题
-修改你的博客根目录下的config.yml配置文件中的theme属性，将其设置为maupassant
+修改你的博客根目录下的config.yml配置文件中的theme属性，将其设置为next
 
 ### 更新主题
 ``` bash
-cd themes/maupassant
+cd themes/next
 git pull
 ```
 更新好后，本地启动起来效果
@@ -152,12 +182,12 @@ hexo server -g  #生成加预览
 ```
 
 ### 主题的_config.yml配置
-具体配置请直接参考[如何使用maupassant主题](https://www.haomwei.com/technology/maupassant-hexo.html)。
+具体配置请直接参考[开始使用NexT主题](http://theme-next.iissnan.com/getting-started.html)。
 同时我对这个主题进行了很多的修改让它看上去更加符合自己的审美观，如果对我博客的主题感兴趣可以直接在我的github页面拉取即可。
 
 ## 多台电脑同时维护博客
 
-之前利用了 Hexo+Github搭建了自己的博客网站，但问题来了：如何在多台电脑上对此博客进行维护？
+之前利用了 Hexo + Github搭建了自己的博客网站，但问题来了：如何在多台电脑上对此博客进行维护？
 
 ### 思路
 
@@ -197,27 +227,37 @@ $ npm install hexo-renderer-sass --save
 注意：千万别执行`hexo init`这个命令啊，同时maupassant主题的安装步骤还是需要的。
 
 ### 使用方法
+
+如果是新电脑，先把source分支clone下来：
+```bash
+git clone -b source --single-branch https://github.com/yidao620c/yidao620c.github.io.git
+```
+
 在任意一台mac操作，都需先切换并保持在source分支上。使用git命令管理source文件；使用hexo命令进行同步至远程master分支，无需处理本地master分支
+
 1. 在A中使用Hexo的new、g、d方法添加、生成、部署新的博客，内容都会被同步自动放到Github的master分支上
 2. 在A中使用git命令的`push origin source`同步source到远程source分支
 3. 同样保证B的git当前在git_blog下的source分支下
+
 先使用：
 ``` bash
 git pull origin source
 ```
+
 获得Github的source分支上的最新版本，再使用：
 ``` bash
 $ git add -u
 $ git commit -m ""
 $ git push origin source
 ```
+
 将新内容提交至Github的source分支上，完成source管理。
 
 ### 其他说明
 ``` bash
-git add -f "" // 强制添加文件/文件夹为tracked状态
-$ git rm --cache "" // 解除文件为tracked状态
-$ git rm -r --cache "" // 解除文件夹为tracked状态
+git add -f xxx // 强制添加文件/文件夹为tracked状态
+$ git rm --cache xxx // 解除文件为tracked状态
+$ git rm -r --cache xxx // 解除文件夹为tracked状态
 ```
 
 ## 添加网站的RSS订阅
@@ -282,6 +322,24 @@ CNAME: www      =>  yidao620c.github.io
 www，CNAME，cmback.github.io.
 ```
 
+## 站内搜索
+最简单是直接开启Local Search，
+先在NexT的_config.yml配置中开启这个本地搜索：
+```
+# Local search
+local_search:
+  enable: true
+```
+
+全局配置文件_config.yml中定义搜索页面：
+``` html
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+```
+
 ## FAQ
 
 * 遇到有大括号的代码块，如果多行的不用管，如果单行的就单个反引号，并且在里面加raw标签，比如{% raw %} `{{test}}` {% endraw %}
@@ -295,6 +353,5 @@ www，CNAME，cmback.github.io.
 ## 参考
 
 * [hexo干货系列](http://tengj.top/tags/hexo/)
-* [让你的Octopress博客在多台Mac上同时使用](http://wangzz.github.io/blog/2014/04/02/ru-he-pei-zhi-rang-ni-de-octopressbo-ke-zai-duo-tai-macshang-tong-shi-shi-yong/)
 * [大道至简——Hexo简洁主题推荐](https://www.haomwei.com/technology/maupassant-hexo.html)
 
