@@ -139,6 +139,17 @@ url = "http://localhost:8080/api/swagger.json";
 方法如下：修改`index.html`，如下：
 
 ``` html
+<h3>API文档列表：</h3>
+
+<ul>
+    <li><a href="/index.html?api1">api1</a></li>
+    <li><a href="/index.html?api2">api2</a></li>
+</ul>
+
+<div id="swagger-ui"></div>
+
+<script src="./swagger-ui-bundle.js"></script>
+<script src="./swagger-ui-standalone-preset.js"></script>
 <script>
     window.onload = function () {
         var resourceNames = window.location.href.split('?');
