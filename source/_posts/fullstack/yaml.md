@@ -64,8 +64,8 @@ specialDelivery:  >
 ```
 — # 區塊形式
 person:
-name: John Smith
-age: 33
+  name: John Smith
+  age: 33
 — # 內置形式
 person: {name: John Smith, age: 33}
 ```
@@ -88,9 +88,9 @@ node5:
   <<: *node3
   c: 003
 
-#眼部雷射手術之標準程序
+# 一个更加详细的例子
 ---
-- step:  &amp;id001                    #定義錨點標籤 &amp;id001
+- step:  &id001                    # 定义锚点标记&id001
     instrument:      Lasik 2000
     pulseEnergy:     5.4
     pulseDuration:   12
@@ -98,13 +98,13 @@ node5:
     spotSize:        1mm
 
 - step:
-     &lt;&lt;: *id001                  # 合併鍵值：使用在錨點標籤定義的內容
-     spotSize:       2mm               # 覆寫"spotSize"鍵值
+     <<: *id001                  # 合并鍵值：使用在錨點標籤定義的內容
+     spotSize:       2mm         # 覆盖"spotSize"键值
 
 - step:
-     &lt;&lt;: *id001                  # 合併鍵值：使用在錨點標籤定義的內容
-     pulseEnergy:    500.0             # 覆寫鍵值
-     alert: &gt;                       # 加入其他鍵值
+     <<: *id001                  # 合併鍵值：使用在錨點標籤定義的內容
+     pulseEnergy:    500.0       # 覆寫鍵值
+     alert: >                    # 加入其他鍵值
            warn patient of
            audible pop
 ```
@@ -136,7 +136,7 @@ Blank lines denote   #空白的行代表
 paragraph breaks     #段落之間的區隔
 ```
 
-和保存新行不同的是，换行字元会被转换成空白字符，空行被转换成换行，而前导空白字符则会被自动消去。上面会变成两行。
+和保存新行不同的是，换行字元会被转换成空白字符，空行被转换成换行，而前导空白字符则会被自动消去，上面会变成两行。
 
 #### 5，混合使用：
 
