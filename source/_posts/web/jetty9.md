@@ -3,7 +3,7 @@ title: "Jetty9的简易教程"
 date: 2017-06-12 20:12:08 +0800
 comments: true
 toc: true
-categories: java
+categories: web
 tags: [jetty9]
 ---
 Jetty是一个用 Java 实现、开源、基于标准的，并且具有丰富功能的 Http 服务器和 Web 容器。
@@ -54,14 +54,20 @@ java -jar start.jar
 
 介绍一下jetty的目录，跟tomcat容器一样，我们也需要了解各个目录是做什么的
 
-Dir       | Description
-----------|------------------------------------------------------
-bin       | Jetty命令，可以将Jetty配置成系统服务
-ect       | Jetty自身的配置文件
-lib       | Jetty的JAR文件
-logs      | Jetty运行时的日志文件
-webapps   | 存放Web应用，Jetty会自动加载这个目录下的所有Web应用
-start.jar | Jetty的启动文件。在命令行环境下以 java -jar start.jar 来启动Jetty
+Dir              | Description
+-----------------|------------------------------------------------------
+bin/             | 存放在Unix系统下运行的shell脚本
+ect/             | 配置文件
+lib/             | 运行所依赖的jar文件
+logs/            | 运行时的日志文件
+modules/         | 各个模块
+resources/       | 包含新增到classpath配置文件夹，如log4j.properties
+webapps/         | 存放Web应用，Jetty会自动加载这个目录下的所有Web应用
+start.jar        | 运行Jetty的jar。在命令行环境下以 java -jar start.jar 来启动Jetty
+start.ini        | 存放启动信息
+notice.html      | 许可信息等
+README.txt       | 一些有用的说明
+VERSION.txt      | 版本信息
 
 修改端口号现在jetty9是修改`start.ini`文件中的`jetty.port=8001`
 
