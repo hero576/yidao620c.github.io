@@ -3,7 +3,7 @@ layout: post
 title: "redis笔记01 - 入门与安装"
 date: 2015-07-01 12:15:42 +0800
 toc: true
-categories: linux
+categories: cache
 tags: redis
 ---
 

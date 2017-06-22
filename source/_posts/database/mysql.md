@@ -3,7 +3,7 @@ title: "MySQL核心知识整理"
 date: 2016-09-17 12:07:14 +0800
 comments: true
 toc: true
-categories: fullstack
+categories: database
 tags: [mysql]
 ---
 
