@@ -109,6 +109,47 @@ RUN、CMD 和 ENTRYPOINT 这三个 Dockerfile 指令看上去很类似，很容�
 2. CMD 设置容器启动后默认执行的命令及其参数，但 CMD 能够被 docker run 后面跟的命令行参数替换。
 3. ENTRYPOINT 配置容器启动时运行的命令。
 
+Shell 和 Exec 格式
+
+我们可用两种方式指定 RUN、CMD 和 ENTRYPOINT 要运行的命令：Shell 格式和 Exec 格式，
+二者在使用上有细微的区别。
+
+Shell 格式:
+
+```
+RUN apt-get install python3  
+CMD echo "Hello world"  
+ENTRYPOINT echo "Hello world" 
+```
+
+当指令执行时，shell 格式底层会调用 `/bin/sh -c <command>`
+
+Exec 格式：
+
+```
+RUN ["apt-get", "install", "python3"]  
+CMD ["/bin/echo", "Hello world"]  
+ENTRYPOINT ["/bin/echo", "Hello world"]
+```
+
+当指令执行时，会直接调用 <command>，不会被 shell 解析。
+
+如果希望使用环境变量，照如下修改:
+```
+ENV name Cloud Man  
+ENTRYPOINT ["/bin/sh", "-c", "echo Hello, $name"]
+```
+
+最佳实践
+
+1. 使用 RUN 指令安装应用和软件包，构建镜像。
+2. 如果 Docker 镜像的用途是运行应用程序或服务，比如运行一个 MySQL，
+应该优先使用 Exec 格式的 ENTRYPOINT 指令。CMD 可为 ENTRYPOINT 提供额外的默认参数，
+同时可利用 docker run 命令行替换默认参数。
+3. 如果想为容器设置默认的启动命令，可使用 CMD 指令。用户可在 docker run 命令行中替换此默认命令。
+
+
+
 
 
 
