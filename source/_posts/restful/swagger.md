@@ -6,197 +6,23 @@ toc: true
 categories: restful
 tags: [swagger]
 ---
-REST API都是要对外提供服务的，那么文档是必须的。经常要给其他人员提供文档，每次都是要不断的维护word/excel的文件，挺麻烦的。
-能不能做到自动生成呢？答案是可以的，swagger就是这样的一个组件帮助我们快速生成，
-让开发人员只需要关注功能的开发即可，后续的工作就交给Swagger就好了。
-
-Swagger是一个简单但功能强大的API表达工具。它具有地球上最大的API工具生态系统，数以千计的开发人员，
-使用几乎所有的现代编程语言，都在支持和使用Swagger。使用Swagger生成API，我们可以得到交互式文档，
-自动生成代码的SDK以及API的发现特性等。
+REST API都是要对外提供服务的，那么文档是必须的。Swagger是一个简单但功能强大的API表达工具。
+它具有地球上最大的API工具生态系统，数以千计的开发人员，使用几乎所有的现代编程语言，
+都在支持和使用Swagger。使用Swagger生成API，我们可以得到交互式文档，自动生成代码的SDK以及API的发现特性等。
 
 2.X版本已经发布，Swagger变得更加强大。值得感激的是，Swagger的源码100%开源在[github](https://github.com/swagger-api)。
 
-我演示的是为Jersey2自动生成API文档，更多的请参考[官方文档](http://swagger.io/docs/)。<!--more-->
-
 使用Swagger不纯粹是为了生成一个漂亮的API文档，也不纯粹是为了自动生成多种语言的代码框架，
-重要的是，通过遵循它的标准，可以使REST API分组清晰、定义标准。
+重要的是，通过遵循它的标准，可以使REST API分组清晰、定义标准。<!--more-->
 
 通过Swagger生成API 文档有两种方式：
 
 1. 通过代码注解来生成。好处：随时保持接口和文档的同步。坏处：代码入侵
-2. 使用`Swagger Editor` 编写API文档的Yaml/Json定义。好处：不污染代码。坏处：不能实现文档和代码的实时同步
+2. 使用`Swagger Editor` 编写API文档的Yaml/Json定义。
 
-这里我采用第一种方式来说明，牺牲代码的纯净度来获取实时同步效果。
-
-## pom.xml加入swagger的依赖
-``` xml
-<dependency>
-    <groupId>io.swagger</groupId>
-    <artifactId>swagger-jersey2-jaxrs</artifactId>
-    <version>1.5.13</version>
-</dependency>
-```
-
-## 修改资源配置类
-
-(1) 修改自定义的`ResourceConfig`配置类，其中`com.enzhico.epay.action`是所有接口所在的包
-``` java
-public class ApplicationConfig extends ResourceConfig {
-
-    public ApplicationConfig() {
-        packages("com.enzhico.epay.action", "io.swagger.jaxrs.listing");
-
-        register(ApiListingResource.class);
-        register(SwaggerSerializers.class);
-
-        BeanConfig config = new BeanConfig();
-        config.setTitle("EPAY API");
-        config.setVersion("1.0.0");
-        config.setContact("Neng Xiong");
-        config.setHost("localhost:8080");
-        config.setBasePath("/api");
-        config.setDescription("收费电子化项目API接口文档");
-        config.setSchemes(new String[] { "http", "https" });
-        config.setLicense("Apache Licence V2");
-        config.setLicenseUrl("https://www.apache.org/licenses/LICENSE-2.0");
-        config.setResourcePackage("com.enzhico.epay.action");
-        config.setPrettyPrint(true);
-        config.setScan(true);
-
-        register(JacksonFeature.class);
-        register(MultiPartFeature.class);
-
-        register(JsonProvider.class);
-        register(JacksonJsonProvider.class);
-
-        register(AuthenticationFilter.class);
-        register(CORSResponseFilter.class);
-        //register(RequestContextFilter.class);  // Though it might be needed. Guess not
-
-        property(ServerProperties.METAINF_SERVICES_LOOKUP_DISABLE, true);
-    }
-}
-```
-
-## 配置注解
-所有的Actin类都必须添加`API`的注解，另外所有接口方法都要编写Swagger相应的注解，具体的编写方法参考Swagger Core，
-种类我写一个示例：
-
-``` java
-/**
- * User Action
- *
- * @author XiongNeng
- * @version 1.0
- * @since 2017/6/12
- */
-@Component
-@Api(value = "users", description = "用户操作相关的API", tags = "users, mytag")
-@Path("/v1")
-public class UserAction {
-
-    private static final Logger _logger = LoggerFactory.getLogger(UserAction.class);
-
-    @Autowired
-    private UserService userService;
-
-    /**
-     * 查询用户列表
-     * @return
-     * @throws AppException
-     */
-    @GET
-    @Path("users")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Authentication
-    @ApiOperation(value="获取用户列表", notes="获取用户列表的详细说明")
-    public List<User> getUsers() throws AppException {
-        _logger.info("111111111111111111111 getUsers()");
-        return userService.queryUsers();
-    }
-}
-```
-
-## 配置swagger-ui
-有两种方式可以很直观优雅的查看这个swagger.json接口定义文件，第一种是使用swagger-ui。
-
-先下载swagger-ui：
-```
-https://github.com/swagger-api/swagger-ui
-```
-
-拷贝dist目录下面的文件到webroot下面（和WEB-INF同级目录），然后修改`index.html`中的url地址：
-```
-url = "http://localhost:8080/api/swagger.json";
-```
-
-最后生成的文档效果如下：
-
-![](https://xnstatic-1253397658.file.myqcloud.com/swagger01.png)
-
-还有一种方法是使用`swagger editor`，将`swagger.json`或`swagger.yaml`导入即可。
-
-方法如下：修改`index.html`，如下：
-
-``` html
-<h3>API文档列表：</h3>
-
-<ul>
-    <li><a href="/index.html?api1">api1</a></li>
-    <li><a href="/index.html?api2">api2</a></li>
-</ul>
-
-<div id="swagger-ui"></div>
-
-<script src="./swagger-ui-bundle.js"></script>
-<script src="./swagger-ui-standalone-preset.js"></script>
-<script>
-    window.onload = function () {
-        var resourceNames = window.location.href.split('?');
-        if (resourceNames.length > 1) {
-            var url = "http://localhost:8080/yaml/" + resourceNames[1] + ".yaml";
-            // Build a system
-            const ui = SwaggerUIBundle({
-                url: url,
-                dom_id: '#swagger-ui',
-                presets: [
-                    SwaggerUIBundle.presets.apis,
-                    SwaggerUIStandalonePreset
-                ],
-                plugins: [
-                    SwaggerUIBundle.plugins.DownloadUrl
-                ],
-                layout: "StandaloneLayout"
-            });
-            window.ui = ui
-        }
-    }
-</script>
-```
-
-然后在webroot目录下面创建子目录yaml，把各个版本的yaml配置文件放到这里面即可，比如api1.yaml、api2.yaml等。
-
-## API开发规约
-
-使用swagger2提供的swagger core功能，通过代码注解的方式自动生成api文档。
-后端工程师在编写代码的同时即可完成接口文档的编写。
-
-1. 后端工程师定义model，并用swagger annonation注解
-2. 后端工程师定义restful接口，不需实现，并用swagger annonation注解
-3. 后端工程师导出swagger接口文件分发给前端工程师，作为接口文档
-4. 前端工程师根据接口文档行开发，可以将接口文档导入到swagger工具(swagger editor / swagger hub)中。
-5. 前端工程师可以通过`swagger codegen`（集成在`swagger editor`中）生成server stubs来测试前端，
-也可以使用swagger hub集成的virtserver（收费）来在线测试接口。
-6. 如果开发过程中接口变更，后端工程师重新导出接口文档，并分发给前端工程师使用。
-
-## swagger注解使用
-
-* [简单例子](https://jakubstas.com/spring-jersey-swagger-create-documentation/#.WMj-khJ95E4)
-* [官方接口文档](http://docs.swagger.io/swagger-core/current/apidocs/index.html)
-
-## 多个版本的API文档
-使用一段时间后，感觉这种方式，在代码里面的注解配置实在太多，对代码入侵太大了，所以放弃这种方式。
-改成老老实实用`Swagger Editor`编辑yaml文件，然后放到webroot/yaml/子目录下面，可以放多个版本的定义。
+虽然第一种方式最方便，不用编写swagger配置文件，但是对代码污染太严重了。所以在项目里面我选择第二种方式，
+另外我也不实用Swagger UI来展示API文档，页面太花哨了。
+这里我选择swagger2markup将其转换为AsciiDoc或MarkDown格式。
 
 ## Swagger Editor使用
 Swagger Editor是个用Angular开发的WEB小程序，它可以让你用YAML来定义你的接口规范，并实时验证和现实成接口文档。
@@ -225,3 +51,90 @@ http-server –p 2017 swagger-editor
 ![](https://xnstatic-1253397658.file.myqcloud.com/swagger02.png)
 
 写完文档后可导出yaml格式的文件，这个文件可在swagger ui中使用生成漂亮的HTML页面的API文档。
+
+## swagger2markup
+
+GitHub主页：https://github.com/Swagger2Markup/swagger2markup
+
+swagger2markup用来将我们手写的或自动生成的swagger.yaml或swagger.json转换成漂亮的 AsciiDoc 或 Markdown格式文件。
+然后再通过`asciidoctor-maven-plugin`将其转换为漂亮的HTML格式文档方便查看。
+
+将swagger.yaml转换成AsciiDoc的方法：http://swagger2markup.github.io/swagger2markup/1.3.1/
+
+先添加maven依赖：
+``` xml
+<dependency>
+    <groupId>io.github.swagger2markup</groupId>
+    <artifactId>swagger2markup</artifactId>
+    <version>1.3.1</version>
+</dependency><!-- 日志打印 slf4j + log4j包 -->
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-log4j12</artifactId>
+    <version>1.7.25</version>
+</dependency>
+```
+
+转换本地的yaml文件方法：
+``` java
+import io.github.swagger2markup.Swagger2MarkupConverter;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+Path localSwaggerFile = Paths.get("src/main/resources/swagger.yaml");
+Path outputFile = Paths.get("build/swagger");
+
+Swagger2MarkupConverter.from(localSwaggerFile)
+        .build()
+        .toFile(outputFile);
+```
+
+使用asciidoctor-maven-plugin将 AsciiDoc 转换成HTML文件方法
+
+添加maven插件：
+``` xml
+<plugin>
+    <groupId>org.asciidoctor</groupId>
+    <artifactId>asciidoctor-maven-plugin</artifactId>
+    <version>1.5.5</version>
+    <configuration>
+        <sourceDirectory>build</sourceDirectory>
+        <outputDirectory>target/docs/asciidoc</outputDirectory>
+        <!--<doctype>book</doctype>-->
+        <backend>html5</backend>
+        <sourceHighlighter>coderay</sourceHighlighter>
+        <attributes>
+            <toc>left</toc>
+        </attributes>
+    </configuration>
+    <executions>
+        <execution>
+            <id>output-html</id>
+            <phase>generate-resources</phase>
+            <goals>
+                <goal>process-asciidoc</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+然后执行：
+```
+mvn asciidoctor:process-asciidoc
+```
+
+那么在target/docs/asciidoc文件夹里面就会生成一个swagger.html，直接浏览器打开这个文件：
+
+![](https://xnstatic-1253397658.file.myqcloud.com/swagger03.png)
+
+是不是很帅，^_^
+
+
+## API开发规约
+
+1. 接口维护者使用swagger2提供的swagger core功能，先使用swagger editor手动编写api文档
+2. 通过上面的步骤更新在线API文档托管到网站上面，前端和后端工程师可在线查看api文档。
+3. 如果开发过程中接口变更，接口维护者重新编写和生成托管API文档，并通知前端和后端工程师具体实现。
+
