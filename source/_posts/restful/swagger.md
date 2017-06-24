@@ -77,35 +77,85 @@ swagger2markup用来将我们手写的或自动生成的swagger.yaml或swagger.j
 
 转换本地的yaml文件方法：
 ``` java
+import io.github.swagger2markup.GroupBy;
+import io.github.swagger2markup.Language;
+import io.github.swagger2markup.Swagger2MarkupConfig;
 import io.github.swagger2markup.Swagger2MarkupConverter;
+import io.github.swagger2markup.builder.Swagger2MarkupConfigBuilder;
+import io.github.swagger2markup.markup.builder.MarkupLanguage;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-Path localSwaggerFile = Paths.get("src/main/resources/swagger.yaml");
-Path outputFile = Paths.get("build/swagger");
+public static void main(String[] args) throws Exception {
+    Path localSwaggerFile = Paths.get("src/main/resources/swagger.yaml");
+    Path outputFile = Paths.get("build/swagger");
 
-Swagger2MarkupConverter.from(localSwaggerFile)
-        .build()
-        .toFile(outputFile);
+    Swagger2MarkupConfig config = new Swagger2MarkupConfigBuilder()
+            .withMarkupLanguage(MarkupLanguage.ASCIIDOC)
+            .withOutputLanguage(Language.ZH)
+            .withPathsGroupedBy(GroupBy.TAGS)
+            .withGeneratedExamples()
+            .withoutInlineSchema()
+            .build();
+    Swagger2MarkupConverter converter = Swagger2MarkupConverter.from(localSwaggerFile)
+            .withConfig(config)
+            .build();
+    converter.toFile(outputFile);
+}
 ```
 
-使用asciidoctor-maven-plugin将 AsciiDoc 转换成HTML文件方法
+使用 [asciidoctor-maven-plugin](https://github.com/asciidoctor/asciidoctor-maven-plugin/blob/master/README_zh-CN.adoc)
+将 AsciiDoc 转换成HTML/PDF文件方法
 
 添加maven插件：
 ``` xml
+<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <asciidoctor.maven.plugin.version>1.5.5</asciidoctor.maven.plugin.version>
+    <asciidoctorj.pdf.version>1.5.0-alpha.15</asciidoctorj.pdf.version>
+    <asciidoctorj.version>1.5.5</asciidoctorj.version>
+    <jruby.version>9.1.8.0</jruby.version>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+</properties>
+
 <plugin>
     <groupId>org.asciidoctor</groupId>
     <artifactId>asciidoctor-maven-plugin</artifactId>
-    <version>1.5.5</version>
+    <version>${asciidoctor.maven.plugin.version}</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj-pdf</artifactId>
+            <version>${asciidoctorj.pdf.version}</version>
+        </dependency>
+        <!-- Comment this section to use the default jruby artifact provided by the plugin -->
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby-complete</artifactId>
+            <version>${jruby.version}</version>
+        </dependency>
+        <!-- Comment this section to use the default AsciidoctorJ artifact provided by the plugin -->
+        <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj</artifactId>
+            <version>${asciidoctorj.version}</version>
+        </dependency>
+    </dependencies>
     <configuration>
         <sourceDirectory>build</sourceDirectory>
-        <outputDirectory>target/docs/asciidoc</outputDirectory>
-        <!--<doctype>book</doctype>-->
-        <backend>html5</backend>
+        <outputDirectory>docs/asciidoc/${project.version}</outputDirectory>
+        <headerFooter>true</headerFooter>
+        <doctype>book</doctype>
         <sourceHighlighter>coderay</sourceHighlighter>
         <attributes>
             <toc>left</toc>
+            <toclevels>3</toclevels>
+            <sectnums>true</sectnums>
+            <revnumber>${project.version}</revnumber>
+            <revdate>${maven.build.timestamp}</revdate>
+            <organization>广州恩智科技</organization>
+            <sourcedir>${project.build.sourceDirectory}</sourcedir>
         </attributes>
     </configuration>
     <executions>
@@ -115,6 +165,36 @@ Swagger2MarkupConverter.from(localSwaggerFile)
             <goals>
                 <goal>process-asciidoc</goal>
             </goals>
+            <configuration>
+                <backend>html5</backend>
+            </configuration>
+        </execution>
+        <execution>
+            <id>output-docbook</id>
+            <phase>generate-resources</phase>
+            <goals>
+                <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+                <backend>docbook</backend>
+            </configuration>
+        </execution>
+        <execution>
+            <id>output-pdf-doc</id>
+            <phase>generate-resources</phase>
+            <goals>
+                <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+                <backend>pdf</backend>
+                <attributes>
+                    <icons>font</icons>
+                    <pagenums/>
+                    <toc/>
+                    <idprefix/>
+                    <idseparator>-</idseparator>
+                </attributes>
+            </configuration>
         </execution>
     </executions>
 </plugin>
@@ -122,10 +202,10 @@ Swagger2MarkupConverter.from(localSwaggerFile)
 
 然后执行：
 ```
-mvn asciidoctor:process-asciidoc
+mvn clean && mvn compile
 ```
 
-那么在target/docs/asciidoc文件夹里面就会生成一个swagger.html，直接浏览器打开这个文件：
+那么在 `docs/asciidoc/1.0.0` 文件夹里面就会生成html、xml和pdf格式的文档，直接浏览器打开HTML文档效果：
 
 ![](https://xnstatic-1253397658.file.myqcloud.com/swagger03.png)
 
