@@ -159,5 +159,127 @@ docker rm -v $(docker ps -aq -f status=exited)
 2. `docker start` 将以后台方式启动容器，容器状态处于 Running 状态。
 3. 实际上，`docker run` 命令是`docker create` 和 `docker start` 的组合
 
+## 内存限额
+
+与操作系统类似，容器可使用的内存包括两部分：物理内存和 swap。Docker 通过下面两组参数来控制容器内存的使用量：
+
+1. -m 或 --memory：设置内存的使用限额，例如 100M, 2G。
+2. --memory-swap：设置 `内存+swap` 的使用限额。
+
+当我们执行如下命令：
+```
+docker run -m 200M --memory-swap=300M httpd
+```
+
+其含义是允许该容器最多使用 200M 的内存和 100M 的 swap。默认情况下，
+上面两组参数为 -1，即对容器内存和 swap 的使用没有限制。
+
+如果在启动容器时只指定 -m 而不指定 --memory-swap，那么 --memory-swap 默认为 -m 的两倍。
+
+## CPU限制
+
+默认设置下，所有容器可以平等地使用 host CPU 资源并且没有限制。
+
+Docker 可以通过 `-c` 或 `--cpu-shares` 设置容器使用 CPU 的权重。如果不指定，默认值为 1024。
+
+与内存限额不同，通过 -c 设置的 cpu share 并不是 CPU 资源的绝对数量，而是一个相对的权重值。
+某个容器最终能分配到的 CPU 资源取决于它的 cpu share 占所有容器 cpu share 总和的比例。
+
+换句话说：通过 cpu share 可以设置容器使用 CPU 的优先级。
+
+比如在 host 中启动了两个容器：
+
+```
+docker run --name "container_A" -c 1024 centos
+docker run --name "container_B" -c 512 centos
+```
+
+container_A 的 cpu share 1024，是 container_B 的两倍。
+当两个容器都需要 CPU 资源时，container_A 可以得到的 CPU 是 container_B 的两倍。
+
+## 磁盘IO限制
+
+Block IO 是另一种可以限制容器使用的资源。Block IO 指的是磁盘的读写，
+docker 可通过设置权重、限制 bps 和 iops 的方式控制容器读写磁盘的带宽，下面分别讨论。
+
+注：目前 Block IO 限额只对 direct IO（不使用文件缓存）有效。
+
+默认情况下，所有容器能平等地读写磁盘，可以通过设置 `--blkio-weight` 参数来改变容器 block IO 的优先级。
+
+`--blkio-weight` 与 `--cpu-shares` 类似，设置的是相对权重值，默认为 500。
+在下面的例子中，container_A 读写磁盘的带宽是 container_B 的两倍：
+
+```
+docker run -it --name container_A --blkio-weight 600 centos   
+docker run -it --name container_B --blkio-weight 300 centos
+```
+
+**限制 bps 和 iops**
+
+* bps 是 byte per second，每秒读写的数据量。
+* iops 是 io per second，每秒 IO 的次数。
+
+可通过以下参数控制容器的 bps 和 iops：
+
+1. --device-read-bps，限制读某个设备的 bps。
+2. --device-write-bps，限制写某个设备的 bps。
+3. --device-read-iops，限制读某个设备的 iops。
+4. --device-write-iops，限制写某个设备的 iops。
+
+下面这个例子限制容器写 /dev/sda 的速率为 30 MB/s ：
+```
+docker run -it --device-write-bps /dev/sda:30MB centos
+```
+
+## 容器底层技术
+
+cgroup 和 namespace 是最重要的两种技术。cgroup 实现资源限额， namespace 实现资源隔离。
+
+**cgroup**
+
+cgroup 全称 Control Group。Linux 操作系统通过 cgroup 可以设置进程使用 CPU、内存 和 IO 资源的限额。
+前面我们看到的 `--cpu-shares`、`-m`、`--device-write-bps` 实际上就是在配置 cgroup。
+
+**namespace**
+
+在每个容器中，我们都可以看到文件系统，网卡等资源，这些资源看上去是容器自己的。
+拿网卡来说，每个容器都会认为自己有一块独立的网卡，即使 host 上只有一块物理网卡。这种方式非常好，它使得容器更像一个独立的计算机。
+
+Linux 实现这种方式的技术是 namespace。namespace 管理着 host 中全局唯一的资源，并可以让每个容器都觉得只有自己在使用它。
+换句话说，namespace 实现了容器间资源的隔离。
+
+Linux 使用了六种 namespace，分别对应六种资源：Mount、UTS、IPC、PID、Network 和 User。
+
+### Mount namespace
+
+Mount namespace 让容器看上去拥有整个文件系统。
+
+容器有自己的 / 目录，可以执行 mount 和 umount 命令。当然我们知道这些操作只在当前容器中生效，不会影响到 host 和其他容器。
+
+### UTS namespace
+
+UTS namespace 让容器有自己的 hostname。默认情况下，容器的 hostname 是它的短ID，可以通过 -h 或 --hostname 参数设置。
+
+```
+docker run -h xnhost -it centos
+```
+
+### IPC namespace
+
+IPC namespace 让容器拥有自己的共享内存和信号量（semaphore）来实现进程间通信，而不会与 host 和其他容器的 IPC 混在一起。
+
+### PID namespace
+
+所有容器的进程都挂在 dockerd 进程下，同时也可以看到容器自己的子进程。
+如果我们进入到某个容器，ps 就只能看到自己的进程了。
+容器拥有自己独立的一套 PID，这就是 PID namespace 提供的功能。
+
+### Network namespace
+
+Network namespace 让容器拥有自己独立的网卡、IP、路由等资源。我们会在后面网络章节详细讨论。
+
+### User namespace
+
+User namespace 让容器能够管理自己的用户，host 不能看到容器中创建的用户。
 
 
