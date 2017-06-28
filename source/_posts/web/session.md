@@ -145,6 +145,8 @@ cookie的名字必须固定（如ticket），因为后面再获取的时候，�
 都把token拿出来放到ajax请求的header里即可。不过如果是非接口的请求，比如直接通过点击链接请求一个页面这种，
 是无法自动带上token的。所以这种方式也仅限于走纯接口的web应用。
 
+![](https://xnstatic-1253397658.file.myqcloud.com/session03.png)
+
 ## JWT
 
 现在SPA应用，前后端完全分离，基于API接口的应用越来越多，这时候基于token的认证就是最好的选择方式了。
