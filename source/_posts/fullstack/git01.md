@@ -325,8 +325,8 @@ $ git rebase --continue
 $ git rebase --abort
 ```
 
-## 工作区、暂存区、版本库
-在git里面有三个很重要的概念：工作区、暂存区、HEAD。
+## 工作区、暂存区、提交历史
+在git里面有三个很重要的概念：工作区、暂存区、提交历史。
 
 ### 工作区（Working Directory）
 就是你在电脑里能看到的目录，比如我的gitdemo文件夹就是一个工作区
@@ -335,9 +335,9 @@ $ git rebase --abort
 一般存放在 ".git目录下" 下的index文件（.git/index）中，所以我们把暂存区有时也叫作索引（index）。
 实际上指向暂存区的指针名就是index。
 
-### 版本库（Repository）
-隐藏目录.git其实是Git的版本库。Git为我们自动创建的第一个分支master，以及指向master的一个指针叫HEAD。
-请注意暂存区也是放在这个隐藏目录里面的。
+### 提交历史（Commit History）
+隐藏目录`.git`其实是Git的版本库，也叫分支的提交历史。Git为我们自动创建的第一个分支master，
+以及指向master的一个指针叫HEAD。请注意暂存区也是放在这个隐藏目录里面的。
 
 ![](https://xnstatic-1253397658.file.myqcloud.com/git01.jpg)
 
@@ -460,8 +460,9 @@ git checkout -- readme.txt
 git reset --soft/mixed/hard <commit_id>
 git push origin HEAD --force
 
-HEAD 最近一个提交
-HEAD^ 上一次
+HEAD   最新提交
+HEAD~  上1个提交
+HEAD~2 上2个提交
 ```
 
 重要的事说三遍，最后有必要再次总结几个重要的指令：
@@ -476,6 +477,8 @@ HEAD^ 上一次
 这个命令也是极具危险性的，因为不但会清除工作区中未提交的改动，也会清除暂存区中未提交的改动。
 
 `git reset` 有三个选项，`--hard、--mixed、--soft`。
+
+注意这三个选项对文件层面的`git reset`毫无作用，因为缓存区中的文件一定会变化，而工作目录中的文件一定不变。
  
  ```
  //仅仅只是撤销已提交的版本库，不会修改暂存区和工作区
