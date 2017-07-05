@@ -325,16 +325,19 @@ $ git rebase --continue
 $ git rebase --abort
 ```
 
-## 工作区和暂存区
+## 工作区、暂存区、版本库
 在git里面有三个很重要的概念：工作区、暂存区、HEAD。
 
 ### 工作区（Working Directory）
 就是你在电脑里能看到的目录，比如我的gitdemo文件夹就是一个工作区
 
+### 暂存区（Stage）
+一般存放在 ".git目录下" 下的index文件（.git/index）中，所以我们把暂存区有时也叫作索引（index）。
+实际上指向暂存区的指针名就是index。
+
 ### 版本库（Repository）
-工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库。
-里面存了很多东西，其中最重要的一个就是暂存区（对应指针index），
-还有Git为我们自动创建的第一个分支master，以及指向master的一个指针叫HEAD。
+隐藏目录.git其实是Git的版本库。Git为我们自动创建的第一个分支master，以及指向master的一个指针叫HEAD。
+请注意暂存区也是放在这个隐藏目录里面的。
 
 ![](https://xnstatic-1253397658.file.myqcloud.com/git01.jpg)
 
@@ -411,9 +414,9 @@ nothing to commit, working directory clean
 ## 关于diff
 很多时候需要用diff命令来比较文件差异，总结一下:
 
-* git diff readme.txt         -> 工作区 和 暂存区比较
-* git diff --cache readme.txt -> 暂存区 和 版本库比较
-* git diff HEAD -- readme.txt -> 版本库 和 工作区比较
+* `git diff readme.txt`         -> 工作区 和 暂存区比较
+* `git diff --cache readme.txt` -> 暂存区 和 版本库比较
+* `git diff HEAD -- readme.txt` -> 版本库 和 工作区比较
 
 如果`git diff`后面不加文件名readme.txt，表示要显示所有文件的差异。
 
@@ -427,7 +430,7 @@ nothing to commit, working directory clean
 
 总之，就是让这个文件回到最近一次git commit或git add时的状态。
 
-`git checkout -- file` 命令中的--很重要，没有--，就变成了“切换到另一个分支”的命令，
+`git checkout -- file` 命令中的`--`很重要，没有`--`，就变成了“切换到另一个分支”的命令，
 我们在后面的分支管理中会再次遇到`git checkout`命令。
 
 还有一种情况是，你想将暂存区的修改撤销掉:
@@ -450,6 +453,39 @@ git checkout -- readme.txt
 2. 场景2：当你不但改乱了工作区某个文件的内容，还添加到了暂存区时，想丢弃修改，分两步，
 第一步用命令`git reset HEAD file`，就回到了场景1，第二步按场景1操作。
 3. 场景3：已经提交了不合适的修改到版本库时，想要撤销本次提交，参考版本回退一节，不过前提是没有推送到远程库。
-4. 场景4：删除版本库里面的文件，但是工作区间内容保留，一般是先提交了想忽略的文件。
-使用命令`git rm --cached test.log`或者是`git rm --cached -r testdir`
+4. 场景4：删除版本库里面的文件，但是工作区间内容保留，一般是先提交了想忽略的文件。`git reset --mixed 版本库ID`
+5. 对于已提交至远程服务器的错误提交，参考下面的命令：
+
+```
+git reset --soft/mixed/hard <commit_id>
+git push origin HEAD --force
+
+HEAD 最近一个提交
+HEAD^ 上一次
+```
+
+重要的事说三遍，最后有必要再次总结几个重要的指令：
+
+* 当执行 `git reset HEAD` 命令时，暂存区的目录树会被重写，被 master 分支指向的目录树所替换，但是工作区不受影响。
+* 当执行 `git rm --cached <file>` 命令时，会直接从暂存区删除文件，工作区则不做出改变。
+* 当执行 `git rm -f <file>` 命令时，会直接把暂存区和工作区全部删了。
+* 当执行 `git checkout .` 或者 `git checkout -- <file>` 命令时，会用暂存区全部或指定的文件替换工作区的文件。
+这个操作很危险，会清除工作区中未添加到暂存区的改动。
+* 当执行 `git checkout HEAD .` 或者 `git checkout HEAD <file>` 命令时，
+会用 HEAD 指向的 master 分支中的全部或者部分文件替换暂存区和工作区中的文件。
+这个命令也是极具危险性的，因为不但会清除工作区中未提交的改动，也会清除暂存区中未提交的改动。
+
+`git reset` 有三个选项，`--hard、--mixed、--soft`。
+ 
+ ```
+ //仅仅只是撤销已提交的版本库，不会修改暂存区和工作区
+ git reset --soft 版本库ID
+ 
+ //仅仅只是撤销已提交的版本库和暂存区，不会修改工作区
+ git reset --mixed 版本库ID
+ 
+ //彻底将工作区、暂存区和版本库记录恢复到指定的版本库
+ git reset --hard 版本库ID
+ ```
+注意这个版本库ID应该不是你刚刚提交的版本库ID，而是刚刚提交版本库的上一个版本库。
 
