@@ -13,6 +13,22 @@ CentOS 7继承了RHEL 7的新的特性，例如强大的systemd，
 CentOS 7的服务systemctl脚本存放在：/usr/lib/systemd/，有系统 system 和用户 user 之分，
 即：`/usr/lib/systemd/system` 和 `/usr/lib/systemd/user` <!--more-->
 
+## 配置文件
+
+这里我们先要说明一下unit的文件位置，一般主要有三个目录：
+```
+/lib/systemd/system
+/run/systemd/system
+/etc/systemd/system
+```
+这三个目录的配置文件优先级依次从低到高，如果同一选项三个地方都配置了，优先级高的会覆盖优先级低的。
+系统安装时，默认会将unit文件放在`/lib/systemd/system`目录。如果我们想要修改系统默认的配置，比如`nginx.service`，一般有两种方法：
+
+1. 在`/etc/systemd/system`目录下创建`nginx.service`文件，里面写上我们自己的配置。
+2. 在`/etc/systemd/system`下面创建`nginx.service.d`目录，在这个目录里面新建任何以.conf结尾的文件，然后写入我们自己的配置。推荐这种做法。
+
+`/run/systemd/system`这个目录一般是进程在运行时动态创建unit文件的目录，一般很少修改，除非是修改程序运行时的一些参数时，即Session级别的，才在这里做修改。
+
 ## 服务配置
 每一个服务以`.service`结尾，一般会分为3部分：[Unit]、[Service]和[Install]，就以nginx为例吧，具体内容如下：
 ```
@@ -78,18 +94,51 @@ systemctl enable nginx.service
 systemctl enable nginx.service
 # 禁止自启动
 systemctl disable nginx.service
-# 重新加载
-systemctl reload nginx.service
 # 启动服务
 systemctl start nginx.service
 # 停止服务
 systemctl stop nginx.service
 # 重启服务
 systemctl restart nginx.service
+
+# 查看Unit定义文件
+systemctl cat nginx.service
+# 编辑Unit定义文件
+systemctl edit nginx.service
+# 重新加载Unit定义文件
+systemctl reload nginx.service
+
+# 列出已启动的所有unit，就是已经被加载到内存中
+systemctl list-units
+# 列出系统已经安装的所有unit，包括那些没有被加载到内存中的unit
+systemctl list-unit-files
+
+# 查看服务的日志
+journalctl -u nginx.service    # 还可以配合`-b`一起使用，只查看自本次系统启动以来的日志
+
+# 查看所有target下的unit
+systemctl list-unit-files --type=target
+
+# 查看默认target，即默认的运行级别。对应于旧的`runlevel`命令
+systemctl get-default
+
+# 设置默认的target
+systemctl set-default multi-user.target
+
+# 查看某一target下的unit
+systemctl list-dependencies multi-user.target
+
+# 切换target，不属于新target的unit都会被停止
+systemctl isolate multi-user.target
+
+systemctl poweroff    # 关机
+systemctl reboot       # 重启
+systemctl rescue    # 进入rescue模式
 ```
 
 ## 参考资料
 
 * [create systemd unit files](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/System_Administrators_Guide/sect-Managing_Services_with_systemd-Unit_Files.html)
 * [NGINX systemd service file](https://www.nginx.com/resources/wiki/start/topics/examples/systemd/)
+* [Systemd introduction](http://time-track.cn/systemd-introduction.html)
 
