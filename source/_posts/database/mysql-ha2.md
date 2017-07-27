@@ -201,9 +201,10 @@ ERROR 1872 (HY000): Slave failed to initialize relay log info structure from the
 ```
 mysql> reset slave;
 mysql> start slave;
-``` 
+```
 
 然后执行下面语句查看复制是否搭建成功：
+
 ```
 show slave status\G
 ```
