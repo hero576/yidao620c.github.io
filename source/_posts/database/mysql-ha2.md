@@ -16,15 +16,29 @@ mysql自带的主从、keepalived+双主、MHA、MMM、Heartbeat+DRBD、PXC、Ga
 
 ## Mysql数据库复制原理
 
-整体上来说，复制有3个步骤：
+当主从复制正在进行中时，如果想查看从库两个线程运行状态，
+可以通过执行在从库里执行 `show slave status\G` 语句，以下的字段可以给你想要的信息：
 
-1. master将改变记录到二进制日志(binary log)中（这些记录叫做二进制日志事件，binary log events）；
-1. slave将master的binary log events拷贝到它的中继日志(relay log)；
-1. slave重做中继日志中的事件，将改变反映它自己的数据。
+```
+Master_Log_File       — 上一个从主库拷贝过来的binlog文件
+Read_Master_Log_Pos   — 主库的binlog文件被拷贝到从库的relay log中的位置
+Relay_Master_Log_File — SQL线程当前处理中的relay log文件
+Exec_Master_Log_Pos   — 当前binlog文件正在被执行的语句的位置
+```
 
-下图描述了复制的过程：
+整个主从复制的流程可以通过以下图示理解：
 
-![](https://xnstatic-1253397658.file.myqcloud.com/mysql-copy.jpg)
+![](https://xnstatic-1253397658.file.myqcloud.com/mysql-copy.png)
+
+步骤说明：
+
+1. 步骤一：主库db的更新事件(update、insert、delete)被写到binlog
+1. 步骤二：从库发起连接，连接到主库
+1. 步骤三：此时主库创建一个binlog dump thread，把binlog的内容发送到从库
+1. 步骤四：从库启动之后，创建一个I/O线程，读取主库传过来的binlog内容并写入到relay log
+1. 步骤五：还会创建一个SQL线程，从relay log里面读取内容，从Exec_Master_Log_Pos位置开始执行读取到的更新事件，将更新内容写入到slave的db
+
+注：上面的解释是解释每一步做了什么，整个mysql主从复制是异步的，不是按照上面的步骤执行的。
 
 ## 双主高可用原理
 
