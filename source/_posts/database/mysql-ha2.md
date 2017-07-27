@@ -641,7 +641,7 @@ ssh-keygen -t rsa
 ssh-copy-id 172.17.0.2
 ```
 
-### 自定义keepalived的日志输出文件
+## 自定义keepalived的日志输出文件
 
 keepalived的日志默认是输出到/var/log/messages中，这样不便于查看。如何自定义keepalived的日志输出文件呢？
 
@@ -723,5 +723,7 @@ modinfo ip_vs
 为了减少IP的漂移次数，生产中我们通常是把修复好的主库当做新主库的备库，本篇的方案还是通过手动执行`reset_master_mysql.sh`将master1切换回主库。
 更优方案是master1修复好之后，只需要启动上面的keepalived软件。master2作为新的主库，而master1现在变成了备库。
 
-后面有空的时候再把这个方案补充上来。
+另外当主库出现问题的时候通知机制，现在并没有配置邮箱服务，后面把邮件通知服务也加上去就完美了。
+
+有空的时候把这个改进方案补充上来。
 
