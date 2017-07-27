@@ -11,7 +11,9 @@ tags: docker
 运行容器
 
 ```
-docker run httpd
+docker run -d --name "node001" httpd
+# 对于默认没有长期服务启动的镜像，使用下面这种
+docker run -d -e "container=docker" --privileged=true -v /sys/fs/cgroup:/sys/fs/cgroup --name node001 centos7.2-mysql /usr/sbin/init
 ```
 
 查看当前正在运行的容器
@@ -73,9 +75,9 @@ docker exec -it <container> bash|sh
 
 attach 与 exec 主要区别如下:
 
-1. attach 直接进入容器 启动命令 的终端，不会启动新的进程。
+1. attach直接进入容器启动命令的终端，不会启动新的进程。
 2. exec 则是在容器中打开新的终端，并且可以启动新的进程。
-3. 如果想直接在终端中查看启动命令的输出，用 attach；其他情况使用 exec。
+3. 如果想直接在终端中查看启动命令的输出，用attach；其他情况使用 exec。
 
 如果只是为了查看启动命令的输出，可以使用 docker logs 命令：
 ```
@@ -158,6 +160,65 @@ docker rm -v $(docker ps -aq -f status=exited)
 1. `docker create` 创建的容器处于 Created 状态
 2. `docker start` 将以后台方式启动容器，容器状态处于 Running 状态。
 3. 实际上，`docker run` 命令是`docker create` 和 `docker start` 的组合
+
+## 持久化容器
+
+前面我讲过了如何利用Dockerfile再其他已有镜像基础上创建新的镜像了。
+这里再讲一下如何将运行中的容器进行持久化。
+
+### docker commit
+
+可以通过 `docker commit` 将一个运行中的容器变成一个新的镜像，命令如下：
+```
+docker commit <containner-id> image-name
+```
+
+### 导出(Export)
+
+`docker export` 命令用于持久化容器（不是镜像）：
+
+```
+sudo docker export <CONTAINER ID> > /home/export.tar
+```
+
+导入容器得到新的镜像：
+
+```
+# 导入export.tar文件
+cat /home/export.tar | sudo docker import - busybox-1-export:latest
+
+# 查看镜像
+sudo docker images
+```
+
+### 保存(Save)
+
+Save命令用于持久化镜像（不是容器）：
+
+```
+sudo docker save image-name > /home/save.tar
+```
+
+导入镜像得到新的镜像：
+
+```
+ # 导入save.tar文件
+docker load < /home/save.tar
+
+# 查看镜像
+sudo docker images
+```
+
+### 导出和保存的差别
+
+导出后再导入(exported-imported)的镜像会丢失所有的历史，而保存后再加载（saveed-loaded）的镜像没有丢失历史和层(layer)。
+这意味着使用导出后再导入的方式，你将无法回滚到之前的层(layer)，同时，使用保存后再加载的方式持久化整个镜像，
+就可以做到层回滚（可以执行docker tag <LAYER ID> <IMAGE NAME>来回滚之前的层）。
+
+```
+# 显示镜像的所有层(layer)
+docker history image-name
+```
 
 ## 内存限额
 

@@ -16,7 +16,7 @@ tags: [mysql]
 
 从 MySQL 官网选取合适的 MySQL 版本，获取下载地址。然后使用 `wget` 下载：
 ```
-wget http://repo.mysql.com//mysql57-community-release-el7-8.noarch.rpm
+wget http://repo.mysql.com/mysql57-community-release-el7-8.noarch.rpm
 ```
 
 安装 yum Repository
