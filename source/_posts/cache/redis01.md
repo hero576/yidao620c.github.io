@@ -7,13 +7,15 @@ categories: cache
 tags: redis
 ---
 
-Redis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。从2010年3月15日起，Redis的开发工作由VMware主持。
+**更新**于2017/08/02，使用最新版 redis 4.0.1 演示
 
-Redis能运行在大多数POSIX(Linux, *BSD, OS X 和Solaris等)系统上，官方没有支持Windows的版本。目前最新的版本是2.2.11，这个版本主要是修复了一个2.2.7版本中遍历方式优化带来的一个bug。
+Redis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，
+并提供多种语言的API。从2010年3月15日起，Redis的开发工作由VMware主持。
 
-和普通的Key-Value结构不同，Redis的Key支持灵活的数据结构，除了strings，还有hashes、lists、 sets 和sorted sets等结构。正是这些灵活的数据结构，丰富了Redis的应用场景，能满足更多业务上的灵活存储需求。
+和普通的Key-Value结构不同，Redis的Key支持灵活的数据结构，除了strings，还有hashes、lists、 sets 和sorted sets等结构。
+正是这些灵活的数据结构，丰富了Redis的应用场景，能满足更多业务上的灵活存储需求。
 
-Redis的数据都保存在内存中，而且底层实现上是自己写了epoll event loop部分，而没有采用开源的libevent等通用框架，所以读写效率很高。为了实现数据的持久化，Redis支持定期刷新(可通过配置实现)或写日志的方式来保存数据到磁盘。<!--more-->
+Redis的数据都保存在内存中，读写效率很高。为了实现数据的持久化，Redis支持定期刷新(可通过配置实现)或写日志的方式来保存数据到磁盘。<!--more-->
 
 ### 基础知识
 
@@ -29,7 +31,8 @@ Redis的数据都保存在内存中，而且底层实现上是自己写了epoll 
 键值的数据类型决定了该键值支持的操作。Redis支持诸如列表、集合或有序集合的交集、并集、查集等高级原子操作;同时，如果键值的类型是普通数字，Redis则提供自增等原子操作。
 
 #### 持久化
-通常，Redis将数据存储于内存中，或被配置为使用虚拟内存。通过两种方式可以实现数据持久化：使用截图的方式，将内存中的数据不断写入磁盘;或使用类似MySQL的日志方式，记录每次更新的日志。前者性能较高，但是可能会引起一定程度的数据丢失;后者相反。
+通常，Redis将数据存储于内存中，或被配置为使用虚拟内存。通过两种方式可以实现数据持久化：使用截图的方式，
+将内存中的数据不断写入磁盘;或使用类似MySQL的日志方式，记录每次更新的日志。前者性能较高，但是可能会引起一定程度的数据丢失;后者相反。
 
 #### 主从同步
 Redis支持将数据同步到多台从库上，这种特性对提高读取性能非常有益。
@@ -41,7 +44,8 @@ Redis支持将数据同步到多台从库上，这种特性对提高读取性能
 很多...
 
 #### 适用场合
-毫无疑问，Redis开创了一种新的数据存储思路，使用Redis，我们不用在面对功能单调的数据库时，把精力放在如何把大象放进冰箱这样的问题上，而是利用Redis灵活多变的数据结构和数据操作，为不同的大象构建不同的冰箱。希望你喜欢这个比喻。
+毫无疑问，Redis开创了一种新的数据存储思路，使用Redis，我们不用在面对功能单调的数据库时，把精力放在如何把大象放进冰箱这样的问题上，
+而是利用Redis灵活多变的数据结构和数据操作，为不同的大象构建不同的冰箱。希望你喜欢这个比喻。
 
 下面是Redis适用的一些场景:
 
@@ -68,11 +72,14 @@ END
 
 (2)、排行榜应用，取TOP N操作
 
-这个需求与上面需求的不同之处在于，前面操作以时间为权重，这个是以某个条件为权重，比如按顶的次数排序，这时候就需要我们的sorted set出马了，将你要排序的值设置成sorted set的score，将具体的数据设置成相应的value，每次只需要执行一条ZADD命令即可。
+这个需求与上面需求的不同之处在于，前面操作以时间为权重，这个是以某个条件为权重，比如按顶的次数排序，这时候就需要我们的sorted set出马了，
+将你要排序的值设置成sorted set的score，将具体的数据设置成相应的value，每次只需要执行一条ZADD命令即可。
 
 (3)、需要精准设定过期时间的应用
 
-比如你可以把上面说到的sorted set的score值设置成过期时间的时间戳，那么就可以简单地通过过期时间排序，定时清除过期数据了，不仅是清除Redis中的过期数据，你完全可以把Redis里这个过期时间当成是对数据库中数据的索引，用Redis来找出哪些数据需要过期删除，然后再精准地从数据库中删除相应的记录。
+比如你可以把上面说到的sorted set的score值设置成过期时间的时间戳，那么就可以简单地通过过期时间排序，定时清除过期数据了，
+不仅是清除Redis中的过期数据，你完全可以把Redis里这个过期时间当成是对数据库中数据的索引，
+用Redis来找出哪些数据需要过期删除，然后再精准地从数据库中删除相应的记录。
 
 (4)、计数器应用
 
@@ -98,84 +105,75 @@ Redis的Pub/Sub系统可以构建实时的消息系统，比如很多用Pub/Sub�
 
 这个不必说了，性能优于Memcached，数据结构更多样化。
 
+### Redis4.0新特性
+
+1. 推出模块系统，通过模块系统，我们可以对Redis进行自定义扩展，实现自己的数据类型和功能。
+2. 改进主从复制策略，引入 PSYNC，允许部分同步，master和slave会分别维护一个复制偏移量
+3. 优化缓存回收，新增回收策略 LFU(Least Frequently Used)，对最不常用的缓存数据进行清理。
+4. 新增非阻塞删除 UNLINK，先删除一个key的引用，然后在一个单独线程中执行真正的删除。
+5. 新增内存命令 MEMORY，命令可以让我们更清晰的了解内存状况。
+
+新增的模块系统是架构上的重大调整，使Redis的应用形态发生很大变化，其余几点是性能上的优化，使Redis更加高效。
+
 ### 安装及使用
 
 #### 下载Redis
 ```bash
-# wget http://redis.googlecode.com/files/redis-2.6.14.tar.gz
+# wget http://download.redis.io/releases/redis-4.0.1.tar.gz
 ```
 
 #### 编译源程序并且测试一下
 ```bash
-# mkdir env
-# tar -zxvf redis-2.6.14.tar.gz -C env/
-# cd redis-2.6.14/
-# make
-# yum install tcl
-# make test
+tar xvzf redis-4.0.1.tar.gz && cd redis-4.0.1/
+make distclean
+make && make test
 ```
 
-最后测试结果为：
+如果测试没有问题，就开始安装：
 ```
-\o/ All tests passed without errors!
-Cleanup: may take some time... OK
+make install
 ```
-那么，恭喜你，成功安装了。
 
-安装完成后，会在src目录下生成几个可执行文件：
+安装redis-server服务，一路默认按Enter：
+```
+cd utils
+./install_server.sh
+
+Selected config:
+Port           : 6379
+Config file    : /etc/redis/6379.conf
+Log file       : /var/log/redis_6379.log
+Data dir       : /var/lib/redis/6379
+Executable     : /usr/local/bin/redis-server
+Cli Executable : /usr/local/bin/redis-cli
+Is this ok? Then press ENTER to go on or Ctrl-C to abort.
+```
+
+安装完成会根据你的端口号生成对应的服务，比如默认的就是redis_6379服务。
+
+安装完成就可以启动服务：
+``` bash
+systemctl enable redis_6379
+systemctl start redis_6379
+systemctl status redis_6379
+```
+
+测试服务：
+```
+redis-cli
+ > set test 'XnServer'
+ > get test
+```
+
+几个说明：
 ```
 redis-server：Redis服务器的daemon启动程序
 redis-cli：Redis命令行操作工具。当然，你也可以用telnet根据其纯文本协议来操作
 redis-benchmark：Redis性能测试工具，测试Redis在你的系统及你的配置下的读写性能
 ```
 
-#### 生产环境下的Redis的安装与启动
-
-1. 新建目录/usr/local/redis/，将上面make后的文件夹复制到这个下面，同时将redis的bin目录加入的PATH中，vi /etc/profile，添加 export PATH=$PATH:/usr/local/resin/src，然后还要source /etc/profile才行。
-2. 新建/etc/redis/，用来存放redis的配置文件
-3. 新建/var/redis/端口号/，用来存放每个redis实例的持久化文件
-4. 修改配置文件，首先将配置文件模板复制到/etc/redis 目录中，以端口号命名，比如6379.conf，然后至少修改以下四个配置项：
-```
-daemonize yes  以redis守护进程模式运行
-pidfile /var/run/redis_端口号.pid  设置redis的PID文件位置
-port  端口号  设置redis实例监听的端口号
-dir  /var/redis/端口号  设置持久化文件存放的位置
-```
-5. 配置初始化脚本
-首先将初始化脚本$REDIS_HOME/src/utils/目录中的redis_init_script复制到/etc/init.d/目录中，修改名字为redis_端口号，其中端口号表示要让redis监听的端口号，客户端通过该端口号连接redis，然后修改脚本的REDISPORT变量值为同样的端口号。同时修改EXEC和CLIEXEC的执行路径变量
-6. 执行/etc/init.d/redis_端口号 start  启动
-7. 执行/etc/init.d/redis_端口号 stop  停止，或者是用  $ redis-cli SHUTDOWN。使用kill redis进程PID也可以正常结束redis，但不要用kill -9，谢谢。
-8. 配置redis服务随系统启动而启动
-```
-#!/bin/sh
-#chkconfig: 2345 80 90
-#description:redis_6379
-chkconfig redis_6379 on
-```
-
-#### 客户端连接验证
-
-新打开一个Session输入：src/redis-cli，如果出现下面提示，那么您就可以开始Redis之旅了
-```
-# src/redis-cli
-redis 127.0.0.1:6379>
-```
-
-#### 查看Redis日志
-
-查看服务器端session，即可对Redis的运行状况进行查看或分析了
-
-以上的几个步骤就OK了!!这样一个简单的Redis数据库就可以畅通无阻地运行起来了。
-
-#### 停止Redis实例
-
-客户端来停止服务，如可以用shutdown来停止Redis实例, 具体如下:
-```bash
-# src/redis-cli shutdown
-```
-
 ### 配置Redis
-使用配置文件启动：`src/redis-server redis.conf`
+使用配置文件启动：`/etc/redis/6379.conf`
 
 主要配置项：
 
