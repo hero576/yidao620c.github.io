@@ -165,7 +165,7 @@ redis-cli
  > get test
 ```
 
-几个说明：
+几个命令说明：
 ```
 redis-server：Redis服务器的daemon启动程序
 redis-cli：Redis命令行操作工具。当然，你也可以用telnet根据其纯文本协议来操作
