@@ -21,9 +21,21 @@ tags: [springboot]
 
 建议使用逻辑分离的方式来解决这个问题。就是我们将真正要定时任务处理的逻辑，写成rest或者rpc服务，
 然后我们可以新建一个单独的定时任务项目，这个项目应该是没有任何的业务代码的，他纯粹只有定时任务功能，
-几点启动，或者每隔多少时间启动，启动后，通过rest或者rpc的方式，调用真正处理逻辑的服务。
+几点启动，或者每隔多少时间启动。启动后，通过rest或者rpc的方式，调用真正处理逻辑的服务。
 
-## 添加@EnableScheduling注解
+## 添加依赖
+
+实际上只要添加最基础的start依赖即可支持定时任务：
+
+``` xml
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.5.6.RELEASE</version>
+</parent>
+```
+
+## 添加注解配置类
 
 如果有多个耗时任务，最好使用线程池来执行，添加一个配置类专门用来配置定时任务执行的线程池：
 
