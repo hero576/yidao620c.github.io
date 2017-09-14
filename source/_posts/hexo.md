@@ -14,10 +14,12 @@ hexo是一个台湾人做的基于Node.js的静态博客程序，优势是生成
 
 ## 安装
 
-我这个教程是基于window 64系统，Hexo3版本
+我这个教程hexo3版本，本地使用Windows7系统，在IDEA上面写Markdown的博客，爽歪歪。
 
 ### 安装依赖软件
 [Node.js](https://nodejs.org/en): node.js用来创建hexo博客框架的
+
+如果是windows系统，可以直接下载安装文件安装。如果是linux系统，可以使用下面的命令行：
 
 ```
 wget https://nodejs.org/dist/v6.10.0/node-v6.10.0.tar.gz
@@ -218,13 +220,13 @@ $ git clone -b source git@github.com:yidao620c/yidao620c.github.com.git
 $ cd yidao620c.github.com
 $ git branch -a
 $ git checkout -b source origin/source
-$ npm install hexo
-$ npm install
-$ npm install hexo-deployer-git
-$ npm install hexo-renderer-jade --save
-$ npm install hexo-renderer-sass --save
+$ cnpm install hexo
+$ cnpm install
+$ cnpm install hexo-deployer-git
+$ cnpm install hexo-renderer-jade --save
+$ cnpm install hexo-renderer-sass --save
 ```
-注意：千万别执行`hexo init`这个命令啊，同时maupassant主题的安装步骤还是需要的。
+注意：千万别执行`hexo init`这个命令啊，同时`Next`主题的安装步骤还是需要的。
 
 ### 使用方法
 
@@ -256,8 +258,8 @@ $ git push origin source
 ### 其他说明
 ``` bash
 git add -f xxx // 强制添加文件/文件夹为tracked状态
-$ git rm --cache xxx // 解除文件为tracked状态
-$ git rm -r --cache xxx // 解除文件夹为tracked状态
+git rm --cache xxx // 解除文件为tracked状态
+git rm -r --cache xxx // 解除文件夹为tracked状态
 ```
 
 ## 添加网站的RSS订阅
@@ -265,7 +267,7 @@ $ git rm -r --cache xxx // 解除文件夹为tracked状态
 ### 安装hexo-generator-feed
 
 ``` bash
-npm install hexo-generator-feed --save
+cnpm install hexo-generator-feed --save
 ```
 安装完后，会在node_modules目录下生成hexo-generator-feed目录
 
