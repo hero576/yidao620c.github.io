@@ -307,6 +307,6 @@ mvn deploy:deploy-file \
 
 打包或发布的时候如果想跳过测试，加一个参数：
 ```
-
+mvn clean && mvn deploy -DskipTests=true
 ```
 
