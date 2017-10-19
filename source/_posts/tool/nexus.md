@@ -89,7 +89,7 @@ health-check  instances  keystores  lock  log  orient  port  tmp
 默认的这几个仓库我解释一下：
 
 1. maven-central：maven中央库，默认从https://repo1.maven.org/maven2/拉取jar 
-2. maven-releases：私库发行版jar 
+2. maven-releases：私库发行版jar，初次安装请将`Deployment policy`设置为`Allow redeploy`
 3. maven-snapshots：私库快照（调试版本）jar 
 4. maven-public：仓库分组，把上面三个仓库组合在一起对外提供服务，在本地maven基础配置`settings.xml`中使用。
 
@@ -229,4 +229,84 @@ mvn deploy:deploy-file \
 
 `-DrepositoryId`的值即为在`setttings.xml`里面配置的server id。
 
+## 发布源码和文档
+
+如果你还想发布源码和javadoc，那么需要使用maven插件，我把插件配置列出来：
+
+``` xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.7.0</version>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+                <encoding>UTF-8</encoding>
+            </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <configuration>
+                <encoding>UTF-8</encoding>
+            </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.0.1</version>
+            <executions>
+                <execution>
+                    <id>attach-sources</id>
+                    <goals>
+                        <goal>jar</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.10.4</version>
+            <configuration>
+                <encoding>UTF-8</encoding>
+                <aggregate>true</aggregate>
+                <charset>UTF-8</charset>
+                <docencoding>UTF-8</docencoding>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>attach-javadocs</id>
+                    <goals>
+                        <goal>jar</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>2.8.2</version>
+            <executions>
+                <execution>
+                    <id>deploy</id>
+                    <phase>deploy</phase>
+                    <goals>
+                        <goal>deploy</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
+
+发布javadoc的时候，每个方法注释必须遵循规范，比如参数、返回值、异常都应该有说明。
+
+打包或发布的时候如果想跳过测试，加一个参数：
+```
+
+```
 
