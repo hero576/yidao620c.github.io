@@ -178,6 +178,27 @@ Nexus提供了一系列可配置的调度任务来方便用户管理系统。用
         <url>http://123.207.66.156:8081/repository/maven-public/</url>
     </mirror>
 </mirrors>
+
+<profiles>
+    <profile>  
+      <id>dev</id>
+      <repositories>
+        <repository>
+          <id>Nexus</id>
+          <url>http://123.207.66.156:8081/repository/maven-public/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+    </profile>
+</profiles>
+<activeProfiles>
+    <activeProfile>dev</activeProfile>
+</activeProfiles>
 ```
 
 如果要发布自己的jar到私服，就需要修改工程的`pom.xml`，添加如下内容，否则什么都不用做：
