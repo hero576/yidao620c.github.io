@@ -165,6 +165,9 @@ gitbook在编译书籍的时候会读取书籍源码顶层目录中的`book.json
             "logo": "/core-scrapy/assets/logo.png",
             "favicon": "/core-scrapy/assets/favicon.png",
             "excludeDefaultStyles": true
+        },
+        "disqus": {
+            "shortName": "yidao620cgithubio"
         }
     },
     "styles": {
@@ -187,6 +190,18 @@ gitbook还支持许多插件，用户可以从 [NPM](https://www.npmjs.com/) 上
 * gitbook-plugin-theme-X: 主题
 
 接下来我推荐几个比较好用的插件
+
+```
+cnpm i -g gitbook-plugin-disqus
+cnpm i -g gitbook-plugin-multipart
+cnpm i -g gitbook-plugin-toggle-chapters
+cnpm i -g gitbook-plugin-styles-sass-fix
+cnpm i -g gitbook-plugin-multipart
+cnpm i -g gitbook-plugin-toggle-chapters
+cnpm i -g gitbook-plugin-theme-gestalt
+cnpm i -g gitbook-plugin-theme-styles-sass-fix
+cnpm i -g gitbook-plugin-styles-sass-fix
+```
 
 ### theme-gestalt
 
@@ -214,7 +229,7 @@ Disqus 是一个非常流行的为网站集成评论系统的工具，同样，g
     "plugins": ["disqus"],
     "pluginsConfig": {
         "disqus": {
-            "shortName": "introducetogitbook"
+            "shortName": "yidao620cgithubio"
         }
     }  
 }
