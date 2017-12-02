@@ -97,9 +97,35 @@ net.ipv4.tcp_fastopen = 3
 
 「锐速」的一大优势是只需要在服务器端单边部署就行了，换句话说，你不需要再安装另外一个应用。
 
-**改核适配锐速**
+一键安装：
+
+``` bash
+wget -N --no-check-certificate https://github.com/91yun/serverspeeder/raw/master/serverspeeder.sh && bash serverspeeder.sh
+```
+
+安装上面官网的的安装步骤执行一键安装脚本会出现如下的错误信息：
+```
+前面的省略...
+Complete!
+=================================================
+操作系统：CentOS 
+发行版本：7.4 
+内核版本：3.10.0-693.el7.x86_64 
+位数：x64 
+锐速版本：3.10.61.0 
+=================================================
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 96179  100 96179    0     0  77305      0  0:00:01  0:00:01 --:--:-- 77314
+
+
+锐速暂不支持该内核，程序退出.自动安装判断比较严格，你可以到http://www.91yun.org/serverspeeder91yun手动下载安装文件尝试不同版本
+
+```
 
 锐速只能适配几个特定的内核，我现在的CentOS7.4内核并不支持，那么就需要修改内核来适配了。具体步骤如下
+
+**改核适配锐速**
 
 ### 监测VPS架构
 
