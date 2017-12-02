@@ -150,7 +150,7 @@ uname -r #当前使用内核版本
 
 ### Centos7安装内核（不太推荐）
 
-CentOS 7支持安装锐速的内核：3.10.0–327.el7.x86_64
+CentOS 7支持安装锐速的内核：3.10.0-229.1.2.el7.x86_64
 
 ``` bash
 yum install -y linux-firmware
