@@ -37,7 +37,7 @@ tags: gitbook
 
 然后用xshell工具来连接，主机名选择上面实例详情的名称，使用密钥对来登录，用户名选择centos即可。
 
-## 部署 Shadowsocks
+## 部署SS
 好了，现在开始正式部署ss了，这里使用 [teddysun](https://teddysun.com/342.html) 的一键安装脚本。
 
 先切换到root用户，可使用 `sudo passwd root` 先修改root密码，然后执行：
@@ -79,7 +79,7 @@ net.ipv4.tcp_fastopen = 3
 /etc/init.d/shadowsocks restart
 ```
 
-## 安装 Shadowsocks 客户端
+## 安装SS客户端
 
 相比服务器端的安装，客户端的安装就简单了许多。首先，根据操作系统下载相应的客户端。
 
