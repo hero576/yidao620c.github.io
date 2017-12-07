@@ -180,6 +180,12 @@ def setup(app):
 在[官网页面](http://tug.org/texlive/acquire-netinstall.html)
 下载安装包[install-tl-unx.tar.gz](http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz)
 
+如果先安装依赖包：
+``` bash
+yum install perl-Digest-MD5
+```
+
+然后解压缩安装：
 ``` bash
 tar zxf install-tl-unx.tar.gz
 cd install-tl-*
@@ -189,25 +195,25 @@ Enter command: i
 [... when done, see below for post-install ...]
 ```
 
+安装时间会比较长，我这里安装大概要50分钟左右，请耐心等待...
+
 安装完后配置PATH，在`/etc/profile`后面添加:
 ``` bash
 export PATH=/usr/local/texlive/2016/bin/x86_64-linux:$PATH
 ```
-然后执行`source /etc/profile`即可
+注意上面的路径改成你自己正确的路径，然后执行`source /etc/profile`即可
 
 如果要生成中文PDF，还需要确认安装了东亚语言包和字体包
 ``` bash
 yum -y install fontconfig ttmkfdir
-# /usr/shared目录就可以看到fonts和fontconfig目录
-# 首先在/usr/shared/fonts目录下新建一个目录chinese：
+# /usr/share目录就可以看到fonts和fontconfig目录
+# 首先在/usr/share/fonts目录下新建一个目录chinese：
 cd /usr/share/fonts
 mkdir chinese
 # 紧接着需要修改chinese目录的权限：
 chmod -R 755 /usr/share/fonts/chinese
-# 从C:/Windows/Fonts目录复制你想要的字体到某个文件夹
-# 然后从这个文件夹复制去chinese文件夹
-# msyh.ttf msyhbd.ttf simhei.ttf simsun.ttc
-# wqy-microhei.ttc YaHeiConsolas.ttf
+# 从C:/Windows/Fonts目录复制你想要的字体到chinese文件夹
+# msyh.ttf msyhbd.ttf simhei.ttf simsun.ttc wqy-microhei.ttc YaHeiConsolas.ttf
 ttmkfdir -e /usr/share/X11/fonts/encodings/encodings.dir
 vi /etc/fonts/fonts.conf
 <!-- Font directory list -->
@@ -229,8 +235,8 @@ latex_engine = 'xelatex'
 make clean
 make latexpdf
 ```
-中间遇到卡住的警告什么的不管，直接按Enter键，在`build/latex`目录中即可找到生成的pdf文件了。
 
+完成之后在`build/latex`目录中即可找到生成的pdf文件了。
 
 1. ReadTheDocs可以自动生成中文PDF，但ReadTheDocs服务器里的TeXLive版本太老，
 导致只能使用pdflatex而不能使用xelatex编译，再加上服务器上中文字体的限制，
@@ -239,11 +245,22 @@ make latexpdf
 
 ## 生成繁体PDF
 
-写一个shell脚本来转换源码，然后生成步骤不变:
+先安装opencc
+
+``` basn
+wget https://github.com/BYVoid/OpenCC/archive/master.zip
+unzip master.zip
+yum install -y cmake gcc gcc-c++ doxygen
+cd OpenCC-master
+make && make install
+ln -s /usr/lib/libopencc.so.2 /usr/lib64/libopencc.so.2
+```
+
+写一个shell脚本来转换源码：
+
 ``` bash
 #!/bin/bash
 # 将某个文件夹所有文件简体转换成繁体字
-# 先安装opencc：sudo apt-get install opencc
 
 curdir=`pwd`
 file_dir=${curdir}/$1
@@ -252,14 +269,19 @@ for f in $(find $file_dir -type f); do
     opencc -i "${f}" -o "${f}_"
     mv -f "${f}_" "${f}"
 done
+```
 
-# 简体转繁体
+简体转繁体
+
+``` bash
 ./stot.sh scrapy-cookbook/source/
 ```
 
+然后上面的生成PDF步骤不变。
+
 ## FAQ
 
-build的时候出现错误：! Package inputenc Error: Unicode char 我 (U+6211)
+**build的时候出现错误：! Package inputenc Error: Unicode char 我 (U+6211)**
 
 解决办法，在`conf.py`中添加:
 ``` python
@@ -284,15 +306,16 @@ latex_elements={# The paper size ('letterpaper' or 'a4paper').
 
 -------------------
 
-WARNING: Pygments lexer name u'python run.py' is not known
+**WARNING: Pygments lexer name u'python run.py' is not known**
 
-解决办法，写代码的时候别用''' python run.py这样的格式，不支持
+解决办法，写代码的时候别用'''python run.py这样的格式，不支持
 
 -------------------
 
-WARNING: nonlocal image URI found:
+**WARNING: nonlocal image URI found**
 
 解决办法，更改conf.py
+
 ``` python
 import sphinx.environment
 from docutils.utils import get_source_line
@@ -306,7 +329,7 @@ sphinx.environment.BuildEnvironment.warn_node = _warn_node
 
 --------------------
 
-生成的PDF文件中图片不能显示的问题
+**生成的PDF文件中图片不能显示的问题**
 
 解决办法，因为文章里面引用的是外部图片链接，导致不能显示图片，
 将图片下载到source/images目录，然后改链接为相对路径。
@@ -318,7 +341,7 @@ sphinx.environment.BuildEnvironment.warn_node = _warn_node
 
 --------------------
 
-自动生成标题问题
+**自动生成标题问题**
 
 修改`conf.py`将manual改成howto
 ```
@@ -330,7 +353,7 @@ latex_documents = [
 
 ---------------------
 
-图片覆盖文字的问题
+**图片覆盖文字的问题**
 
 养成一个好习惯就是新增图片一定要空一行
 ``` md
@@ -343,15 +366,30 @@ two line
 
 ---------------------
 
-2.0.0版的pdf文件中，每个章节都多了一层编号。
+**生成的pdf文件中，每个章节都多了一层编号。**
 
 我猜测这个问题的原因是sphinx将rst转为LaTex文件，再转为PDF的。sphinx生成的LaTex文件中，
 使用了\Section标记段落，默认情况下\Section是自动编号的章节，而\Section*才是不带自动编号的。
 
-为了解决这个问题，需要手工编辑sphinx生成的python3-cookbook.tex，
+为了解决这个问题，需要手工编辑sphinx生成的python3-cookbook.tex
+
+``` bash
+cd build/latex/
+vi scrapy-cookbook.tex
+```
+
 在`\setcounter{tocdepth}{2}`下增加一行`\setcounter{secnumdepth}{-2}`
 
 这行代码关闭了章节编号的计数器，这样生成的PDF就是目录正确且章节不带自动编号。
+请注意别乱动里面的东西，删除一个空行也不行。
+
+然后执行命令：
+``` bash
+xelatex scrapy-cookbook.tex
+```
+
+这时候生成的pdf文件就是正常格式的了。如果一次执行不成功就再执行一次，很奇怪的事情。
+
 具体原理解释参见<http://liam0205.me/2015/04/10/how-to-list-unnumbered-section-in-the-table-of-contents/>
 
 ---------------------

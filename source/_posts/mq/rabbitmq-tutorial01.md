@@ -88,3 +88,12 @@ rabbitmqctl set_permissions -p / test ".*" ".*" ".*"
 现在可以通过`http://ip:15672`访问web管理界面了，使用`guest/guest`登录。
 
 ![](https://xnstatic-1253397658.file.myqcloud.com/rb01.png)
+
+## 卸载
+
+如果后面不想用了就卸载掉
+
+``` bash
+rpm -qa |grep rabbitmq
+yum remove rabbitmq-server
+```
