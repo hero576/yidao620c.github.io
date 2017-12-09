@@ -366,7 +366,7 @@ two line
 
 ---------------------
 
-**生成的pdf文件中，每个章节都多了一层编号。**
+**生成的pdf文件中，每个章节都多了一层编号**
 
 我猜测这个问题的原因是sphinx将rst转为LaTex文件，再转为PDF的。sphinx生成的LaTex文件中，
 使用了\Section标记段落，默认情况下\Section是自动编号的章节，而\Section*才是不带自动编号的。
@@ -393,3 +393,84 @@ xelatex scrapy-cookbook.tex
 具体原理解释参见<http://liam0205.me/2015/04/10/how-to-list-unnumbered-section-in-the-table-of-contents/>
 
 ---------------------
+
+**优化PDF显示**
+
+这个参考 <https://github.com/yidao620c/python3-cookbook/issues/108>
+
+编辑tex文件，在导言区的内容如下：
+
+```
+前面省略...
+\title{《Python Cookbook》第三版}
+\date{Dec 09, 2017}
+\release{3.0.0}
+\author{熊能}
+\newcommand{\sphinxlogo}{\vbox{}}
+\renewcommand{\releasename}{Release}
+\makeindex
+
+% 隐藏原目录名
+\renewcommand{\contentsname}{}
+
+% 在 section 前插入分页
+\usepackage{titlesec}
+\newcommand{\sectionbreak}{\clearpage}
+
+% 章节编号只编号到 subsection
+\newcommand\normalsecnumdepth{\setcounter{secnumdepth}{2}}
+
+% 所有层次章节都不编号
+\newcommand\specialsecnumdepth{\setcounter{secnumdepth}{-2}}  
+
+% toc 到 subsection
+\newcommand\normaltocdepth{
+    \setcounter{tocdepth}{2}
+    \addtocontents{toc}{\setcounter{tocdepth}{2}}
+}
+
+% toc 到 section
+\newcommand\specialtocdepth{
+    \setcounter{tocdepth}{1}
+    \addtocontents{toc}{\setcounter{tocdepth}{1}}
+}
+
+\begin{document}
+
+\maketitle
+\specialsecnumdepth
+\specialtocdepth
+\renewcommand{\contentsname}{}
+\section{目录}
+\vspace{-36pt}
+\sphinxtableofcontents
+\phantomsection\label{\detokenize{index::doc}}
+
+
+\section{版权}
+\label{\detokenize{copyright::doc}}\label{\detokenize{copyright:copyright}}\label{\detokenize{copyright:python-cookbook-3rd-edition-documentation}}
+\begin{DUlineblock}{0em}
+\item[] 书名：    《Python Cookbook》3rd Edition
+\item[] 作者：     David Beazley, Brian K. Jones
+...
+```
+
+在 `\section{第一章：数据结构和算法}` 前插入
+```
+\normaltocdepth
+```
+
+在 `\section{附录A}` 前插入
+```
+\specialtocdepth
+```
+
+另外执行下面命令，删除每个章节多余的Contents和下面的一行空格：
+``` bash
+sed -i '/Contents:/,+1 d' python3-cookbook.tex
+```
+
+再次运行生成命令即可(最好执行2次)：
+```
+xelatex python3-cookbook.tex
+```
