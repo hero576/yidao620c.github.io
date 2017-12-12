@@ -187,6 +187,48 @@ hexo server -g  #生成加预览
 具体配置请直接参考[开始使用NexT主题](http://theme-next.iissnan.com/getting-started.html)。
 同时我对这个主题进行了很多的修改让它看上去更加符合自己的审美观，如果对我博客的主题感兴趣可以直接在我的github页面拉取即可。
 
+## 启用disqus评论
+
+最好的评论系统disqus因为你懂的原因国内不能访问，找了好久，最后通过[disqus-proxy](https://github.com/ciqulover/disqus-proxy)完美实现。
+
+按照readme文档来配置，几个重要步骤说明一下。
+
+1、首先去disqus添加一个网站，记住你申请的网站shortname
+
+在主题配置里面开启评论
+``` yml
+disqus_shortname: xncoding
+```
+
+然后在全局配置里面开启：
+
+``` yml
+disqus_proxy:
+  shortname: xncoding
+  username: xiongneng
+  host: yourserver.com
+  port: 5509
+```
+
+2、disqus上面申请application，获取`Secret Key`，这个要记住，后面服务器配置用到。
+
+3、后端配置
+
+我再EC2服务器上面申请了一个虚拟机，后端使用Node.js，需要Node.js版本7.6以上
+
+``` bash
+su root
+curl -sL https://rpm.nodesource.com/setup_7.x | bash -
+yum install nodejs
+
+git clone https://github.com/ciqulover/disqus-proxy
+
+npm i --production
+```
+
+后面跟REAME.md文档一致，使用pm2启动。
+
+
 ## 多台电脑同时维护博客
 
 之前利用了 Hexo + Github搭建了自己的博客网站，但问题来了：如何在多台电脑上对此博客进行维护？

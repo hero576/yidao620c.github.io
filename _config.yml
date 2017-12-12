@@ -104,6 +104,12 @@ algolia:
   indexName: 'xnindex'
   chunkSize: 5000
 
+disqus_proxy:
+  shortname: xncoding
+  username: xiongneng
+  host: ec2-52-199-26-126.ap-northeast-1.compute.amazonaws.com
+  port: 5509
+
 stylus:
   compress: true
 
