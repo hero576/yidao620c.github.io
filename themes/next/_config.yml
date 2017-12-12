@@ -291,7 +291,16 @@ mathjax:
 #duoshuo_shortname: yidao620c
 
 # Disqus
-disqus_shortname: xncoding
+#disqus:
+#  enable: false
+#  shortname:
+#  count: true
+
+# changyan
+changyan:
+  enable: true
+  appid: cytmsByHa
+  appkey: 4ac23d4624531cd1605c8a00857e76e4
 
 # Hypercomments
 #hypercomments_id:

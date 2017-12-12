@@ -207,8 +207,10 @@ disqus_proxy:
   shortname: xncoding
   username: xiongneng
   host: yourserver.com
-  port: 5509
+  port: 443
 ```
+
+注意上面我设置的端口是443，后面我还要配置https访问。
 
 2、disqus上面申请application，获取`Secret Key`，这个要记住，后面服务器配置用到。
 
@@ -226,8 +228,114 @@ git clone https://github.com/ciqulover/disqus-proxy
 npm i --production
 ```
 
+**重要修正**
+
+修改匿名评论不能通过的问题(最新的貌似已经修正过来了)。
+
+参考<http://szhshp.org/tech/2017/08/20/jekylldisqusproxy.html>
+
+启动之前，先修改文件`disqus-proxy/server/index.js`
+
+``` js
+router.post('/api/createComment', async function (ctx) {
+  logger.info('Create comment: ' + JSON.stringify(ctx.request.body))
+  let result
+  try {
+    result = await rq(Object.assign(req, {
+      url: 'https://disqus.com/api/3.0/posts/create.json',
+      method: 'POST',
+      form: Object.assign(ctx.request.body, {
+        api_key: 'E8Uh5l5fHZ6gD8U3KycjAIAk46f68Zw7C6eW8WSjZvCLXebZ7p0r1yrYDrLilk2F' //就是这儿！！！
+      }),
+      json: true
+    }))
+  } catch (e) {
+    logger.error('Error when create comment:' + JSON.stringify(e.error))
+    ctx.body = e.error
+    return
+  }
+  ctx.body = result
+  logger.info('Create comment successfully with response code: ' + result.code)
+})
+```
+
 后面跟REAME.md文档一致，使用pm2启动。
 
+4、需要启动https访问，用nginx来反向代理`disqus proxy`，
+参考[CentOS7配置自签名的SSL](https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-on-centos-7)
+
+重要步骤：
+``` bash
+sudo yum install nginx
+systemctl start nginx
+systemctl enable nginx
+
+# If you have a firewalld firewall running
+sudo firewall-cmd --add-service=http
+sudo firewall-cmd --add-service=https
+sudo firewall-cmd --runtime-to-permanent
+
+# If have an iptables firewall running
+sudo iptables -I INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+sudo iptables -I INPUT -p tcp -m tcp --dport 443 -j ACCEPT
+
+mkdir /etc/ssl/private
+chmod 700 /etc/ssl/private
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+
+# 上面很多提示最重要的一步是：Common Name (e.g. server FQDN or YOUR name) []:server_IP_address，配置成你的域名
+openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+```
+
+
+最后的添加的ssl配置如下：
+```
+server {
+    listen 443 http2 ssl;
+    listen [::]:443 http2 ssl;
+
+    server_name ec2-xxxxx.compute.amazonaws.com;
+
+    ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
+    ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+    ssl_dhparam /etc/ssl/certs/dhparam.pem;
+
+    location / {
+        proxy_set_header  X-Real-IP  $remote_addr;
+        proxy_pass http://127.0.0.1:5509$request_uri;
+    }
+}
+
+```
+
+然后测试并重启nginx：
+```
+nginx -t
+systemctl restart nginx
+```
+
+对于那些连不上disqus的用户会显示一个精简版的评论框。
+
+### 切换至畅言
+使用disqus后发现还是有不少问题，首先是https因为不少认证过的，在浏览器里面有警告。
+另外匿名评论我在管理后台看不到，不知道什么原因。最后还是切换至国内的畅言评论。
+
+参考这篇 <http://www.jianshu.com/p/5888bd91d070>
+
+先申请畅言，并且通过审核。获取到畅言评论的APP ID 和APP KEY，复制下来。
+
+然后更新最新的hexo的[NexT主题](https://github.com/iissnan/hexo-theme-next)，我自己的定制过不太敢升级，
+于是我去找到这个[pull request](https://github.com/iissnan/hexo-theme-next/pull/1514/)，查看变动的文件，自己修改了。
+
+修改完成后，主题配置文件`_config.yml`中添加一个简单的配置即可：
+
+```
+# changyan
+changyan:
+  enable: true
+  appid: your_appid
+  appkey: your_appkey
+```
 
 ## 多台电脑同时维护博客
 
