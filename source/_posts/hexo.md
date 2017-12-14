@@ -376,7 +376,51 @@ $ cnpm install hexo-deployer-git
 $ cnpm install hexo-renderer-jade --save
 $ cnpm install hexo-renderer-sass --save
 ```
-注意：千万别执行`hexo init`这个命令啊，同时`Next`主题的安装步骤还是需要的。
+
+**重要记录**
+
+千万别执行`hexo init`这个命令啊，同时`Next`主题的安装步骤还是需要的。
+
+另外hexo3.4.3版本好像生成toc的时候有点问题，我退回到3.3.9就正常。
+
+首先`package.json`改成绝对版本号：
+``` json
+{
+  "name": "hexo-site",
+  "version": "0.0.0",
+  "private": true,
+  "hexo": {
+    "version": "3.3.9"
+  },
+  "dependencies": {
+    "hexo": "3.3.9",
+    "hexo-deployer-git": "^0.3.1",
+    "hexo-generator-archive": "^0.1.5",
+    "hexo-generator-category": "^0.1.3",
+    "hexo-generator-feed": "^1.2.2",
+    "hexo-generator-index": "^0.2.0",
+    "hexo-generator-tag": "^0.2.0",
+    "hexo-renderer-ejs": "^0.3.0",
+    "hexo-renderer-jade": "^0.4.1",
+    "hexo-renderer-marked": "^0.3.0",
+    "hexo-renderer-sass": "^0.3.2",
+    "hexo-renderer-stylus": "^0.3.1",
+    "hexo-server": "^0.2.0"
+  }
+}
+```
+
+然后把hexo卸载了，重新安装指定版本，在另外一个目录执行：
+```
+cnpm uninstall hexo -g
+cnpm install hexo@3.3.9 -g
+```
+
+然后再回到hexo目录执行：
+```
+cnpm install
+```
+
 
 ### 使用方法
 

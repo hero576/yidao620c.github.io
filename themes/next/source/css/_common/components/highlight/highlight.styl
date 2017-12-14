@@ -18,8 +18,7 @@ pre, code { font-family: $code-font-family; }
 
 code {
   padding: 2px 4px;
-  //word-wrap: break-word;
-  word-break: break-all;
+  word-wrap: break-word;
   color: $code-foreground;
   background: $code-background;
   border-radius: $code-border-radius;
@@ -28,6 +27,7 @@ code {
 
 pre {
   @extend $code-block;
+  padding: 10px;
 
   code {
     padding: 0;
@@ -82,6 +82,7 @@ pre {
   }
 
   .code pre {
+    width: 100%
     padding-left: 10px
     padding-right: 10px
     background-color: $highlight-background
