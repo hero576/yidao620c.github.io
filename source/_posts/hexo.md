@@ -95,6 +95,9 @@ deploy:
     branch: master
 ```
 
+我刚开始是部署到github上面，现在我部署到自己的腾讯云主机上面去了，
+原理都一样，在腾讯云主机上面创建一个git服务即可。然后上面的`repository`改成自己的git服务器地址。
+
 如果你是第一次使用Github或者是已经使用过，但没有配置过SSH，则可能需要配置一下SSH。
 在Git Bash输入以下指令（任意位置点击鼠标右键），检查是否已经存在了SSH keys。
 ``` bash
@@ -228,39 +231,6 @@ git clone https://github.com/ciqulover/disqus-proxy
 npm i --production
 ```
 
-**重要修正**
-
-修改匿名评论不能通过的问题(最新的貌似已经修正过来了)。
-
-参考<http://szhshp.org/tech/2017/08/20/jekylldisqusproxy.html>
-
-启动之前，先修改文件`disqus-proxy/server/index.js`
-
-``` js
-router.post('/api/createComment', async function (ctx) {
-  logger.info('Create comment: ' + JSON.stringify(ctx.request.body))
-  let result
-  try {
-    result = await rq(Object.assign(req, {
-      url: 'https://disqus.com/api/3.0/posts/create.json',
-      method: 'POST',
-      form: Object.assign(ctx.request.body, {
-        api_key: 'E8Uh5l5fHZ6gD8U3KycjAIAk46f68Zw7C6eW8WSjZvCLXebZ7p0r1yrYDrLilk2F' //就是这儿！！！
-      }),
-      json: true
-    }))
-  } catch (e) {
-    logger.error('Error when create comment:' + JSON.stringify(e.error))
-    ctx.body = e.error
-    return
-  }
-  ctx.body = result
-  logger.info('Create comment successfully with response code: ' + result.code)
-})
-```
-
-后面跟REAME.md文档一致，使用pm2启动。
-
 4、需要启动https访问，用nginx来反向代理`disqus proxy`，
 参考[CentOS7配置自签名的SSL](https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-on-centos-7)
 
@@ -286,7 +256,6 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/ngi
 # 上面很多提示最重要的一步是：Common Name (e.g. server FQDN or YOUR name) []:server_IP_address，配置成你的域名
 openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
 ```
-
 
 最后的添加的ssl配置如下：
 ```
@@ -322,12 +291,9 @@ systemctl restart nginx
 
 参考这篇 <http://www.jianshu.com/p/5888bd91d070>
 
-先申请畅言，并且通过审核。获取到畅言评论的APP ID 和APP KEY，复制下来。
+先申请畅言，并且通过审核。获取到畅言评论的`APP ID` 和`APP KEY`，复制下来。
 
-然后更新最新的hexo的[NexT主题](https://github.com/iissnan/hexo-theme-next)，我自己的定制过不太敢升级，
-于是我去找到这个[pull request](https://github.com/iissnan/hexo-theme-next/pull/1514/)，查看变动的文件，自己修改了。
-
-修改完成后，主题配置文件`_config.yml`中添加一个简单的配置即可：
+主题配置文件`_config.yml`中添加一个简单的配置即可：
 
 ```
 # changyan
@@ -357,7 +323,7 @@ $ git branch source // 创建source分支
 $ git checkout source // 切换到source分支
 $ git remote -v //查看远程分支名字
  // 我的内容为如下，说明已绑定
- // origin    git@github.com:yidao620c/yidao620c.github.com.git (fetch)
+ // origin  git@github.com:yidao620c/yidao620c.github.com.git (fetch)
  // origin	git@github.com:yidao620c/yidao620c.github.com.git (push)
 修改.gitignore文件，添加"public/"字段至其中。
 $ git push origin source // 将当前git_blog下的内容push到Github上的远程仓库的source分支（会自动创建）上
@@ -372,7 +338,7 @@ $ git branch -a
 $ git checkout -b source origin/source
 $ cnpm install hexo
 $ cnpm install
-$ cnpm install hexo-deployer-git
+$ cnpm install hexo-deployer-git --save
 $ cnpm install hexo-renderer-jade --save
 $ cnpm install hexo-renderer-sass --save
 ```
@@ -394,11 +360,13 @@ $ cnpm install hexo-renderer-sass --save
   },
   "dependencies": {
     "hexo": "3.3.9",
+    "hexo-algolia": "^1.2.3",
     "hexo-deployer-git": "^0.3.1",
     "hexo-generator-archive": "^0.1.5",
     "hexo-generator-category": "^0.1.3",
     "hexo-generator-feed": "^1.2.2",
     "hexo-generator-index": "^0.2.0",
+    "hexo-generator-searchdb": "^1.0.8",
     "hexo-generator-tag": "^0.2.0",
     "hexo-renderer-ejs": "^0.3.0",
     "hexo-renderer-jade": "^0.4.1",
@@ -420,7 +388,6 @@ cnpm install hexo@3.3.9 -g
 ```
 cnpm install
 ```
-
 
 ### 使用方法
 
@@ -519,12 +486,11 @@ www，CNAME，cmback.github.io.
 ```
 
 ## 站内搜索
-最简单是直接开启Local Search，
-先在NexT的_config.yml配置中开启这个本地搜索：
+最简单是直接开启`Local Search`
+
+安装 `hexo-generator-searchdb`，在站点的根目录下执行以下命令：
 ```
-# Local search
-local_search:
-  enable: true
+cnpm install hexo-generator-searchdb --save
 ```
 
 全局配置文件_config.yml中定义搜索页面：
@@ -535,6 +501,96 @@ search:
   format: html
   limit: 10000
 ```
+
+在NexT的_config.yml配置中开启这个本地搜索：
+```
+# Local search
+local_search:
+  enable: true
+```
+
+## algolia搜索
+使用一段时间的`Local Search`后发现还是不太好用，后来比较了一下Swiftype、 微搜索、Local Search 和 Algolia，
+发现`algolia`比较好。安装`NexT`文档配置步骤如下：
+
+第一步，先注册Algolia，创建Index
+
+前往 [Algolia 注册页面](https://www.algolia.com/)，注册一个新账户。可以使用 GitHub 或者 Google 账户直接登录，
+注册后的 14 天内拥有所有功能（包括收费类别的）。之后若未续费会自动降级为免费账户，免费账户总共有 10,000 条记录，
+每月有 100,000 的可以操作数。注册完成后，创建一个新的 Index，这个 Index 将在后面使用。
+
+第二步，安装Algolia
+```
+npm install --save hexo-algolia
+```
+
+第三步，获取Key，更新站点配置
+
+在 Algolia 服务站点上找到需要使用的一些配置的值，包括 `ApplicationID`、`Search-Only API Key`、`min API Key`。
+注意，Admin API Key 需要保密保存。点击ALL API KEYS 找到新建INDEX对应的key， 编辑权限，
+在弹出框中找到ACL选择勾选`Search`、`Add records`、`Delete records`、`List indices`、`Delete index`权限，点击update更新。
+
+![](https://xnstatic-1253397658.file.myqcloud.com/hexo20.png)
+
+编辑站点配置文件，新增以下配置：
+```
+algolia:
+  applicationID: 'IQUD4IM8MM'
+  indexName: 'blogindex'
+  chunkSize: 5000
+```
+
+替换除了 chunkSize 以外的其他字段为在 Algolia 获取到的值。
+
+第四步，更新Index
+
+当配置完成，新增一个环境变量，windwos和linux配置环境变量我就不讲了。
+
+```
+HEXO_ALGOLIA_INDEXING_KEY=Search-Only API key
+```
+
+在站点根目录下执行
+```
+$ hexo algolia
+```
+
+来更新 Index，请注意观察命令的输出。
+```
+$ hexo algolia
+INFO  [Algolia] Testing HEXO_ALGOLIA_INDEXING_KEY permissions.
+INFO  Start processing
+INFO  [Algolia] Identified 152 pages and posts to index.
+INFO  [Algolia] Indexing chunk 1 of 4 (50 items each)
+INFO  [Algolia] Indexing chunk 2 of 4 (50 items each)
+INFO  [Algolia] Indexing chunk 3 of 4 (50 items each)
+INFO  [Algolia] Indexing chunk 4 of 4 (50 items each)
+INFO  [Algolia] Indexing done.
+```
+
+注意，每次更新文章后记得执行`hexo algolia`更新索引哦。
+
+第五步，主题集成
+
+更改主题配置文件，找到 Algolia Search 配置部分：
+```
+# Algolia Search
+algolia_search:
+  enable: false
+  hits:
+    per_page: 10
+  labels:
+    input_placeholder: Search for Posts
+    hits_empty: "We didn't find any results for the search: ${query}"
+    hits_stats: "${hits} results found in ${time} ms"
+```
+
+将 `enable` 改为 `true` 即可，根据需要你可以调整 `labels` 中的文本。
+
+
+## 阅读次数统计
+
+使用LeanCloud为文章添加阅读次数统计，请参考文章[为NexT主题添加文章阅读量统计功能](https://notes.wanghao.work/2015-10-21-%E4%B8%BANexT%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%8A%9F%E8%83%BD.html#%E9%85%8D%E7%BD%AELeanCloud)
 
 ## FAQ
 

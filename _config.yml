@@ -98,17 +98,11 @@ jiathis: false
 duoshuo_share: false
 
 algolia:
-  applicationID: 'OFNGCUOLOW'
-  apiKey: '2cd2edac28bf6f65be36c05bdfb1a245'
-  adminApiKey: '2461abf473f29aa8a0d2449e527a7181'
-  indexName: 'xnindex'
+  applicationID: 'IQUD4IM8MM'
+  apiKey: '5b89dec2bf05dd488435bcdb942cf385'
+  adminApiKey: '63e66b0cbf4f6226235d803c59beab82'
+  indexName: 'blogindex'
   chunkSize: 5000
-
-disqus_proxy:
-  shortname: xncoding
-  username: xiongneng
-  host: ec2-52-199-26-126.ap-northeast-1.compute.amazonaws.com
-  port: 443
 
 stylus:
   compress: true
