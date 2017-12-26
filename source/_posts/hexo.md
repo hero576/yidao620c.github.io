@@ -36,7 +36,7 @@ npm install npm@latest -g
 npm --version
 ```
 
-## 换淘宝源
+### 换淘宝源
 ```
 npm install -g cnpm --registry=https://registry.npm.taobao.org
 ```
@@ -190,103 +190,8 @@ hexo server -g  #生成加预览
 具体配置请直接参考[开始使用NexT主题](http://theme-next.iissnan.com/getting-started.html)。
 同时我对这个主题进行了很多的修改让它看上去更加符合自己的审美观，如果对我博客的主题感兴趣可以直接在我的github页面拉取即可。
 
-## 启用disqus评论
-
-最好的评论系统disqus因为你懂的原因国内不能访问，找了好久，最后通过[disqus-proxy](https://github.com/ciqulover/disqus-proxy)完美实现。
-
-按照readme文档来配置，几个重要步骤说明一下。
-
-1、首先去disqus添加一个网站，记住你申请的网站shortname
-
-在主题配置里面开启评论
-``` yml
-disqus_shortname: xncoding
-```
-
-然后在全局配置里面开启：
-
-``` yml
-disqus_proxy:
-  shortname: xncoding
-  username: xiongneng
-  host: yourserver.com
-  port: 443
-```
-
-注意上面我设置的端口是443，后面我还要配置https访问。
-
-2、disqus上面申请application，获取`Secret Key`，这个要记住，后面服务器配置用到。
-
-3、后端配置
-
-我再EC2服务器上面申请了一个虚拟机，后端使用Node.js，需要Node.js版本7.6以上
-
-``` bash
-su root
-curl -sL https://rpm.nodesource.com/setup_7.x | bash -
-yum install nodejs
-
-git clone https://github.com/ciqulover/disqus-proxy
-
-npm i --production
-```
-
-4、需要启动https访问，用nginx来反向代理`disqus proxy`，
-参考[CentOS7配置自签名的SSL](https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-on-centos-7)
-
-重要步骤：
-``` bash
-sudo yum install nginx
-systemctl start nginx
-systemctl enable nginx
-
-# If you have a firewalld firewall running
-sudo firewall-cmd --add-service=http
-sudo firewall-cmd --add-service=https
-sudo firewall-cmd --runtime-to-permanent
-
-# If have an iptables firewall running
-sudo iptables -I INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-sudo iptables -I INPUT -p tcp -m tcp --dport 443 -j ACCEPT
-
-mkdir /etc/ssl/private
-chmod 700 /etc/ssl/private
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
-
-# 上面很多提示最重要的一步是：Common Name (e.g. server FQDN or YOUR name) []:server_IP_address，配置成你的域名
-openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
-```
-
-最后的添加的ssl配置如下：
-```
-server {
-    listen 443 http2 ssl;
-    listen [::]:443 http2 ssl;
-
-    server_name ec2-xxxxx.compute.amazonaws.com;
-
-    ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
-    ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
-    ssl_dhparam /etc/ssl/certs/dhparam.pem;
-
-    location / {
-        proxy_set_header  X-Real-IP  $remote_addr;
-        proxy_pass http://127.0.0.1:5509$request_uri;
-    }
-}
-
-```
-
-然后测试并重启nginx：
-```
-nginx -t
-systemctl restart nginx
-```
-
-对于那些连不上disqus的用户会显示一个精简版的评论框。
-
-### 切换至畅言
-使用disqus后发现还是有不少问题，首先是https因为不少认证过的，在浏览器里面有警告。
+### 畅言评论
+一开始我用了多说，后来多说关闭不能使用了。然后换到disqus，发现还是有不少问题，首先是https因为不少认证过的，在浏览器里面有警告。
 另外匿名评论我在管理后台看不到，不知道什么原因。最后还是切换至国内的畅言评论。
 
 参考这篇 <http://www.jianshu.com/p/5888bd91d070>
@@ -301,126 +206,6 @@ changyan:
   enable: true
   appid: your_appid
   appkey: your_appkey
-```
-
-## 多台电脑同时维护博客
-
-之前利用了 Hexo + Github搭建了自己的博客网站，但问题来了：如何在多台电脑上对此博客进行维护？
-
-### 思路
-
-* 对于一个已创建的博客目录，其已通过hexo建立了public目录下的内容与远程仓库yidao620c@github.com的master分支的连接关系，通过hexo的hexo deploy命令即可保持更新；
-* 因此只需要在此仓库yidao620c@github.com上再创建一个分支如source，将其与hexo下其他文件如node_modules、themes、scaffolds等（即除了public目录及.gitignore包含的文件外）进行同步绑定。
-* 在不同的电脑下设置好hexo环境，通过hexo命令维护master分支，通过git命令维护source分支即可。
-
-### 具体步骤
-
-（假定最初创建博客为A，其他另一个为B)
-
-1) 在A中的git_blog目录下，建立source分支：
-``` bash
-$ git branch source // 创建source分支
-$ git checkout source // 切换到source分支
-$ git remote -v //查看远程分支名字
- // 我的内容为如下，说明已绑定
- // origin  git@github.com:yidao620c/yidao620c.github.com.git (fetch)
- // origin	git@github.com:yidao620c/yidao620c.github.com.git (push)
-修改.gitignore文件，添加"public/"字段至其中。
-$ git push origin source // 将当前git_blog下的内容push到Github上的远程仓库的source分支（会自动创建）上
-```
-
-2) 在B中建立git_blog目录，安装npm，安装Hexo，添加SSH，然后在B中建立本地的source分支，并与远程的source分支进行了绑定。
-git_blog下的yidao620c.github.com文件夹里保存了和远程source分支相同的内容。
-``` bash
-$ git clone -b source git@github.com:yidao620c/yidao620c.github.com.git
-$ cd yidao620c.github.com
-$ git branch -a
-$ git checkout -b source origin/source
-$ cnpm install hexo
-$ cnpm install
-$ cnpm install hexo-deployer-git --save
-$ cnpm install hexo-renderer-jade --save
-$ cnpm install hexo-renderer-sass --save
-```
-
-**重要记录**
-
-千万别执行`hexo init`这个命令啊，同时`Next`主题的安装步骤还是需要的。
-
-另外hexo3.4.3版本好像生成toc的时候有点问题，我退回到3.3.9就正常。
-
-首先`package.json`改成绝对版本号：
-``` json
-{
-  "name": "hexo-site",
-  "version": "0.0.0",
-  "private": true,
-  "hexo": {
-    "version": "3.3.9"
-  },
-  "dependencies": {
-    "hexo": "3.3.9",
-    "hexo-algolia": "^1.2.3",
-    "hexo-deployer-git": "^0.3.1",
-    "hexo-generator-archive": "^0.1.5",
-    "hexo-generator-category": "^0.1.3",
-    "hexo-generator-feed": "^1.2.2",
-    "hexo-generator-index": "^0.2.0",
-    "hexo-generator-searchdb": "^1.0.8",
-    "hexo-generator-tag": "^0.2.0",
-    "hexo-renderer-ejs": "^0.3.0",
-    "hexo-renderer-jade": "^0.4.1",
-    "hexo-renderer-marked": "^0.3.0",
-    "hexo-renderer-sass": "^0.3.2",
-    "hexo-renderer-stylus": "^0.3.1",
-    "hexo-server": "^0.2.0"
-  }
-}
-```
-
-然后把hexo卸载了，重新安装指定版本，在另外一个目录执行：
-```
-cnpm uninstall hexo -g
-cnpm install hexo@3.3.9 -g
-```
-
-然后再回到hexo目录执行：
-```
-cnpm install
-```
-
-### 使用方法
-
-如果是新电脑，先把source分支clone下来：
-```bash
-git clone -b source --single-branch https://github.com/yidao620c/yidao620c.github.io.git
-```
-
-在任意一台mac操作，都需先切换并保持在source分支上。使用git命令管理source文件；使用hexo命令进行同步至远程master分支，无需处理本地master分支
-
-1. 在A中使用Hexo的new、g、d方法添加、生成、部署新的博客，内容都会被同步自动放到Github的master分支上
-2. 在A中使用git命令的`push origin source`同步source到远程source分支
-3. 同样保证B的git当前在git_blog下的source分支下
-
-先使用：
-``` bash
-git pull origin source
-```
-
-获得Github的source分支上的最新版本，再使用：
-``` bash
-$ git add -u
-$ git commit -m ""
-$ git push origin source
-```
-
-将新内容提交至Github的source分支上，完成source管理。
-
-### 其他说明
-``` bash
-git add -f xxx // 强制添加文件/文件夹为tracked状态
-git rm --cache xxx // 解除文件为tracked状态
-git rm -r --cache xxx // 解除文件夹为tracked状态
 ```
 
 ## 添加网站的RSS订阅
@@ -591,6 +376,126 @@ algolia_search:
 ## 阅读次数统计
 
 使用LeanCloud为文章添加阅读次数统计，请参考文章[为NexT主题添加文章阅读量统计功能](https://notes.wanghao.work/2015-10-21-%E4%B8%BANexT%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%8A%9F%E8%83%BD.html#%E9%85%8D%E7%BD%AELeanCloud)
+
+## 多台电脑同时维护博客
+
+之前利用了 Hexo + Github搭建了自己的博客网站，但问题来了：如何在多台电脑上对此博客进行维护？
+
+### 思路
+
+* 对于一个已创建的博客目录，其已通过hexo建立了public目录下的内容与远程仓库yidao620c@github.com的master分支的连接关系，通过hexo的hexo deploy命令即可保持更新；
+* 因此只需要在此仓库yidao620c@github.com上再创建一个分支如source，将其与hexo下其他文件如node_modules、themes、scaffolds等（即除了public目录及.gitignore包含的文件外）进行同步绑定。
+* 在不同的电脑下设置好hexo环境，通过hexo命令维护master分支，通过git命令维护source分支即可。
+
+### 具体步骤
+
+（假定最初创建博客为A，其他另一个为B)
+
+1) 在A中的git_blog目录下，建立source分支：
+``` bash
+$ git branch source // 创建source分支
+$ git checkout source // 切换到source分支
+$ git remote -v //查看远程分支名字
+ // 我的内容为如下，说明已绑定
+ // origin  git@github.com:yidao620c/yidao620c.github.com.git (fetch)
+ // origin	git@github.com:yidao620c/yidao620c.github.com.git (push)
+修改.gitignore文件，添加"public/"字段至其中。
+$ git push origin source // 将当前git_blog下的内容push到Github上的远程仓库的source分支（会自动创建）上
+```
+
+2) 在B中建立git_blog目录，安装npm，安装Hexo，添加SSH，然后在B中建立本地的source分支，并与远程的source分支进行了绑定。
+git_blog下的yidao620c.github.com文件夹里保存了和远程source分支相同的内容。
+``` bash
+$ git clone -b source git@github.com:yidao620c/yidao620c.github.com.git
+$ cd yidao620c.github.com
+$ git branch -a
+$ git checkout -b source origin/source
+$ cnpm install hexo
+$ cnpm install
+$ cnpm install hexo-deployer-git --save
+$ cnpm install hexo-renderer-jade --save
+$ cnpm install hexo-renderer-sass --save
+```
+
+**重要记录**
+
+千万别执行`hexo init`这个命令啊，同时`Next`主题的安装步骤还是需要的。
+
+另外hexo3.4.3版本好像生成toc的时候有点问题，我退回到3.3.9就正常。
+
+首先`package.json`改成绝对版本号：
+``` json
+{
+  "name": "hexo-site",
+  "version": "0.0.0",
+  "private": true,
+  "hexo": {
+    "version": "3.3.9"
+  },
+  "dependencies": {
+    "hexo": "3.3.9",
+    "hexo-algolia": "^1.2.3",
+    "hexo-deployer-git": "^0.3.1",
+    "hexo-generator-archive": "^0.1.5",
+    "hexo-generator-category": "^0.1.3",
+    "hexo-generator-feed": "^1.2.2",
+    "hexo-generator-index": "^0.2.0",
+    "hexo-generator-searchdb": "^1.0.8",
+    "hexo-generator-tag": "^0.2.0",
+    "hexo-renderer-ejs": "^0.3.0",
+    "hexo-renderer-jade": "^0.4.1",
+    "hexo-renderer-marked": "^0.3.0",
+    "hexo-renderer-sass": "^0.3.2",
+    "hexo-renderer-stylus": "^0.3.1",
+    "hexo-server": "^0.2.0"
+  }
+}
+```
+
+然后把hexo卸载了，重新安装指定版本，在另外一个目录执行：
+```
+cnpm uninstall hexo -g
+cnpm install hexo@3.3.9 -g
+```
+
+然后再回到hexo目录执行：
+```
+cnpm install
+```
+
+### 使用方法
+
+如果是新电脑，先把source分支clone下来：
+```bash
+git clone -b source --single-branch https://github.com/yidao620c/yidao620c.github.io.git
+```
+
+在任意一台mac操作，都需先切换并保持在source分支上。使用git命令管理source文件；使用hexo命令进行同步至远程master分支，无需处理本地master分支
+
+1. 在A中使用Hexo的new、g、d方法添加、生成、部署新的博客，内容都会被同步自动放到Github的master分支上
+2. 在A中使用git命令的`push origin source`同步source到远程source分支
+3. 同样保证B的git当前在git_blog下的source分支下
+
+先使用：
+``` bash
+git pull origin source
+```
+
+获得Github的source分支上的最新版本，再使用：
+``` bash
+$ git add -u
+$ git commit -m ""
+$ git push origin source
+```
+
+将新内容提交至Github的source分支上，完成source管理。
+
+### 其他说明
+``` bash
+git add -f xxx // 强制添加文件/文件夹为tracked状态
+git rm --cache xxx // 解除文件为tracked状态
+git rm -r --cache xxx // 解除文件夹为tracked状态
+```
 
 ## FAQ
 
