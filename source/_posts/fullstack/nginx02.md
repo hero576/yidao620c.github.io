@@ -1,6 +1,6 @@
 ---
 title: "nginx笔记 - 进阶篇"
-date: 2017-01-09 20:16:16 +0800
+date: 2017-01-09 12:25:16 +0800
 comments: true
 toc: true
 categories: fullstack
@@ -89,7 +89,7 @@ server {
 ```
 保存退出
 
-nginx -t检查出现
+执行`nginx -t`检查，如果没问题的话就重启nginx
 ```
 nginx: [emerg] the "ssl" parameter requires ngx_http_ssl_module in /usr/local/nginx/conf/nginx.conf:99
 ```
@@ -146,6 +146,32 @@ configure arguments: --prefix=/usr/local/nginx --with-http_ssl_module
 在浏览器地址栏中输入`http://www.xiongneng.cc/README.md`，返回的结果是我的GitHub上面的README页面:
 
 ![](https://xnstatic-1253397658.file.myqcloud.com/nginx-09.png)
+
+## HTTPS配置实例
+
+```
+server {
+    listen       443 ssl http2;
+    listen       [::]:443 ssl http2;
+    server_name  api.enzhico.cn;
+
+    location / {
+            proxy_redirect off;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header 'Access-Control-Allow-Origin' '*';
+            proxy_set_header 'Access-Control-Allow-Credentials' 'true';
+            proxy_set_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,X-Mx-ReqToken,X-Requested-With';
+            proxy_set_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS';
+            proxy_pass http://119.29.12.177:8094/;
+    }
+
+    ssl_certificate "server.crt";
+    ssl_certificate_key "server_nopwd.key";
+
+}
+```
 
 ## 虚拟主机
 有时候我们需要在同一台主机上面托管多个应用，每个应用访问域名不同，这里我们可以使用基于域名的虚拟主机来实现。
