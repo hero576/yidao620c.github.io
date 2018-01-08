@@ -1,6 +1,6 @@
 ---
-title: "spring boot处理定时任务方式"
-date: 2017-05-22 10:59:25 +0800
+title: "SpringBoot系列 - 定时任务"
+date: 2017-07-12 10:59:25 +0800
 comments: true
 toc: true
 categories: spring

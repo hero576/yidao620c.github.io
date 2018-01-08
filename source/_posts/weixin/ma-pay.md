@@ -29,7 +29,9 @@ tags: [小程序, 微信支付]
 ![](https://xnstatic-1253397658.file.myqcloud.com/ma001.png)
 
 点击开通按钮后，有2种方式可以获取微信支付能力，新申请微信支付商户号或绑定一个已有的微信支付商户号，
-请根据你的业务需要和具体情况选择，只能二选一。开通指引：<http://kf.qq.com/faq/140225MveaUz161230yqiIby.html>
+请根据你的业务需要和具体情况选择，只能二选一。
+
+开通指引：<http://kf.qq.com/faq/140225MveaUz161230yqiIby.html>
 
 小程序支付开发注意点：
 
