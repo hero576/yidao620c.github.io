@@ -208,6 +208,44 @@ changyan:
   appkey: your_appkey
 ```
 
+安装畅言后遇到几个问题，打开页面控制台后一直报错误，页面循环计数，另外有评论的文章，在首页评论数永远是0，在文章里面计数正常，
+虽然不影响使用，但是看着真是不舒服。必须解决，参考了一篇文章（后面贴了链接）解决方案。
+
+找到`next/layout/_third-party/comments/changyan.swig:1~4行`
+```
+{% if theme.changyan.enable and theme.changyan.appid and theme.changyan.appkey %}
+  {% if is_home() %}
+    <script id="cy_cmt_num" src="https://changyan.sohu.com/upload/plugins/plugins.list.count.js?clientId={{theme.changyan.appid}}"></script>
+  {% else %}
+    ...省略
+```
+
+只需要将
+```
+{% else %}
+```
+
+改成
+
+```
+{% elseif page.comments %}
+```
+
+然后再找到`next/layout/_mavro/post.swig:175～178行`
+
+```
+<a href="{{ url_for(post.path) }}#SOHUCS" itemprop="discussionUrl">
+                 <span id="url::{{ post.permalink }}" class="cy_cmt_count" data-xid="{{ post.path }}" itemprop="commentsCount" ></span>
+               </a>
+```
+
+只需要将`post.permalink`这个值包一层encodeURI方法，如下修改：
+```
+<span id="url::{{ encodeURI(post.permalink) }}" class="cy_cmt_count" data-xid="{{ post.path }}" itemprop="commentsCount" ></span>
+```
+
+另外如果部署在自己服务器上面的话，你可以在带www的文章下评论完，然后去不带www的文章下看看，评论已经不存在，我做了nginx 301重定向解决。
+
 ## 添加网站的RSS订阅
 
 ### 安装hexo-generator-feed
@@ -511,4 +549,5 @@ git rm -r --cache xxx // 解除文件夹为tracked状态
 
 * [hexo干货系列](http://tengj.top/tags/hexo/)
 * [大道至简——Hexo简洁主题推荐](https://www.haomwei.com/technology/maupassant-hexo.html)
+* [NEXT主题中使用畅言的坑](http://www.chaixuhong.com/article/NEXT%E4%BD%BF%E7%94%A8%E7%95%85%E8%A8%80%E7%9A%84%E9%97%AE%E9%A2%98.html)
 
