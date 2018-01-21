@@ -1,0 +1,503 @@
+---
+title: "SpringBoot系列 - 集成WebSocket实时通信"
+date: 2017-07-15 12:28:16 +0800
+comments: true
+toc: true
+categories: spring
+tags: [springboot]
+---
+
+WebSocket是 HTML5 开始提供的一种浏览器与服务器间进行全双工通讯的网络技术。
+WebSocket 通信协议于2011年被IETF定为标准RFC 6455，WebSocketAPI 被W3C定为标准。
+在WebSocket API 中，浏览器和服务器只需要要做一个握手的动作，然后，浏览器和服务器之间就形成了一条快速通道。
+两者之间就直接可以数据互相传送。
+
+注意特点：
+
+* 为浏览器和服务端提供了双工异步通信的功能，即服务器可以主动向客户端推送信息，客户端也可以主动向服务器发送信息，是真正的双向平等对话，属于服务器推送技术的一种。
+* 建立在 TCP 协议之上，服务器端的实现比较容易。
+* 与 HTTP 协议有着良好的兼容性。默认端口也是80和443，并且握手阶段采用 HTTP 协议，因此握手时不容易屏蔽，能通过各种 HTTP 代理服务器。
+* 数据格式比较轻量，性能开销小，通信高效。
+* 可以发送文本，也可以发送二进制数据。
+* 没有同源限制，客户端可以与任意服务器通信。
+* 协议标识符是ws（如果加密，则为wss），服务器网址就是 URL。
+
+有多种方式实现WebSocket协议，比如SpringBoot官方推荐的基于STOMP实现，实现起来非常简单，还有通过Socket.IO来实现。
+这里我讲一下后者实现方案。<!--more-->
+
+## 概述
+
+Socket.IO 主要使用WebSocket协议。但是如果需要的话，Socket.io可以回退到几种其它方法，
+例如Adobe Flash Sockets，JSONP拉取，或是传统的AJAX拉取，并且在同时提供完全相同的接口。
+尽管它可以被用作WebSocket的包装库，它还是提供了许多其它功能，比如广播至多个套接字，存储与不同客户有关的数据，和异步IO操作。
+
+更多请参考 Socket.IO 官网：<https://socket.io/>
+
+基于 socket.io 来说，采用 node 实现更加合适，本文使用两个后端的Java开源框架实现。
+
+* 服务端使用 [netty-socketio](https://github.com/mrniko/netty-socketio)
+* 客户端使用 [socket.io-client-java](https://github.com/socketio/socket.io-client-java)
+
+业务需求是将之前通过轮询方式调动RESTFul API改成使用WebSocket长连接方式，实现要服务器实时的推送消息，另外还要实时监控POS机的在线状态等。
+
+## 引入依赖
+
+``` xml
+<!-- netty-socketio-->
+<dependency>
+    <groupId>com.corundumstudio.socketio</groupId>
+    <artifactId>netty-socketio</artifactId>
+    <version>1.7.13</version>
+</dependency>
+<dependency>
+    <groupId>io.netty</groupId>
+    <artifactId>netty-resolver</artifactId>
+    <version>4.1.15.Final</version>
+</dependency>
+<dependency>
+    <groupId>io.netty</groupId>
+    <artifactId>netty-transport</artifactId>
+    <version>4.1.15.Final</version>
+</dependency>
+<dependency>
+    <groupId>io.socket</groupId>
+    <artifactId>socket.io-client</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+## 服务器代码
+
+先来服务端程序爽一把，话不多说，先上代码：
+
+``` java
+public class NamespaceSocketServer {
+    private static final Logger logger = LoggerFactory.getLogger(NamespaceSocketServer.class);
+
+    public static void main(String[] args) {
+        /*
+         * 创建Socket，并设置监听端口
+         */
+        Configuration config = new Configuration();
+        //设置主机名
+        config.setHostname("localhost");
+        //设置监听端口
+        config.setPort(9092);
+        // 协议升级超时时间（毫秒），默认10秒。HTTP握手升级为ws协议超时时间
+        config.setUpgradeTimeout(10000);
+        // Ping消息超时时间（毫秒），默认60秒，这个时间间隔内没有接收到心跳消息就会发送超时事件
+        config.setPingTimeout(180000);
+        // Ping消息间隔（毫秒），默认25秒。客户端向服务器发送一条心跳消息间隔
+        config.setPingInterval(60000);
+        // 连接认证，这里使用token更合适
+        config.setAuthorizationListener(new AuthorizationListener() {
+            @Override
+            public boolean isAuthorized(HandshakeData data) {
+                // 客户端使用 options.query = "username=test&password=test&appid=com.enzhico.xpay";
+                // 可以使用如下代码获取用户密码信息，本文不做身份验证
+                 String username = data.getSingleUrlParam("username");
+                 String password = data.getSingleUrlParam("password");
+                logger.info("认证信息：username=" + username + ",password=" + password);
+                // 如果认证不通过会返回一个Socket.EVENT_CONNECT_ERROR事件
+                return true;
+            }
+        });
+
+        final SocketIOServer server = new SocketIOServer(config);
+
+        /*
+         * 添加连接监听事件，监听是否与客户端连接到服务器
+         */
+        server.addConnectListener(new ConnectListener() {
+            @Override
+            public void onConnect(SocketIOClient client) {
+                // 判断是否有客户端连接
+                if (client != null) {
+                    logger.info("连接成功。clientId=" + client.getSessionId().toString());
+                    client.joinRoom(client.getHandshakeData().getSingleUrlParam("appid"));
+                } else {
+                    logger.error("并没有人连接上。。。");
+                }
+            }
+        });
+
+        /*
+         * 添加监听事件，监听客户端的事件
+         * 1.第一个参数eventName需要与客户端的事件要一致
+         * 2.第二个参数eventClase是传输的数据类型
+         * 3.第三个参数listener是用于接收客户端传的数据，数据类型需要与eventClass一致
+         */
+        server.addEventListener("login", LoginRequest.class, new DataListener<LoginRequest>() {
+            @Override
+            public void onData(SocketIOClient client, LoginRequest data, AckRequest ackRequest) {
+                logger.info("接收到客户端login消息：code = " + data.getCode() + ",body = " + data.getBody());
+                // check is ack requested by client, but it's not required check
+                if (ackRequest.isAckRequested()) {
+                    // send ack response with data to client
+                    ackRequest.sendAckData("已成功收到客户端登录请求", "yeah");
+                }
+                // 向客户端发送消息
+                List<String> list = new ArrayList<>();
+                list.add("登录成功，sessionId=" + client.getSessionId());
+                // 第一个参数必须与eventName一致，第二个参数data必须与eventClass一致
+                String room = client.getHandshakeData().getSingleUrlParam("appid");
+                server.getRoomOperations(room).sendEvent("login", list.toString());
+            }
+        });
+        //启动服务
+        server.start();
+    }
+}
+```
+
+## Android客户端
+
+老规矩，先上代码爽爽
+
+``` java
+public class SocketClient {
+    private static Socket socket;
+    private static final Logger logger = LoggerFactory.getLogger(SocketClient.class);
+
+    public static void main(String[] args) throws URISyntaxException {
+        IO.Options options = new IO.Options();
+        options.transports = new String[]{"websocket"};
+        options.reconnectionAttempts = 2;     // 重连尝试次数
+        options.reconnectionDelay = 1000;     // 失败重连的时间间隔(ms)
+        options.timeout = 20000;              // 连接超时时间(ms)
+        options.forceNew = true;
+        options.query = "username=test1&password=test1&appid=com.enzhico.apay2";
+        socket = IO.socket("http://localhost:9092/", options);
+        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                // 客户端一旦连接成功，开始发起登录请求
+                LoginRequest message = new LoginRequest(12, "这是客户端消息体");
+                socket.emit("login", JsonConverter.objectToJSONObject(message), (Ack) args1 -> {
+                    logger.info("回执消息=" + Arrays.stream(args1).map(Object::toString).collect(Collectors.joining(",")));
+                });
+            }
+        }).on("login", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                logger.info("接受到服务器房间广播的登录消息：" + Arrays.toString(args));
+            }
+        }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                logger.info("Socket.EVENT_CONNECT_ERROR");
+                socket.disconnect();
+            }
+        }).on(Socket.EVENT_CONNECT_TIMEOUT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                logger.info("Socket.EVENT_CONNECT_TIMEOUT");
+                socket.disconnect();
+            }
+        }).on(Socket.EVENT_PING, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                //logger.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ": Socket.EVENT_PING");
+            }
+        }).on(Socket.EVENT_PONG, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                //logger.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ": Socket.EVENT_PONG");
+            }
+        }).on(Socket.EVENT_MESSAGE, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                logger.info("-----------接受到消息啦--------" + Arrays.toString(args));
+            }
+        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                logger.info("客户端断开连接啦。。。");
+                socket.disconnect();
+            }
+        });
+        socket.connect();
+    }
+}
+```
+
+## 关于心跳机制
+
+根据Socket.IO文档解释，客户端发触发一个ping事件和一个pong事件，如下：
+
+- `ping` Fired when a ping packet is written out to the server.
+- `pong` Fired when a pong is received from the server.
+    Parameters:
+    - `Number` number of ms elapsed since `ping` packet (i.e.: latency)
+
+这里最重要的两个服务器参数如下：
+
+1. pingTimeout (Number): how many ms without a pong packet to consider the connection closed (60000)
+1. pingInterval (Number): how many ms before sending a new ping packet (25000).
+
+也就是说握手协议的时候，客户端从服务器拿到这两个参数，一个是ping消息的发送间隔时间，一个是从服务器返回pong消息的超时时间，
+客户端会在超时后断开连接。
+
+## 浏览器客户端演示
+
+对于`netty-socketio`有一个demo工程，里面通过一个网页的聊天小程序演示了各种使用方法。
+
+demo地址：[netty-socketio-demo](https://github.com/mrniko/netty-socketio-demo)
+
+## SpringBoot集成
+
+最后重点讲一下如何更SpringBoot的集成。
+
+### 修改配置
+
+首先maven依赖之前已经讲过了，先修改下`application.yml`配置文件来配置下几个参数，比如主机、端口、心跳时间等等。
+
+``` yml
+###################  自定义项目配置 ###################
+enzhico:
+  socket-hostname: localhost
+  socket-port: 9096
+```
+
+### 添加Bean配置
+
+然后增加一个SocketServer的Bean配置：
+
+``` java
+@Configuration
+public class NettySocketConfig {
+
+    @Resource
+    private MyProperties myProperties;
+
+    @Resource
+    private ApiService apiService;
+    @Resource
+    private ManagerInfoService managerInfoService;
+
+    private static final Logger logger = LoggerFactory.getLogger(NettySocketConfig.class);
+
+    @Bean
+    public SocketIOServer socketIOServer() {
+        /*
+         * 创建Socket，并设置监听端口
+         */
+        com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
+        // 设置主机名，默认是0.0.0.0
+        // config.setHostname("localhost");
+        // 设置监听端口
+        config.setPort(9096);
+        // 协议升级超时时间（毫秒），默认10000。HTTP握手升级为ws协议超时时间
+        config.setUpgradeTimeout(10000);
+        // Ping消息间隔（毫秒），默认25000。客户端向服务器发送一条心跳消息间隔
+        config.setPingInterval(60000);
+        // Ping消息超时时间（毫秒），默认60000，这个时间间隔内没有接收到心跳消息就会发送超时事件
+        config.setPingTimeout(180000);
+        // 这个版本0.9.0不能处理好namespace和query参数的问题。所以为了做认证必须使用全局默认命名空间
+        config.setAuthorizationListener(new AuthorizationListener() {
+            @Override
+            public boolean isAuthorized(HandshakeData data) {
+                // 可以使用如下代码获取用户密码信息
+                String username = data.getSingleUrlParam("username");
+                String password = data.getSingleUrlParam("password");
+                logger.info("连接参数：username=" + username + ",password=" + password);
+                ManagerInfo managerInfo = managerInfoService.findByUsername(username);
+                // MD5盐
+                String salt = managerInfo.getSalt();
+                String encodedPassword = ShiroKit.md5(password, username + salt);
+                // 如果认证不通过会返回一个Socket.EVENT_CONNECT_ERROR事件
+                return encodedPassword.equals(managerInfo.getPassword());
+            }
+        });
+
+        final SocketIOServer server = new SocketIOServer(config);
+
+        return server;
+    }
+
+    @Bean
+    public SpringAnnotationScanner springAnnotationScanner(SocketIOServer socketServer) {
+        return new SpringAnnotationScanner(socketServer);
+    }
+}
+```
+
+注意，我在`AuthorizationListener`里面通过调用service做了用户名和密码的认证。通过注解方式可以注入service，
+执行相应的连接授权动作。
+
+后面还有个`SpringAnnotationScanner`的定义不能忘记。
+
+### 添加消息结构类
+
+预先定义好客户端和服务器端直接传递的消息类型，使用简单的JavaBean即可，比如
+
+``` java
+public class ReportParam {
+    /**
+     * IMEI码
+     */
+    private String imei;
+    /**
+     * 位置
+     */
+    private String location;
+
+    public String getImei() {
+        return imei;
+    }
+
+    public void setImei(String imei) {
+        this.imei = imei;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+}
+```
+
+### 添加消息处理类
+
+这里才是最核心的接口处理类，所有接口处理逻辑都应该写在这里面，我只举了一个例子，就是POS上传位置接口：
+
+``` java
+/**
+ * 消息事件处理器
+ *
+ * @author XiongNeng
+ * @version 1.0
+ * @since 2018/1/19
+ */
+@Component
+public class MessageEventHandler {
+
+    private final SocketIOServer server;
+    private final ApiService apiService;
+
+    private static final Logger logger = LoggerFactory.getLogger(MessageEventHandler.class);
+
+    @Autowired
+    public MessageEventHandler(SocketIOServer server, ApiService apiService) {
+        this.server = server;
+        this.apiService = apiService;
+    }
+
+    //添加connect事件，当客户端发起连接时调用
+    @OnConnect
+    public void onConnect(SocketIOClient client) {
+        if (client != null) {
+            String imei = client.getHandshakeData().getSingleUrlParam("imei");
+            String applicationId = client.getHandshakeData().getSingleUrlParam("appid");
+            logger.info("连接成功, applicationId=" + applicationId + ", imei=" + imei +
+                    ", sessionId=" + client.getSessionId().toString() );
+            client.joinRoom(applicationId);
+            // 更新POS监控状态为在线
+            ReportParam param = new ReportParam();
+            param.setImei(imei);
+            apiService.updateJustState(param, client.getSessionId().toString(), 1);
+        } else {
+            logger.error("客户端为空");
+        }
+    }
+
+    //添加@OnDisconnect事件，客户端断开连接时调用，刷新客户端信息
+    @OnDisconnect
+    public void onDisconnect(SocketIOClient client) {
+        String imei = client.getHandshakeData().getSingleUrlParam("imei");
+        logger.info("客户端断开连接, imei=" + imei + ", sessionId=" + client.getSessionId().toString());
+        // 更新POS监控状态为离线
+        ReportParam param = new ReportParam();
+        param.setImei(imei);
+        apiService.updateJustState(param, "", 2);
+        client.disconnect();
+    }
+
+    // 消息接收入口
+    @OnEvent(value = Socket.EVENT_MESSAGE)
+    public void onEvent(SocketIOClient client, AckRequest ackRequest, Object data) {
+        logger.info("接收到客户端消息");
+        if (ackRequest.isAckRequested()) {
+            // send ack response with data to client
+            ackRequest.sendAckData("服务器回答Socket.EVENT_MESSAGE", "好的");
+        }
+    }
+
+    // 广播消息接收入口
+    @OnEvent(value = "broadcast")
+    public void onBroadcast(SocketIOClient client, AckRequest ackRequest, Object data) {
+        logger.info("接收到广播消息");
+        // 房间广播消息
+        String room = client.getHandshakeData().getSingleUrlParam("appid");
+        server.getRoomOperations(room).sendEvent("broadcast", "广播啦啦啦啦");
+    }
+
+    /**
+     * 报告地址接口
+     * @param client 客户端
+     * @param ackRequest 回执消息
+     * @param param 报告地址参数
+     */
+    @OnEvent(value = "doReport")
+    public void onDoReport(SocketIOClient client, AckRequest ackRequest, ReportParam param) {
+        logger.info("报告地址接口 start....");
+        BaseResponse result = postReport(param);
+        ackRequest.sendAckData(result);
+    }
+
+    /*----------------------------------------下面是私有方法-------------------------------------*/
+    private BaseResponse postReport(ReportParam param) {
+        BaseResponse result = new BaseResponse();
+        int r = apiService.report(param);
+        if (r > 0) {
+            result.setSuccess(true);
+            result.setMsg("报告地址成功");
+        } else {
+            result.setSuccess(false);
+            result.setMsg("该POS机还没有入网，报告地址失败。");
+        }
+        return result;
+    }
+}
+```
+
+## 添加ServerRunner
+
+还有一个步骤就是添加启动器，在SpringBoot启动之后立马执行：
+
+``` java
+/**
+ * SpringBoot启动之后执行
+ *
+ * @author XiongNeng
+ * @version 1.0
+ * @since 2017/7/15
+ */
+@Component
+@Order(1)
+public class ServerRunner implements CommandLineRunner {
+    private final SocketIOServer server;
+    private static final Logger logger = LoggerFactory.getLogger(ServerRunner.class);
+
+    @Autowired
+    public ServerRunner(SocketIOServer server) {
+        this.server = server;
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        logger.info("ServerRunner 开始启动啦...");
+        server.start();
+    }
+}
+```
+
+## 参考文章
+
+* [Android端与Java服务端交互——SocketIO](http://blog.csdn.net/u011160994/article/details/47153365)
+* [Spring Boot 集成 socket.io 后端实现消息实时通信](http://alexpdh.com/2017/09/03/springboot-socketio/)
+* [Spring Boot实战之netty-socketio实现简单聊天室](http://blog.csdn.net/sun_t89/article/details/52060946)
+
