@@ -872,7 +872,7 @@ public class ShiroConfig {
 
 ## 参考文章
 
-[RESTful API Authentication Basics](http://blog.restcase.com/restful-api-authentication-basics/)
-[什么是 JWT -- JSON WEB TOKEN](https://www.jianshu.com/p/576dbf44b2ae)
-[Shiro+JWT+Spring Boot Restful简易教程](https://juejin.im/post/59f1b2766fb9a0450e755993)
+* [RESTful API Authentication Basics](http://blog.restcase.com/restful-api-authentication-basics/)
+* [什么是 JWT -- JSON WEB TOKEN](https://www.jianshu.com/p/576dbf44b2ae)
+* [Shiro+JWT+Spring Boot Restful简易教程](https://juejin.im/post/59f1b2766fb9a0450e755993)
 
