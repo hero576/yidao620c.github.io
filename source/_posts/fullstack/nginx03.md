@@ -159,9 +159,9 @@ return 301 https://$host$request_uri/;
 ## Let's Encrypt 证书
 
 大牌提供商的SSL证书可不便宜，对于大公司也许不算什么，但是对于小公司及个人来说贵了。
-现在国外出现的免费SSL服务商Let’s Encrypt，绝对是小公司或者开发者的福音。
+现在国外出现的免费SSL服务商`Let's Encrypt`，绝对是小公司或者开发者的福音。
 
-这里整理了在CentOS7 + nginx安装和使用Let’s Encrypt的完整过程。
+这里整理了在CentOS7 + nginx安装和使用`Let's Encrypt`的完整过程。
 
 官方网站：<https://letsencrypt.org>
 
@@ -222,7 +222,40 @@ yum install -y certbot
 certbot certonly --webroot -w /opt/www/api.enzhico.net -d api.enzhico.net -m xn@gmail.com --agree-tos
 ```
 
-注意：联系人email地址要填写真实有效的，letsencrypt会在证书在过期以前发送预告的通知邮件。
+如果上面执行过程中出现下列异常：
+
+```
+ImportError: 'pyOpenSSL' module missing required functionality. Try upgrading to v0.14 or newer.
+```
+
+那么就不要使用这种方式安装了，先卸载掉`yum remove -y certbot`，然后使用下面的方法安装。
+
+### 使用certbot-auto脚本安装Certbot
+
+`certbot-auto`脚本会安装Certbot，并且能够自己解决RPM包和Python包依赖问题，同样非常方便。
+同时`certbot-auto`是对certbot的封装，即`certbot-auto`提供certbot的所有功能。
+
+执行完成后就自动获得了HTTPS配置，并且还能设置成HTTP自动转HTTPS，非常方便，好喜欢哦。
+
+1）获取certbot-auto脚本
+
+```
+wget https://dl.eff.org/certbot-auto
+```
+
+2）使`certbot-auto`脚本可执行
+
+```
+chmod a+x ./certbot-auto
+```
+
+3）运行`certbot-auto`，安装Certbot
+
+```
+./certbot-auto --email your@email.address --domains api.enzhico.net
+```
+
+注意：联系人email地址要填写真实有效的，`let's encrypt`会在证书在过期以前发送预告的通知邮件。
 申请成功后，会显示以下Congratulations信息
 ```
 IMPORTANT NOTES:
@@ -265,8 +298,16 @@ certbot renew --quiet
 ```
 
 注意：更新证书时候网站必须是能访问到的
+
+也可以通过crontab定期更新证书。先查看crond服务是否开启：
+
 ```
-# 可以使用crontab定时更新，例如：
+systemctl status crond
+```
+
+开启后，编辑`/etc/crontab`，后面添加如下内容：
+
+```
 # 每月1号5时执行执行一次更新，并重启nginx服务器
 00 05 01 * * /usr/bin/certbot renew --quiet && /bin/systemctl restart nginx
 ```
@@ -274,17 +315,19 @@ certbot renew --quiet
 ### 配置nginx使用证书开通https站点
 
 生成`Perfect Forward Security（PFS）`键值
+
 ```
 mkdir /etc/ssl/private/ -p
 cd /etc/ssl/private/
 openssl dhparam 2048 -out dhparam.pem
 ```
 
-Perfect Forward Security（PFS)是个什么东西，中文翻译成完美前向保密，一两句话也说不清楚，
+`Perfect Forward Security（PFS)`是个什么东西，中文翻译成完美前向保密，一两句话也说不清楚，
 反正是这几年才提倡的加强安全性的技术。如果本地还没有生成这个键值，需要先执行生成的命令。
 生成的过程还挺花时间的，喝杯咖啡歇会儿吧。
 
 配置nginx站点，例如`/etc/nginx/conf.d/api.enzhico.net.conf`，样例内容如下：
+
 ```
 server {
     listen 80;
@@ -326,8 +369,8 @@ server {
 
 ## 国内SSL证书
 
-除了Let’s Encrypt外，国内也有很多SLL证书产商，比如腾讯云、阿里云、七牛之类的，申请的过程也很简单。比如七牛的SSL证书就有免费版本的。
-只需要申请后填写资料完善后，一天就能申请通过了。
+除了`Let's Encrypt`外，国内也有很多SLL证书产商，比如腾讯云、阿里云、七牛之类的，申请的过程也很简单。
+比如七牛的SSL证书就有免费版本的，只需要申请后填写资料完善后，一天就能申请通过了。
 
 七牛SSL证书申请地址：<https://developer.qiniu.com/ssl>
 
