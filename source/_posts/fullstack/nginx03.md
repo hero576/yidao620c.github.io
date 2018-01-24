@@ -156,7 +156,7 @@ return 301 https://$host$request_uri/;
 
 通过命令`nginx -t`测试一下配置是否正确，然后重启nginx。浏览器打开https网址看看，一般来讲浏览器会报一个警告，你信任此网址继续访问即可。
 
-## Let's Encrypt 证书
+## Lets Encrypt 证书
 
 大牌提供商的SSL证书可不便宜，对于大公司也许不算什么，但是对于小公司及个人来说贵了。
 现在国外出现的免费SSL服务商`Let's Encrypt`，绝对是小公司或者开发者的福音。
@@ -173,7 +173,7 @@ return 301 https://$host$request_uri/;
 
 没有特殊情况，首选采用certbot脚本方式。
 
-letsencrypt证书的有效期只有90天，需要长期使用的话，需要在失效前进行延长申请。用certbot脚本工具，
+`Let's Encrypt`证书的有效期只有90天，需要长期使用的话，需要在失效前进行延长申请。用certbot脚本工具，
 可以将延期申请的脚本写到定时任务来自动完成，非常方便。
 
 ### 前提条件
