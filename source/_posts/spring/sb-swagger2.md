@@ -106,6 +106,16 @@ maven依赖：
 </dependency>
 ```
 
+如果你赶紧默认的样式不好看，还可以将上面的`springfox-swagger-ui`依赖换成下面的：
+
+``` xml
+<dependency>
+    <groupId>com.github.xiaoymin</groupId>
+    <artifactId>swagger-bootstrap-ui</artifactId>
+    <version>1.7.2</version>
+</dependency>
+```
+
 ## 创建Swagger2的Java配置类
 
 通过`@Configuration`注解，表明它是一个配置类，`@EnableSwagger2` 注解开启swagger2。
@@ -244,11 +254,14 @@ filterChainDefinitionMap.put("/v2/api-docs", "anon");
 filterChainDefinitionMap.put("/webjars/**", "anon");
 filterChainDefinitionMap.put("/swagger-resources/**", "anon");
 filterChainDefinitionMap.put("/swagger-ui.html", "anon");
+filterChainDefinitionMap.put("/doc.html", "anon");
 ```
 
 ## 访问SwaggerUI
 
 访问`http://localhost:8080/swagger-ui.html`页面查看API文档
+
+如果使用的是`swagger-bootstrap-ui`，请访问`http://localhost:8080/doc.html`
 
 **参考文章**
 

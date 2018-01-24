@@ -93,12 +93,9 @@ public class NamespaceSocketServer {
         config.setAuthorizationListener(new AuthorizationListener() {
             @Override
             public boolean isAuthorized(HandshakeData data) {
-                // 客户端使用 options.query = "username=test&password=test&appid=com.enzhico.xpay";
-                // 可以使用如下代码获取用户密码信息，本文不做身份验证
-                 String username = data.getSingleUrlParam("username");
-                 String password = data.getSingleUrlParam("password");
-                logger.info("认证信息：username=" + username + ",password=" + password);
-                // 如果认证不通过会返回一个Socket.EVENT_CONNECT_ERROR事件
+                // String token = data.getSingleUrlParam("token");
+                // String username = JWTUtil.getSocketUsername(token);
+                // return JWTUtil.verifySocket(token, "secret");
                 return true;
             }
         });
