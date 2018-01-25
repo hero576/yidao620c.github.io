@@ -202,3 +202,23 @@ INFO 4180 --- [       Thread-4] com.alibaba.druid.pool.DruidDataSource   : {data
 
 根据日志的线程名称很清楚的看出，每个异步方法在线程池的不同线程中执行。
 
+## FAQ
+
+实际运行中，还出现过一个问题，一个Service中的方法调用自己的另一个方法，然后我将这个方法加上@Async注解，然而并不起作用。
+异步方法都应该放到单独的异步任务Bean里面去，然后将这个Bean注入到Service中即可。
+
+``` java
+@Service
+public class DeviceService {
+
+    @Resource
+    private AsyncTask asyncTask;
+    
+    public int unbind(Integer id, ManagerInfo managerInfo) {
+        // 前面省略...
+        
+        // 开始异步推送消息
+        asyncTask.pushUnbindMsg(managerInfo, pos, location);
+    }
+}
+```
