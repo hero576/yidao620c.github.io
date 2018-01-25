@@ -27,7 +27,7 @@ tags: [RSA, DES, AES]
 * 3DES（DES加强版，使用3次DES计算，Triple DES，DESede）
 * AES（Advanced Encryption Standard，3DES加强版）
 
-这里只列出最常用的AES算法实现，也是安全等级最高，推荐使用的对称加密算法，其他实现请参考我的GitHub上的源码：
+这里只列出最常用的AES算法实现，也是安全等级最高，推荐使用的对称加密算法，其他实现请参考我的GitHub上的源码。<!--more-->
 
 ``` java
 /**

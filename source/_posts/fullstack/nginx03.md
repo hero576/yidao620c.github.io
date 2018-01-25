@@ -255,8 +255,9 @@ chmod a+x ./certbot-auto
 ./certbot-auto --email your@email.address --domains api.enzhico.net
 ```
 
-注意：联系人email地址要填写真实有效的，`let's encrypt`会在证书在过期以前发送预告的通知邮件。
-申请成功后，会显示以下Congratulations信息
+如果你想同时为多个domain申请证书，上面的`--domains` 参数后面接逗号隔开的域名，比如`--domains api.enzhico.net,dev.enzhico.net`
+
+联系人email地址要填写真实有效的，`let's encrypt`会在证书在过期以前发送预告的通知邮件。申请成功后，会显示以下Congratulations信息
 ```
 IMPORTANT NOTES:
  - Congratulations! Your certificate and chain have been saved at:
