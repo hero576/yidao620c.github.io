@@ -67,7 +67,7 @@ public Future<String> dealHaveReturnTask(int i) {
     log.info("asyncInvokeReturnFuture, parementer=" + i);
     Future<String> future;
     try {
-        Thread.sleep(1000 * 1);
+        Thread.sleep(1000 * i);
         future = new AsyncResult<String>("success:" + i);
     } catch (InterruptedException e) {
         future = new AsyncResult<String>("error");
@@ -85,23 +85,14 @@ System.out.println(future.get());
 
 ## 异常处理
 
-我们可以实现`AsyncConfigurer`接口，也可以继承`AsyncConfigurerSupport`类来实现
-在方法getAsyncExecutor()中创建线程池的时候，必须使用 `executor.initialize()`，
-不然在调用时会报线程池未初始化的异常。如果使用`threadPoolTaskExecutor()`来定义bean，则不需要初始化
+我们可以实现`AsyncConfigurer`接口，也可以继承`AsyncConfigurerSupport`类来实现。
+
+在方法getAsyncExecutor()中创建线程池的时候，必须使用 `executor.initialize()`，不然在调用时会报线程池未初始化的异常。
 
 ``` java
 @Configuration
 @EnableAsync
 public class AsyncConfig implements AsyncConfigurer {
-
-//    @Bean
-//    public ThreadPoolTaskExecutor threadPoolTaskExecutor(){
-//        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-//        executor.setCorePoolSize(10);
-//        executor.setMaxPoolSize(100);
-//        executor.setQueueCapacity(100);
-//        return executor;
-//    }
 
     @Override
     public Executor getAsyncExecutor() {
@@ -111,7 +102,7 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setQueueCapacity(100);
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setAwaitTerminationSeconds(60 * 10);
-        executor.setThreadNamePrefix("AsyncExecutorThread-");
+        executor.setThreadNamePrefix("AsyncThread-");
         executor.initialize(); //如果不初始化，导致找到不到执行器
         return executor;
     }
@@ -126,13 +117,15 @@ public class AsyncConfig implements AsyncConfigurer {
 
 ``` java
 public class AsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
+    private static final Logger log = LoggerFactory.getLogger(AsyncExceptionHandler.class);
+    
     @Override
     public void handleUncaughtException(Throwable ex, Method method, Object... params) {
-        log.info("Async method has uncaught exception, params:{}" + JSON.toJSONString(params));
+        log.info("Async method has uncaught exception, params: " + params);
 
         if (ex instanceof AsyncException) {
             AsyncException asyncException = (AsyncException) ex;
-            log.info("asyncException:"  + asyncException.getErrorMessage());
+            log.info("asyncException:"  + asyncException.getMsg());
         }
 
         log.error("Exception :", ex);
@@ -146,6 +139,22 @@ public class AsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
 public class AsyncException extends Exception {
     private int code;
     private String msg;
+    
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 }
 ```
 
@@ -154,4 +163,42 @@ public class AsyncException extends Exception {
 1. 对于方法返回值是Futrue的异步方法: a) 在调用future的get时捕获异常; b) 在异常方法中直接捕获异常 
 2. 对于返回值是void的异步方法：通过`AsyncUncaughtExceptionHandler`处理异常
 
+## 测试代码
+
+最后写个测试代码看看是否跟预期一致：
+
+``` java
+/**
+ * 测试异步任务
+ */
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class ApplicationTests {
+    private static final Logger log = LoggerFactory.getLogger(ApplicationTests.class);
+    @Autowired
+    private AsyncTask asyncTask;
+
+    @Test
+    public void testAsync() throws InterruptedException, ExecutionException {
+        asyncTask.dealNoReturnTask();
+        Future<String> f = asyncTask.dealHaveReturnTask(5);
+        log.info("主线程执行finished");
+        log.info(f.get());
+    }
+}
+```
+
+执行日志如下：
+
+```
+INFO 4180 --- [           main] com.enzhico.pos.ApplicationTests         : 主线程执行finished
+INFO 4180 --- [  AsyncThread-2] com.enzhico.pos.async.AsyncTask          : asyncInvokeReturnFuture, parementer=5
+INFO 4180 --- [  AsyncThread-1] com.enzhico.pos.async.AsyncTask          : 返回值为void的异步调用开始AsyncThread-1
+INFO 4180 --- [  AsyncThread-1] com.enzhico.pos.async.AsyncTask          : 返回值为void的异步调用结束AsyncThread-1
+INFO 4180 --- [           main] com.enzhico.pos.ApplicationTests         : success:5
+INFO 4180 --- [       Thread-4] o.s.w.c.s.GenericWebApplicationContext   : Closing ....
+INFO 4180 --- [       Thread-4] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed
+```
+
+根据日志的线程名称很清楚的看出，每个异步方法在线程池的不同线程中执行。
 
