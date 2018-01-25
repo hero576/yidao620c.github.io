@@ -126,7 +126,11 @@ node { ①
 ### Push触发器
 这个触发器我更加推荐，因为是实时的，但是需要先配置gitlab的Webhook。
 
-选择`Build when a change is pushed to GitLab. GitLab CI Service URL: http://192.168.217.161:8080/project/scm-example`
+选择
+
+```
+Build when a change is pushed to GitLab. GitLab CI Service URL: http://192.168.217.161:8080/project/scm-example
+```
 
 复制后面那个URL，然后登录gitlab项目打开项目配置`Web Hook`，如果没有配置SSL可以将证书检查取消：
 

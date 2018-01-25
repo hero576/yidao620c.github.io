@@ -57,11 +57,11 @@ pipeline {
 
 ## 主目录和工作目录
 
-Jenkins里面有两个目录很重要，一个是主目录，环境变量访问名称为`${JENKINS_HOME}`，默认为`/opt/tomcat/.jenkins/`，
-这个只在master节点上面有意义，所有jenkins配置，插件等等都放这里面。另外一个叫工作目录，环境变量访问名称为`${WORKSPACE}`，
-这个在每个节点都要定义，也就是任务运行时候所处的目录，比如源码拉下来放哪个目录。默认为`/var/jenkins/workspace`
+Jenkins里面有两个目录很重要，一个是主目录，环境变量访问名称为`${JENKINS_HOME}`，
+默认为`/opt/tomcat/.jenkins/`，这个只在master节点上面有意义，所有jenkins配置，插件等等都放这里面。
+
+另外一个叫工作目录，环境变量访问名称为`${WORKSPACE}`，这个在每个节点都要定义，也就是任务运行时候所处的目录，
+比如源码拉下来放哪个目录。默认为`/var/jenkins/workspace`
 
 上面我写的Jenkinsfile特地就是测试着两个变量的，可以去亲自测试一下。
-
-
 
