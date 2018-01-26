@@ -167,17 +167,14 @@ public static void main(String[] args) throws Exception {
 mvn clean && mvn compile
 ```
 
-那么在 `docs/asciidoc/1.0.0` 文件夹里面就会生成html、xml格式的文档，直接浏览器打开HTML文档效果：
-
-![](https://xnstatic-1253397658.file.myqcloud.com/swagger03.png)
-
-是不是很帅，^_^
+那么在 `docs/asciidoc/1.0.0` 文件夹里面就会生成html、xml格式的文档，可以直接浏览器打开HTML文档。
 
 ## 生成PDF文档
 
 使用`asciidoctor-maven-plugin`插件也能生成pdf格式的文档，但是对于中文支持太差了，很多中文字符是空白。
 
-这里我通过另外的一种方式生成中文PDF文档，
+这里我通过另外的一种方式生成中文PDF文档。
+
 参考：<https://github.com/chloerei/asciidoctor-pdf-cjk-kai_gen_gothic>
 
 ### 安装ruby
@@ -233,7 +230,21 @@ INSTALLATION DIRECTORY: E:/Ruby24-x64/lib/ruby/gems/2.4.0
 
 ```
 
-注意有个空行分割，目的是左边导航菜单是3级，并且自动加序号，然后执行：
+注意有个空行分割，目的是左边导航菜单是3级，并且自动加序号。
+
+为了美化显示，还要将`swagger.adoc`中全局替换一下，将
+
+```
+cols=".^2,.^3,.^9,.^4,.^2"
+```
+
+替换成：
+
+```
+cols=".^2,.^3,.^6,.^4,.^5"
+```
+
+然后执行：
 
 ```
 asciidoctor-pdf -r asciidoctor-pdf-cjk-kai_gen_gothic -a pdf-style=KaiGenGothicCN build/swagger.adoc
@@ -242,7 +253,6 @@ asciidoctor-pdf -r asciidoctor-pdf-cjk-kai_gen_gothic -a pdf-style=KaiGenGothicC
 会在`swagger.adoc`的同级目录生成`swagger.pdf`文件。
 
 ![](https://xnstatic-1253397658.file.myqcloud.com/swagger04.png)
-
 
 ## API开发规约
 

@@ -137,7 +137,11 @@ public class Swagger2Config {
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .produces(Sets.newHashSet("application/json"))
+                .consumes(Sets.newHashSet("application/json"))
+                .protocols(Sets.newHashSet("http", "https"))
                 .apiInfo(apiInfo())
+                .forCodeGeneration(true)
                 .select()
                 // 指定controller存放的目录路径
                 .apis(RequestHandlerSelectors.basePackage("com.enzhico.pos.api"))
@@ -212,33 +216,36 @@ public class PublicApi {
 
 Swagger2提供了一些注解来丰富接口的信息,常用的有:
 
-@ApiOperation：用在方法上，说明方法的作用
+说明：
 
-* value: 表示接口名称
-* notes: 表示接口详细描述
+* @Api：用在类上，说明该类的作用
+* @ApiOperation：用在方法上，说明方法的作用
+* @ApiImplicitParams：用在方法上包含一组参数说明
+* @ApiImplicitParam：用在@ApiImplicitParams注解中，指定一个请求参数的各个方面
+    - paramType：参数放在哪个地方
+        * header-->请求参数的获取：@RequestHeader
+        * query-->请求参数的获取：@RequestParam
+        * path（用于restful接口）-->请求参数的获取：@PathVariable
+        * body（不常用）
+        * form（不常用）
+    - name：参数名
+    - dataType：参数类型
+    - required：参数是否必须传
+    - value：参数的意思
+    - defaultValue：参数的默认值
+* @ApiResponses：用于表示一组响应
+* @ApiResponse：用在@ApiResponses中，一般用于表达一个错误的响应信息
+    - code：数字，例如400
+    - message：信息，例如"请求参数没填好"
+    - response：抛出异常的类
+* @ApiModel：描述一个Model的信息（这种一般用在post创建的时候，使用@RequestBody这样的场景，请求参数无法使用@ApiImplicitParam注解进行描述的时候）
+* @ApiModelProperty：描述一个model的属性
 
-@ApiImplicitParams：用在方法上包含一组参数说明
+以上这些就是最常用的几个注解了。
 
-@ApiImplicitParam：用在@apiimplicitparams注解中，指定一个请求参数的各个方面
+具体其他的注解，查看：
 
-* paramType：参数位置
-* header 对应注解：@requestheader
-* query 对应注解：@requestparam
-* path 对应注解: @pathvariable
-* body 对应注解: @requestbody
-* name：参数名
-* dataType：参数类型
-* required：参数是否必须传
-* value：参数的描述
-* defaultValue：参数的默认值
-
-@ApiResponses：用于表示一组响应
-
-@ApiResponse：用在@apiresponses中，一般用于表达一个错误的响应信息
-
-* code：状态码
-* message：返回自定义信息
-* response：抛出异常的类
+<https://github.com/swagger-api/swagger-core/wiki/Annotations#apimodel>
 
 更多请参考[Swagger注解文档](http://docs.swagger.io/swagger-core/apidocs/com/wordnik/swagger/annotations/package-summary.html)
 
@@ -262,6 +269,107 @@ filterChainDefinitionMap.put("/doc.html", "anon");
 访问`http://localhost:8080/swagger-ui.html`页面查看API文档
 
 如果使用的是`swagger-bootstrap-ui`，请访问`http://localhost:8080/doc.html`
+
+## 生成PDF文档
+
+参考我的另一篇文章 [使用Swagger生成RESTful API文档](https://www.xncoding.com/2017/06/09/restful/swagger.html)
+
+这里我通过SpringBoot + Swagger2方式来生成AsciiDoc，然后剩下的步骤和上面博客一样。
+
+### maven依赖
+
+``` xml
+<dependency>
+    <groupId>org.pegdown</groupId>
+    <artifactId>pegdown</artifactId>
+    <version>1.6.0</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>io.github.swagger2markup</groupId>
+    <artifactId>swagger2markup</artifactId>
+    <version>1.3.1</version>
+    <scope>test</scope>
+</dependency>
+```
+
+另外修改下surefire插件，增加2个系统属性，也就是swagger.json和adoc文件生成的位置：
+
+```
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>2.20</version>
+    <configuration>
+        <systemPropertyVariables>
+            <swaggerOutputDir>${project.basedir}/src/main/resources/swagger</swaggerOutputDir>
+            <asciiDocOutputDir>${project.basedir}/src/main/resources/swagger/swagger</asciiDocOutputDir>
+        </systemPropertyVariables>
+        <skip>true</skip>
+    </configuration>
+</plugin>
+```
+
+### 编写单元测试方法
+
+原理是通过SpringBoot的MockMvc启动后访问`/v2/api-docs`，这个是Swagger的接口数据，然后保存为`swagger.json`，
+
+``` java
+@AutoConfigureMockMvc
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class Swagger2MarkupTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    private static final Logger LOG = LoggerFactory.getLogger(Swagger2MarkupTest.class);
+
+    @Test
+    public void createSpringFoxSwaggerJson() throws Exception {
+//        String outputDir = System.getProperty("swaggerOutputDir"); // mvn test
+        MvcResult mvcResult = this.mockMvc.perform(get("/v2/api-docs")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        String swaggerJson = response.getContentAsString();
+//        Files.createDirectories(Paths.get(outputDir));
+//        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputDir, "swagger.json"), StandardCharsets.UTF_8)){
+//            writer.write(swaggerJson);
+//        }
+        LOG.info("--------------------swaggerJson create --------------------");
+        convertAsciidoc(swaggerJson);
+        LOG.info("--------------------swagon.json to asciiDoc finished --------------------");
+    }
+
+    /**
+     * 将swagger.yaml或swagger.json转换成漂亮的 AsciiDoc
+     * 访问：http://localhost:9095/v2/api-docs
+     * 将页面结果保存为src/main/resources/swagger.json
+     */
+    private void convertAsciidoc(String swaggerStr) {
+//        Path localSwaggerFile = Paths.get(System.getProperty("swaggerOutputDir"), "swagger.json");
+        Path outputFile = Paths.get(System.getProperty("asciiDocOutputDir"));
+        Swagger2MarkupConfig config = new Swagger2MarkupConfigBuilder()
+                .withMarkupLanguage(MarkupLanguage.ASCIIDOC)
+                .withOutputLanguage(Language.ZH)
+                .withPathsGroupedBy(GroupBy.TAGS)
+                .withGeneratedExamples()
+                .withoutInlineSchema()
+                .build();
+        Swagger2MarkupConverter converter = Swagger2MarkupConverter.from(swaggerStr)
+                .withConfig(config)
+                .build();
+        converter.toFile(outputFile);
+    }
+}
+```
+
+执行之后会在`resources/swagger/`下面生成`swagger.adoc`
+
+后面就参考上面的博客，将adoc文件转换成好看的PDF。
+
+![](https://xnstatic-1253397658.file.myqcloud.com/swagger07.png)
 
 **参考文章**
 
