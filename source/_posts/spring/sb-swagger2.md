@@ -106,15 +106,17 @@ maven依赖：
 </dependency>
 ```
 
-如果你赶紧默认的样式不好看，还可以将上面的`springfox-swagger-ui`依赖换成下面的：
+如果你感觉默认的样式不好看，还可以将上面的`springfox-swagger-ui`依赖换成我修改过的：
 
 ``` xml
 <dependency>
-    <groupId>com.github.xiaoymin</groupId>
-    <artifactId>swagger-bootstrap-ui</artifactId>
-    <version>1.7.2</version>
+    <groupId>com.xncoding</groupId>
+    <artifactId>springfox-swagger-ui</artifactId>
+    <version>2.7.0</version>
 </dependency>
 ```
+
+github地址：<https://github.com/yidao620c/springfox-swagger-ui>
 
 ## 创建Swagger2的Java配置类
 
