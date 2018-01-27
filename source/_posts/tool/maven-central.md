@@ -14,8 +14,8 @@ tags: [maven]
 
 ## 注册Sonatype的账户
 
-maven中央仓库是有一个叫做Sonatype的公司在维护的，在发布构件之前需要到 <https://issues.sonatype.org/secure/Signup!default.jspa>
-去注册一个账号，记住自己的用户名和密码，以后要用。
+maven中央仓库是有一个叫做Sonatype的公司在维护的，在发布构件之前需要 [注册一个账号](https://issues.sonatype.org/secure/Signup!default.jspa)，
+记住自己的用户名和密码，以后要用。
 
 同时，还要记住一个地址，将来在查询自己所发布构件状态和进行一些操作的时候要使用 <https://oss.sonatype.org/>
 
