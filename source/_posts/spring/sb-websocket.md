@@ -194,12 +194,12 @@ public class SocketClient {
         }).on(Socket.EVENT_PING, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                //logger.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ": Socket.EVENT_PING");
+                logger.info("Socket.EVENT_PING");
             }
         }).on(Socket.EVENT_PONG, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                //logger.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ": Socket.EVENT_PONG");
+                logger.info("Socket.EVENT_PONG");
             }
         }).on(Socket.EVENT_MESSAGE, new Emitter.Listener() {
             @Override
@@ -220,7 +220,8 @@ public class SocketClient {
 
 ## 关于心跳机制
 
-根据Socket.IO文档解释，客户端发触发一个ping事件和一个pong事件，如下：
+根据 [Socket.IO文档](https://github.com/socketio/engine.io#methods-1) 解释，
+客户端会定期发送心跳包，并触发一个ping事件和一个pong事件，如下：
 
 - `ping` Fired when a ping packet is written out to the server.
 - `pong` Fired when a pong is received from the server.
@@ -233,7 +234,60 @@ public class SocketClient {
 1. pingInterval (Number): how many ms before sending a new ping packet (25000).
 
 也就是说握手协议的时候，客户端从服务器拿到这两个参数，一个是ping消息的发送间隔时间，一个是从服务器返回pong消息的超时时间，
-客户端会在超时后断开连接。
+客户端会在超时后断开连接。心跳包发送方向是客户端向服务器端发送，以维持在线状态。
+
+## 关于断线和超时
+
+关闭浏览器、直接关闭客户端程序、kill进程、主动执行disconnect方法都会导致立刻产生断线事件。
+而客户端把网络断开，服务器端在 `pingTimeout` ms后产生断线事件、客户端在 `pingTimeout` ms后也产生断线事件。
+
+实际上，超时后会产生一个断线事件，叫"disconnect"。客户端和服务器端都可以对这个事件作出应答，释放连接。
+
+客户端代码：
+
+``` java
+.on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+    @Override
+    public void call(Object... args) {
+        logger.info("客户端断开连接啦。。。");
+        socket.disconnect();
+    }
+});
+```
+
+连上服务器后，断开网络。超过了心跳超时时间后，产生断线事件。如果客户端不主动断开连接的话，会自动重连，
+这时候发现连接不上，又产生连接错误事件，然后重试2次，都失败后自动断开连接了。
+
+下面是客户端日志：
+
+```
+SocketClient - 回执消息=服务器已成功收到客户端登录请求,yeah
+SocketClient - Socket.EVENT_PING
+SocketClient - Socket.EVENT_PONG
+SocketClient - 客户端断开连接啦。。。
+SocketClient - Socket.EVENT_CONNECT_ERROR
+```
+
+服务器端代码：
+
+``` java
+server.addDisconnectListener(new DisconnectListener() {
+    @Override
+    public void onDisconnect(SocketIOClient client) {
+        System.out.println("服务器收到断线通知... sessionId=" + client.getSessionId());
+    }
+});
+```
+
+服务器逻辑是，如果在心跳超时后，就直接断开这个连接，并且产生一个断开连接事件。
+
+服务器通过netty处理心跳包ping/pong的日志如下：
+
+```
+WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=1
+WebSocket08FrameDecoder - Decoding WebSocket Frame length=1
+WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=1 length=1
+```
 
 ## 浏览器客户端演示
 
@@ -243,7 +297,7 @@ demo地址：[netty-socketio-demo](https://github.com/mrniko/netty-socketio-demo
 
 ## SpringBoot集成
 
-最后重点讲一下如何更SpringBoot的集成。
+最后重点讲一下如何在SpringBoot中集成。
 
 ### 修改配置
 
