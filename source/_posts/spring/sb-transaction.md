@@ -24,6 +24,62 @@ JDO            | JDOTransactionManager
 而得益于SpringBoot的自动配置机制，为我们自动开启了声明式事务支持，
 我们无需添加注解`@EnableTransactionManagement` <!--more-->
 
+## 事务基础
+
+Spring提供一个@EnableTransactionManagement注解在配置类上开启声明式事务支持，
+自动扫描加了@Transactional注解的类和方法，加入事务支持。
+
+这里重点讲下@Transactional注解的几个属性
+
+**propagation**
+
+事务的传播机制，主要有以下几种，默认是REQUIRED：
+
+1. REQUIRED      - 方法A调用时候没有事务新建一个事务，在方法A中调用方法B，将使用相同的事务，如果方法B发生异常需要回滚，整个事务回滚。
+2. REQUIRES_NEW  - 方法A调用方法B时，无论是否存在事务都开启一个新事务，这样B方法异常不会导致A的数据回滚。
+3. NESTED        - 和REQUIRES_NEW类似，但是只支持JDBC，不支持JPA或Hibernate
+4. SUPPORTS      - 方法调用时有事务就用事务，没事务就不用事务
+5. NOT_SUPPORTED - 强制方法不在事务中执行，若有事务，在方法调用到结束阶段先挂起事务。
+6. NEVER         - 强制不能有事务，若有事务就抛出异常
+7. MANDATORY     - 强制必须有事务，如果没有事务就抛出异常
+
+**isolation**
+
+事务的隔离级别，决定了事务的完整性，主要一下几种，默认是DEFAULT：
+
+1. READ_UNCOMMITTED  - A事务修改记录但没提交，B事务可读取到修改后的值。可导致脏读、不可重复读、幻读。
+2. READ_COMMITTED    - A事务修改并提交后，B事务才能读取到修改后的值，阻止了脏读，但可能导致不可重复读和幻读。
+3. REPEATABLE_READ   - A事务读取了一条记录，B事务将不能修改这条记录，阻止脏读和不可重复读，但是可能出现幻读。
+4. SERIALIZABLE      - 事务是顺序执行的，可避免所有缺陷，但是开销很大。
+5. DEFAULT           - 使用当前数据库默认隔离级别，入Oracle、SQL Server是READ_COMMITTED，MySQL是REPEATABLE_READ
+
+**timeout**
+
+事务过期时间，默认是当前数据库默认事务过期时间。
+
+**readOnly**
+
+指定是否为只读事务，默认是false
+
+如果你一次执行单条查询语句，则没有必要启用事务支持，数据库默认支持SQL执行期间的读一致性；
+ 
+如果你一次执行多条查询语句，例如统计查询，报表查询，在这种场景下，多条查询SQL必须保证整体的读一致性，
+否则，在前条SQL查询之后，后条SQL查询之前，数据被其他用户改变，则该次整体的统计查询将会出现读数据不一致的状态，
+此时，应该启用只读事务支持。 
+
+只读事务与读写事务区别：
+
+对于只读查询，可以指定事务类型为readonly，即只读事务。由于只读事务不存在数据的修改，
+因此数据库将会为只读事务提供一些优化手段，例如Oracle对于只读事务，不启动回滚段，不记录回滚log。
+
+**rollbackFor**
+
+指定哪些异常可以导致事务回滚，默认是Throwable的子类
+
+**noRollbackFor**
+
+执行哪些异常不可用引起事务回滚，默认是Throwable的子类
+
 ## 实战篇
 
 实际项目中，使用SpringBoot的默认配置就已经足够满足我们的需求了。
