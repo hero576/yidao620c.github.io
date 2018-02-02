@@ -36,54 +36,62 @@ Spring Boot构建RESTful API极为简单，实际就是Spring MVC。
 
 ``` java
 @RestController
-@RequestMapping(value = "/api/v1")
-public class PublicApi {
-    @Resource
-    private ApiService apiService;
-    private static final Logger _logger = LoggerFactory.getLogger(PublicApi.class);
+@RequestMapping("/traffic")
+public class TrafficController {
+
+    @Autowired
+    private OutTrafficService ts;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
-     * 入网查询接口
+     * 判断该账户是否存在于交警6合1系统
      *
-     * @return 是否入网
+     * @param req
+     * @return
      */
-    @RequestMapping(value = "/join", method = RequestMethod.GET)
-    public BaseResponse join(@RequestParam("imei") String imei) {
-        _logger.info("入网查询接口 start....");
-        BaseResponse result = new BaseResponse();
-        int posCount = apiService.selectCount(imei);
-        result.setSuccess(true);
-        result.setMsg("已经入网");
-        return result;
+    @RequestMapping(value = "/checkAccount", method = RequestMethod.POST)
+    public ResponseEntity<AccountResponse> checkTrafficAccount(@RequestBody TrafficAccountReq req) {
+        logger.info("检查用户账号接口 start...");
+        AccountResponse result = ts.checkTrafficAccount(req);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
-     * 请求入网接口
+     * 根据业务流水号获取机动车缴款信息
      *
-     * @return 处理结果
+     * @param req
+     * @return
      */
-    @RequestMapping(value = "/join", method = RequestMethod.POST)
-    public BaseResponse doJoin(@RequestBody PosParam posParam) {
-        _logger.info("请求入网接口 start....");
-        BaseResponse result = new BaseResponse();
-        result.setSuccess(true);
-        result.setMsg("入网成功");
-        return result;
+    @RequestMapping(value = "/jdcPayInfo", method = RequestMethod.POST)
+    public ResponseEntity<JDCPayInfoResponse> getJDCPayInfo(@RequestBody TrafficPayJDCReq req) {
+        logger.info("获取机动车缴款信息接口 start...");
+        JDCPayInfoResponse result = ts.getJDCPayinfo(req);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
-     * 定时报告接口
+     * 根据身份证获取缴款信息
      *
-     * @return 报告结果
+     * @param req
+     * @return
      */
-    @RequestMapping(value = "/report", method = RequestMethod.POST)
-    public BaseResponse report(@RequestBody ReportParam param) {
-        _logger.info("定时报告接口 start....");
-        BaseResponse result = new BaseResponse();
-        int r = apiService.report(param);
-        result.setSuccess(true);
-        result.setMsg("报告成功");
-        return result;
+    @RequestMapping(value = "/jsrPayInfo", method = RequestMethod.POST)
+    public ResponseEntity<JSZPayInfoResponse> getJSZPayinfo(@RequestBody TrafficPayJSZReq req) {
+        logger.info("获取驾驶证缴款信息接口 start...");
+        JSZPayInfoResponse result = ts.getJSZPayinfo(req);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 获取整个管理部门信息
+     *
+     * @return
+     */
+    @RequestMapping(value = "/departmentInfo", method = RequestMethod.GET)
+    public ResponseEntity<DepartmentInfoResponse> getDepartmentinfo() {
+        logger.info("获取整个管理部门信息 start...");
+        DepartmentInfoResponse result = ts.getDepartmentinfo();
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
 ```
@@ -97,26 +105,16 @@ maven依赖：
 <dependency>
     <groupId>io.springfox</groupId>
     <artifactId>springfox-swagger2</artifactId>
-    <version>2.7.0</version>
+    <version>2.8.0</version>
 </dependency>
 <dependency>
     <groupId>io.springfox</groupId>
     <artifactId>springfox-swagger-ui</artifactId>
-    <version>2.7.0</version>
+    <version>2.8.0</version>
 </dependency>
 ```
 
-如果你感觉默认的样式不好看，还可以将上面的`springfox-swagger-ui`依赖换成我修改过的：
-
-``` xml
-<dependency>
-    <groupId>com.xncoding</groupId>
-    <artifactId>springfox-swagger-ui</artifactId>
-    <version>2.7.0</version>
-</dependency>
-```
-
-github地址：<https://github.com/yidao620c/springfox-swagger-ui>
+我自己也定制过一个ui，github地址：<https://github.com/yidao620c/springfox-swagger-ui>
 
 ## 创建Swagger2的Java配置类
 
@@ -125,13 +123,6 @@ github地址：<https://github.com/yidao620c/springfox-swagger-ui>
 默认是显示所有接口,可以用`@ApiIgnore`注解标识该接口不显示。
 
 ``` java
-/**
- * Swagger2的Java配置类
- *
- * @author XiongNeng
- * @version 1.0
- * @since 2018/1/7
- */
 @Configuration
 @EnableSwagger2
 public class Swagger2Config {
@@ -144,24 +135,26 @@ public class Swagger2Config {
                 .protocols(Sets.newHashSet("http", "https"))
                 .apiInfo(apiInfo())
                 .forCodeGeneration(true)
+                .useDefaultResponseMessages(false)
                 .select()
                 // 指定controller存放的目录路径
-                .apis(RequestHandlerSelectors.basePackage("com.enzhico.pos.api"))
-                .paths(PathSelectors.ant("/api/v1/*"))
+                .apis(RequestHandlerSelectors.basePackage("com.enzhico.modules.traffic.controller"))
+//                .paths(PathSelectors.ant("/api/v1/*"))
+                .paths(PathSelectors.any())
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 // 文档标题
-                .title("恩志科技API服务")
+                .title("XX系统API服务")
                 // 文档描述
-                .description("恩志科技对外API接口文档")
+                .description("XX系统API接口文档简要描述")
                 // .termsOfServiceUrl("https://github.com/yidao620c")
                 .version("v1")
-                // .license("MIT 协议")
-                // .licenseUrl("http://www.opensource.org/licenses/MIT")
-                // .contact(new Contact("熊能","https://github.com/yidao620c","yidao620@gmail.com"))
+                .license("MIT 协议")
+                .licenseUrl("http://www.opensource.org/licenses/MIT")
+                .contact(new Contact("熊能", "https://github.com/yidao620c", "yidao620@gmail.com"))
                 .build();
     }
 }
@@ -172,46 +165,35 @@ public class Swagger2Config {
 通过在接口上面添加注解方式可配置丰富接口的信息，先看一个例子：
 
 ``` java
-/**
- * 对外机具API类
- */
-@Api(value = "对外机具API类", tags = "机具入网监控", description = "提供POS机的入网和监控的统一管理")
+@Api(value = "交警业务接口类", tags = "交警6合1业务接口", description = "主要任务和交警的专网通信")
 @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Successful — 请求已完成"),
+        @ApiResponse(code = 200, message = "请求正常完成"),
         @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
-        @ApiResponse(code = 401, message = "未授权客户机访问数据"),
-        @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
-        @ApiResponse(code = 500, message = "服务器不能完成请求")}
+//        @ApiResponse(code = 401, message = "未授权客户机访问数据"),
+//        @ApiResponse(code = 403, message = "服务器接受请求，但是拒绝处理"),
+//        @ApiResponse(code = 404, message = "服务器找不到给定的资源，文档不存在"),
+        @ApiResponse(code = 500, message = "服务器出现异常")}
 )
 @RestController
-@RequestMapping(value = "/api/v1")
-public class PublicApi {
+@RequestMapping("/traffic")
+public class TrafficController {
 
-    @Resource
-    private ApiService apiService;
-
-    private static final Logger _logger = LoggerFactory.getLogger(PublicApi.class);
+    @Autowired
+    private OutTrafficService ts;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
-     * 入网查询接口
+     * 判断该账户是否存在于交警6合1系统
      *
-     * @return 是否入网
+     * @param req
+     * @return
      */
-    @ApiOperation(value = "入网查询接口", notes = "根据IMEI码来查询该POS机是否入网", produces = "application/json")
-    @ApiImplicitParam(name = "imei", value = "IMEI码", required = true, dataType = "String", paramType = "query", defaultValue = "1234555SHA")
-    @RequestMapping(value = "/join", method = RequestMethod.GET)
-    public BaseResponse join(@RequestParam("imei") String imei) {
-        _logger.info("入网查询接口 start....");
-        BaseResponse result = new BaseResponse();
-        int posCount = apiService.selectCount(imei);
-        if (posCount > 0) {
-            result.setSuccess(true);
-            result.setMsg("已经入网");
-        } else {
-            result.setSuccess(false);
-            result.setMsg("没有入网");
-        }
-        return result;
+    @ApiOperation(value = "检查用户账号接口", notes = "检查该用户是否在6合1系统中存在", produces = "application/json")
+    @RequestMapping(value = "/checkAccount", method = RequestMethod.POST)
+    public ResponseEntity<AccountResponse> checkTrafficAccount(@RequestBody TrafficAccountReq req) {
+        logger.info("检查用户账号接口 start...");
+        AccountResponse result = ts.checkTrafficAccount(req);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
 ```
@@ -256,14 +238,13 @@ Swagger2提供了一些注解来丰富接口的信息,常用的有:
 注意如果Spring Boot使用过Shiro或Spring Security框架，需要将相应的URL访问权限放开，以Shiro为例，添加匿名访问过滤器：
 
 ``` java
-filterChainDefinitionMap.put("/api/v1/**", "anon");//API接口
+filterChainDefinitionMap.put("/api/v1/**", "anon"); //API接口
 
 // swagger接口文档
 filterChainDefinitionMap.put("/v2/api-docs", "anon");
 filterChainDefinitionMap.put("/webjars/**", "anon");
 filterChainDefinitionMap.put("/swagger-resources/**", "anon");
 filterChainDefinitionMap.put("/swagger-ui.html", "anon");
-filterChainDefinitionMap.put("/doc.html", "anon");
 ```
 
 ## 访问SwaggerUI
@@ -367,11 +348,34 @@ public class Swagger2MarkupTest {
 }
 ```
 
-执行之后会在`resources/swagger/`下面生成`swagger.adoc`
+执行之后会在`resources/swagger/`下面生成`swagger.adoc`，在`swagger.adoc`的顶部加入：
 
-后面就参考上面的博客，将adoc文件转换成好看的PDF。
+```
+:toclevels: 3
+:numbered:
+```
 
-![](https://xnstatic-1253397658.file.myqcloud.com/swagger07.png)
+注意有个空行分割，目的是左边导航菜单是3级，并且自动加序号。为了美化显示，根据你的需要调整表格宽度，比如
+
+```
+cols=".^2,.^3,.^9,.^4,.^2"
+```
+
+替换成：
+
+```
+cols=".^2,.^3,.^6,.^4,.^5"
+```
+
+然后在/resources目录下面执行：
+
+```
+asciidoctor-pdf -r asciidoctor-pdf-cjk-kai_gen_gothic -a pdf-style=KaiGenGothicCN swagger/swagger.adoc
+```
+
+更详细的安装字体和asciidoctor-pdf命令的方法，请参考上面的博客，将adoc文件转换成好看的PDF。
+
+![](https://xnstatic-1253397658.file.myqcloud.com/sb-swagger03.png)
 
 **参考文章**
 
