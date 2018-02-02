@@ -47,19 +47,31 @@ Spring Boot由众多Starter组成，随着版本的推移Starter家族成员也�
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>1.5.9.RELEASE</version>
     </parent>
+    
 
     <dependencies>
+        <!-- @ConfigurationProperties annotation processing (metadata for IDEs)
+                 生成spring-configuration-metadata.json类，需要引入此类-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
+    </dependencies>
 </project>
 ```
+
+注意其中 `spring-boot-configuration-processor` 的作用是编译时生成`spring-configuration-metadata.json`，
+此文件主要给IDE使用，用于提示使用。如在intellij idea中，当配置此jar相关配置属性在`application.yml`，
+你可以用ctlr+鼠标左键，IDE会跳转到你配置此属性的类中。
 
 这里说下artifactId的命名问题，Spring 官方 Starter通常命名为`spring-boot-starter-{name}` 如 `spring-boot-starter-web`。
 
 Spring官方建议非官方Starter命名应遵循`{name}-spring-boot-starter`的格式。
-
 
 ## 编写Service
 
