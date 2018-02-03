@@ -296,4 +296,83 @@ Started UserServiceTest in 12.919 seconds (JVM runni
 
 可以看到，第2次、第3次获取的时候并没有执行方法，说明缓存生效了。后面更新会同时更新缓存，取出来的也是更新后的数据。
 
+## 切换缓存技术
+
+得益于SpringBoot的自动配置机制，切换缓存技术除了替换相关maven依赖包和配置Bean外，使用方式和实例中一样，
+不需要修改业务代码。如果你要切换到其他缓存技术非常简单。
+
+**EhCache**
+
+当我们需要使用EhCache作为缓存技术的时候，只需要在pom.xml中添加EhCache的依赖：
+
+``` xml
+<dependency>
+    <groupId>net.sf.ehcache</groupId>
+    <artifactId>ehcahe</artifactId>
+</dependency>
+```
+
+EhCache的配置文件ehcache.xml只需要放到类路径下面，SpringBoot会自动扫描，例如：
+
+``` xml
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         updateCheck="false" monitoring="autodetect"
+         dynamicConfig="true">
+
+    <diskStore path="java.io.tmpdir/ehcache"/>
+
+    <defaultCache
+            maxElementsInMemory="50000"
+            eternal="false"
+            timeToIdleSeconds="3600"
+            timeToLiveSeconds="3600"
+            overflowToDisk="true"
+            diskPersistent="false"
+            diskExpiryThreadIntervalSeconds="120"
+    />
+
+    <cache name="authorizationCache"
+           maxEntriesLocalHeap="2000"
+           eternal="false"
+           timeToIdleSeconds="3600"
+           timeToLiveSeconds="3600"
+           overflowToDisk="false"
+           statistics="true">
+    </cache>
+</ehcache>
+```
+
+SpringBoot会为我们自动配置`EhCacheCacheManager`这个Bean，不过你也可以自己定义。
+
+**Guava**
+
+当我们需要Guava作为缓存技术的时候，只需要在pom.xml中增加Guava的依赖即可：
+
+``` xml
+<dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>18.0</version>
+</dependency>
+```
+
+SpringBoot会为我们自动配置`GuavaCacheManager`这个Bean。
+
+**Redis**
+
+最后还提一点，本篇采用Redis作为缓存技术，添加了依赖：
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+```
+
+SpringBoot会为我们自动配置`RedisCacheManager`这个Bean，同时还会配置`RedisTemplate`这个Bean。
+后面这个Bean就是下一篇要讲解的操作Redis数据库用，这个就比单纯注解缓存强大和灵活的多了。
+
+
 
