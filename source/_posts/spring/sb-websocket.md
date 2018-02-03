@@ -546,6 +546,67 @@ public class ServerRunner implements CommandLineRunner {
 }
 ```
 
+## nginx反向代理
+
+要实现通过域名并走标准80或443端口的话，最好使用nginx做反向代理，跟正常的http反向代理基本一致，
+不过websocket需要增加一个upgrade的配置。
+
+下面我以一个实际使用例子来说明如何配置nginx的https访问websocket，并且开启301自动http跳转https。
+
+首先要有一个域名，比如`test.enzhico.net`，然后申请letsencrypt的免费证书，这个过程我不讲了，另外的博客文章里面有。
+
+配置如下:
+
+```
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    '' close;
+}
+
+server {
+      server_name test.enzhico.net;
+      location / {
+          proxy_pass http://localhost:9096;
+          proxy_read_timeout 300s;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection $connection_upgrade;
+      }
+      #root /opt/www/test.enzhico.net;
+      #index index.html index.htm;
+      error_page 404 /404.html;
+          location = /40x.html {
+      }
+
+      error_page 500 502 503 504 /50x.html;
+          location = /50x.html {
+      }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/test.enzhico.net/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/test.enzhico.net/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+server {
+    listen 80;
+    server_name test.enzhico.net;
+    return 301 https://$host$request_uri; # managed by Certbot
+}
+```
+
+注意这其中和普通HTTP代理的关键不同是：
+
+```
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection $connection_upgrade;
+```
+
 ## 参考文章
 
 * [Android端与Java服务端交互——SocketIO](http://blog.csdn.net/u011160994/article/details/47153365)

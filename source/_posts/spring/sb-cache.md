@@ -54,7 +54,7 @@ Spring提供4个注解来声明缓存规则，如下表所示：
 @CacheEvict    | 将数据从缓存中删除
 @Caching       | 可通过此注解组合多个注解策略在一个方法上面
 
-@Cacheable 、@CachePut 、@CacheEvict都有value属性，指定要使用的缓存名称，二key属性指定缓存中存储的键。
+@Cacheable 、@CachePut 、@CacheEvict都有value属性，指定要使用的缓存名称，而key属性指定缓存中存储的键。
 
 ## 集成Redis缓存
 
@@ -63,6 +63,15 @@ Spring提供4个注解来声明缓存规则，如下表所示：
 ### 安装redis
 
 安装和配置redis服务器网上很多教程，这里就不多讲了。在linux服务器上面安装一个redis，启动后端口号为默认的6379。
+
+### 添加maven依赖
+
+``` xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+```
 
 ### 配置application.yml
 
@@ -104,6 +113,31 @@ public class RedisCacheConfig {
 }
 ```
 
+### keyGenerator
+
+一般来讲我们使用key属性就可以满足大部分要求，但是如果你还想更好的自定义key，可以实现keyGenerator。
+
+这个属性为定义key生成的类，和key属性不能同时存在。
+
+在`RedisCacheConfig`配置类中添加我自定义的KeyGenerator：
+
+``` java
+/**
+ * 自定义缓存key的生成类实现
+ */
+@Bean(name = "myKeyGenerator")
+public KeyGenerator myKeyGenerator() {
+    return new KeyGenerator() {
+        @Override
+        public Object generate(Object o, Method method, Object... params) {
+            logger.info("自定义缓存，使用第一参数作为缓存key，params = " + Arrays.toString(params));
+            // 仅仅用于测试，实际不可能这么写
+            return params[0];
+        }
+    };
+}
+```
+
 经过以上配置后，redis缓存管理对象已经生成。下面简单介绍如何使用。
 
 ### 使用
@@ -137,9 +171,25 @@ public class UserService {
      * @param id
      * @return
      */
-    @Cacheable(cacheNames="user1", key="#id")
+    @Cacheable(cacheNames="user1", key="#id", sync = true)
     public User getById2(int id) {
         logger.info("获取用户start...");
+        return userMapper.selectById(id);
+    }
+    
+    /**
+     * 以上我们使用默认的keyGenerator，对应spring的SimpleKeyGenerator
+     * 如果你的使用很复杂，我们也可以自定义myKeyGenerator的生成key
+     * <p>
+     * key和keyGenerator是互斥，如果同时制定会出异常
+     * The key and keyGenerator parameters are mutually exclusive and an operation specifying both will result in an exception.
+     *
+     * @param id
+     * @return
+     */
+    @Cacheable(cacheNames = "user1", keyGenerator = "myKeyGenerator")
+    public User queryUserById(int id) {
+        logger.info("queryUserById,id={}", id);
         return userMapper.selectById(id);
     }
 
@@ -164,7 +214,7 @@ public class UserService {
     }
 
     /**
-     * 对符合key条件的记录从缓存中book1移除
+     * 对符合key条件的记录从缓存中user1移除
      */
     @CacheEvict(cacheNames="user1", key="#id")
     public void deleteById(int id) {
@@ -173,14 +223,16 @@ public class UserService {
     }
 
     /**
-     * allEntries = true: 清空book1里的所有缓存
+     * allEntries = true: 清空user1里的所有缓存
      */
     @CacheEvict(cacheNames="user1", allEntries=true)
-    public void clearBook1All(){
+    public void clearUser1All(){
         logger.info("clearAll");
     }
 }
 ```
+
+注意可以在类上面通过`@CacheConfig`配置全局缓存名称，方法上面如果也配置了就会覆盖。
 
 然后写个测试类：
 
@@ -196,82 +248,52 @@ public class UserServiceTest {
         User user = new User(id, "admin", "admin");
         userService.createUser(user);
         User user1 = userService.getById(id); // 第1次访问
+        assertEquals(user1.getPassword(), "admin");
         User user2 = userService.getById(id); // 第2次访问
+        assertEquals(user2.getPassword(), "admin");
+        User user3 = userService.queryUserById(id); // 第3次访问，使用自定义的KeyGenerator
+        assertEquals(user3.getPassword(), "admin");
         user.setPassword("123456");
         userService.updateUser(user);
-        User user3 = userService.getById(id); // 第3次访问
-        assertEquals(user3.getPassword(), "123456");
+        User user4 = userService.getById(id); // 第4次访问
+        assertEquals(user4.getPassword(), "123456");
         userService.deleteById(id);
         assertNull(userService.getById(id));
     }
 }
 ```
 
-下面是测试的打印日志：
+下面是测试的打印日志一部分：
 
 ```
+Started UserServiceTest in 12.919 seconds (JVM runni
 创建用户start...
-==>  Preparing: INSERT INTO t_user ( id,
-==> Parameters: 9(Integer), admin(String
+==>  Preparing: INSERT INTO t_user ( id, username, `
+==> Parameters: 14(Integer), admin(String), admin(St
 <==    Updates: 1
 获取用户start...
-==>  Preparing: SELECT id AS id,username
-==> Parameters: 9(Integer)
+==>  Preparing: SELECT id AS id,username,`password` 
+==> Parameters: 14(Integer)
 <==      Total: 1
+自定义缓存，使用第一参数作为缓存key，params = [14]
 更新用户start...
-==>  Preparing: UPDATE t_user SET userna
-==> Parameters: admin(String), 123456(St
+==>  Preparing: UPDATE t_user SET username=?, `passw
+==> Parameters: admin(String), 123456(String), 14(In
 <==    Updates: 1
 获取用户start...
-==>  Preparing: SELECT id AS id,username
-==> Parameters: 9(Integer)
+==>  Preparing: SELECT id AS id,username,`password` 
+==> Parameters: 14(Integer)
 <==      Total: 1
 删除用户start...
-==>  Preparing: DELETE FROM t_user WHERE
-==> Parameters: 9(Integer)
+==>  Preparing: DELETE FROM t_user WHERE id=? 
+==> Parameters: 14(Integer)
 <==    Updates: 1
 获取用户start...
-==>  Preparing: SELECT id AS id,username
-==> Parameters: 9(Integer)
+==>  Preparing: SELECT id AS id,username,`password` 
+==> Parameters: 14(Integer)
 <==      Total: 0
 ```
 
-可以看到，第二次获取的时候并没有执行方法，说明缓存生效了。后面更新会同时更新缓存，取出来的也是更新后的数据。
+可以看到，第2次、第3次获取的时候并没有执行方法，说明缓存生效了。后面更新会同时更新缓存，取出来的也是更新后的数据。
 
-## keyGenerator
-
-定义key生成的类，和key的不能同时存在。
-
-一般来讲我们使用key属性就可以满足大部分要求，但是如果你还想更好的自定义key，可以实现keyGenerator。
-
-``` java
-/**
- * 以上我们使用默认的keyGenerator，对应spring的SimpleKeyGenerator 
- *  如果你的使用很复杂，我们也可以自定义myKeyGenerator的生成key
- * 
- *  key和keyGenerator是互斥，如果同时制定会出异常
- *  The key and keyGenerator parameters are mutually exclusive and an operation specifying both will result in an exception.
- * 
- * @param id
- * @return
- */
-@Cacheable(cacheNames="user1",  keyGenerator="myKeyGenerator")
-public User queryUserById(String id){
-    logger.info("queryUserById,id={}",id);
-    return userMapper.selectById(id);
-}
-
-// 自定义缓存key的生成类实现如下：
-@Component
-public class MyKeyGenerator implements KeyGenerator {
-
-    @Override
-    public Object generate(Object target, Method method, Object... params) {
-        System.out.println("自定义缓存，使用第一参数作为缓存key. params = " + Arrays.toString(params));
-        // 仅仅用于测试，实际不可能这么写
-        return params[0] + "0";
-    }
-
-}
-```
 
