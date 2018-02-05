@@ -647,6 +647,20 @@ public SimpleJobLauncher jobLauncher(ThreadPoolTaskExecutor taskExecutor, DruidD
 
 重点是上面的那句`jobLauncher.setTaskExecutor(taskExecutor);`
 
+这里的并发表示的是执行不同的Job使用线程池，每个Job实例会分配一个线程去执行。这个是最推荐的做法。
+
+如果你还想对单个Job执行逻辑采用多线程，可以再Step配置中加入线程池支持，不过需要保证你所有的Step都是线程安全的：
+
+``` java
+return stepBuilderFactory
+    .get("logStep1")
+    //设置每个Job通过并发方式执行，一般来讲一个Job就让它串行完成的好
+    .taskExecutor(new SimpleAsyncTaskExecutor())
+    //并发任务数为 10,默认为4
+    .throttleLimit(10)
+    .build();
+```
+
 这里我通过一个实际例子展示如何编写多个Job并发执行。
 
 还是跟上面例子一样，将csv文件导入到表中，但是这个时候有两个csv文件，我要导入到两张表。
@@ -777,6 +791,95 @@ public void testTwoJobs() throws Exception {
 [ taskExecutor-1] o.s.b.c.l.support.SimpleJobLauncher      : Job: [FlowJob: [name=zappJob]] completed with 
 ```
 
+## 异常处理
+
+默认情况下，Spring Batch遇到异常的时候会终止处理，比如遇到csv文件中解析错误就会终止异常。如果我想忽略掉这些异常继续处理，
+可以配置在Reader中忽略异常。
+
+这个在Step的定义中配置：
+
+``` java
+return stepBuilderFactory
+    .get("logStep1")
+    .<Log, Log>chunk(5000)//批处理每次提交5000条数据
+    .reader(reader)//给step绑定reader
+    .processor(processor)//给step绑定processor
+    .writer(writer)//给step绑定writer
+    .faultTolerant()
+    .retry(Exception.class)   // 重试
+    .noRetry(ParseException.class)
+    .retryLimit(1)           //每条记录重试一次
+    .skip(Exception.class)
+    .skipLimit(200)         //一共允许跳过200次异常
+//                .taskExecutor(new SimpleAsyncTaskExecutor()) //设置每个Job通过并发方式执行，一般来讲一个Job就让它串行完成的好
+//                .throttleLimit(10)        //并发任务数为 10,默认为4
+    .build();
+```
+
+上面定义了使用可容忍异常模式，遇到Exception异常就重试1次，对于ParseException异常不重试，所有异常都会忽略掉，不会导致程序终止。
+但是最大允许跳过200次异常，超过这个数字就终止执行了。
+
+然后改一下csv文件，把某个字段改大点，超过数据库中定义长度：
+
+```
+1|等哈哈哈|01
+2|等哈哈哈|02
+3|等哈哈哈|025555
+4|等哈哈哈|02
+5|等哈哈哈|02
+```
+
+重新执行发现正常执行完成，数据库中只插入了4条数据，id为3的没有。
+
+## 通用配置
+
+更进一步，如果有多个CSV文件需要导入，那么安装上面的写法。每次都要定义一个新的Config类，一个新的Bean类，代码重复率很高。
+
+实际上可以定义一个通用配置，去掉里面的显示Bean类，通过Java反射机制，还有@StepScope注解，
+实现每次运行时候根据JobParameters初始化不同的Job。
+
+如果有一个新的CSV文件需要导入，只需要新建一个Bean，定义好相应的列，然后将Bean的属性列表、插入SQL语句作为参数传入即可。
+
+测试代码：
+
+``` java
+/**
+ * 测试一个配置类，可同时运行多个任务
+ * @throws Exception 异常
+ */
+@Test
+public void testCommonJobs() throws Exception {
+    JobParameters jobParameters1 = new JobParametersBuilder()
+            .addLong("time",System.currentTimeMillis())
+            .addString(KEY_JOB_NAME, "App")
+            .addString(KEY_FILE_NAME, p.getCsvApp())
+            .addString(KEY_VO_NAME, "com.enzhico.trans.modules.zapp.App")
+            .addString(KEY_COLUMNS, String.join(",", new String[]{
+                    "appid", "zname", "flag"
+            }))
+            .addString(KEY_SQL, "insert into z_test_App (appid, zname, flag) values(:appid, :zname, :flag)")
+            .toJobParameters();
+    jobLauncher.run(commonJob, jobParameters1);
+
+    JobParameters jobParameters2 = new JobParametersBuilder()
+            .addLong("time",System.currentTimeMillis())
+            .addString(KEY_JOB_NAME, "Log")
+            .addString(KEY_FILE_NAME, p.getCsvLog())
+            .addString(KEY_VO_NAME, "com.enzhico.trans.modules.zlog.Log")
+            .addString(KEY_COLUMNS, String.join(",", new String[]{
+                    "logid", "msg", "logtime"
+            }))
+            .addString(KEY_SQL, "insert into z_test_Log (logid, msg, logtime) values(:logid, :msg, :logtime)")
+            .toJobParameters();
+    jobLauncher.run(commonJob, jobParameters2);
+
+    logger.info("Main线程执行完成");
+
+    while (true) {
+        Thread.sleep(2000000L);
+    }
+}
+```
 
 ## FAQ
 
