@@ -608,29 +608,175 @@ public class BatchServiceTest {
 
 ![](https://xnstatic-1253397658.file.myqcloud.com/sb-batch03.png)
 
-## 并发执行
+## 并发执行多个Job
 
-SpringBatch批处理框架默认使用单线程完成任务的执行，但是他提供了对线程池的支持。
-使用tasklet的task-executor属性可以很容易的将普通的step转成多线程的step。
-
-* task-executor:  任务执行处理器，定义后采用多线程执行任务，需要考虑线程安全问题。
-* throttle-limit: 最大使用线程池数目。
+SpringBatch批处理框架默认使用单线程完成所有任务的执行，官方推荐配置任务执行器来并发执行，
+提高批处理的效率。
 
 Spring Core 为我们提供了多种执行器实现（包括多种异步执行器），我们可以根据实际情况灵活选择使用。
 
 类名	                     | 描述                                        | 是否异步
 -------------------------|---------------------------------------------|-------------------------
-ThrottledTaskExecutor    | 该执行器为其他任意执行器的装饰类              | 视被装饰的执行器而定
 SyncTaskExecutor         | 简单同步执行器                               | 否
 SimpleAsyncTaskExecutor	 | 简单异步执行器，提供最基本的异步实现          | 是
 WorkManagerTaskExecutor  | 该类作为通过 JCA 规范进行任务执行的实现       | 是
 ThreadPoolTaskExecutor   | 线程池任务执行器                             | 是
 
-在多线程step中为了保证代码处理的正确性，要求所有在多线程step中处理的对象和操作必须都是线程安全的。
-但是SpringBatch框架提供的大部分的ItemReader、ItemWriter都不是线程安全的。所以需要自己保证多线程处理时候的线程安全。
 
-最常见的需要并行处理情况是，job中不同的step没有先后顺序，可以在执行期间并行的执行。
-SpringBatch提供了并行step的能力。可以通过split元素来定义并行的作业流。
+配置线程池执行Job：
+
+``` java
+@Bean
+public ThreadPoolTaskExecutor taskExecutor() {
+    ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+    taskExecutor.setCorePoolSize(5);
+    taskExecutor.setMaxPoolSize(10);
+    taskExecutor.setQueueCapacity(200);
+    return taskExecutor;
+}
+
+@Bean
+public SimpleJobLauncher jobLauncher(ThreadPoolTaskExecutor taskExecutor, DruidDataSource dataSource,
+                                     PlatformTransactionManager transactionManager) throws Exception {
+    SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
+    jobLauncher.setTaskExecutor(taskExecutor);
+    jobLauncher.setJobRepository(jobRepository(dataSource, transactionManager));
+    return jobLauncher;
+}
+```
+
+重点是上面的那句`jobLauncher.setTaskExecutor(taskExecutor);`
+
+这里我通过一个实际例子展示如何编写多个Job并发执行。
+
+还是跟上面例子一样，将csv文件导入到表中，但是这个时候有两个csv文件，我要导入到两张表。
+
+``` sql
+CREATE TABLE Z_TEST_APP (
+    appid INT,
+    zname VARCHAR2 (20),
+    flag VARCHAR2 (2),
+    CONSTRAINT app_pk PRIMARY KEY (appid)
+ );
+
+ CREATE TABLE Z_TEST_LOG (
+    logid INT,
+    msg VARCHAR2 (20),
+    logtime VARCHAR2 (8),
+    CONSTRAINT log_pk PRIMARY KEY (logid)
+ );
+```
+
+每个类型任务单独创建一个package，然后里面放两个类。以APP为例：
+
+创建一个App类：
+
+``` java
+public class App {
+    private int appid;
+    private String zname;
+    private String flag;
+}
+```
+
+然后创建一个AppConfig类配置任务：
+
+``` java
+@Configuration
+public class AppConfig {
+    /**
+     * ItemReader定义,用来读取数据
+     * 1，使用FlatFileItemReader读取文件
+     * 2，使用FlatFileItemReader的setResource方法设置csv文件的路径
+     * 3，对此对cvs文件的数据和领域模型类做对应映射
+     *
+     * @return FlatFileItemReader
+     */
+    @Bean(name = "appReader")
+    @StepScope
+    public FlatFileItemReader<App> reader(@Value("#{jobParameters['input.file.name']}") String pathToFile) {
+        FlatFileItemReader<App> reader = new FlatFileItemReader<>();
+        reader.setResource(new FileSystemResource(pathToFile));
+        reader.setLineMapper(new DefaultLineMapper<App>() {
+            {
+                setLineTokenizer(new DelimitedLineTokenizer("|") {
+                    {
+                        setNames(new String[]{
+                                "appid", "zname", "flag"
+                        });
+                    }
+                });
+                setFieldSetMapper(new BeanWrapperFieldSetMapper<App>() {{
+                    setTargetType(App.class);
+                }});
+            }
+        });
+        return reader;
+    }
+    
+    // ....后面省略
+}
+```
+
+注意，每个Bean配置都加一个name属性，然后自动注入里面需要通过@Qualifier注解来指定当前类中的Bean，
+因为如果不指定name，Spring默认只会初始化一个Bean实例。
+
+比如定义Job：
+
+``` java
+@Bean(name = "zappJob")
+public Job zappJob(JobBuilderFactory jobBuilderFactory, @Qualifier("zappStep1") Step s1) {
+    return jobBuilderFactory.get("zappJob")
+            .incrementer(new RunIdIncrementer())
+            .flow(s1)//为Job指定Step
+            .end()
+            .listener(new MyJobListener("App"))//绑定监听器csvJobListener
+            .build();
+}
+```
+
+另外一个LOG任务的配置也是同样。
+
+好了，定义完成之后开始写测试方法：
+
+``` java
+@Test
+public void testTwoJobs() throws Exception {
+    JobParameters jobParameters1 = new JobParametersBuilder()
+            .addLong("time", System.currentTimeMillis())
+            .addString("input.file.name", p.getCsvApp())
+            .toJobParameters();
+    jobLauncher.run(zappJob, jobParameters1);
+
+    JobParameters jobParameters2 = new JobParametersBuilder()
+            .addLong("time", System.currentTimeMillis())
+            .addString("input.file.name", p.getCsvLog())
+            .toJobParameters();
+    jobLauncher.run(zlogJob, jobParameters2);
+
+    logger.info("main线程完成");
+    while (true) {
+        Thread.sleep(2000000L);
+    }
+}
+```
+
+这个是运行日志:
+
+```
+[ taskExecutor-1] o.s.b.c.l.support.SimpleJobLauncher      : Job: [FlowJob: [name=zappJob]] launched with t
+[ taskExecutor-1] com.enzhico.trans.modules.MyJobListener  : 任务-App处理开始
+[           main] com.enzhico.service.BatchServiceTest     : main线程完成
+[ taskExecutor-2] o.s.b.c.l.support.SimpleJobLauncher      : Job: [FlowJob: [name=zlogJob]] launched with t
+[ taskExecutor-2] com.enzhico.trans.modules.MyJobListener  : 任务-Log处理开始
+[ taskExecutor-1] o.s.batch.core.job.SimpleStepHandler     : Executing step: [zappStep1]
+[ taskExecutor-2] o.s.batch.core.job.SimpleStepHandler     : Executing step: [logStep1]
+[ taskExecutor-2] com.enzhico.trans.modules.MyJobListener  : 任务-Log处理结束，总耗时=495ms
+[ taskExecutor-1] com.enzhico.trans.modules.MyJobListener  : 任务-App处理结束，总耗时=585ms
+[ taskExecutor-2] o.s.b.c.l.support.SimpleJobLauncher      : Job: [FlowJob: [name=zlogJob]] completed with 
+[ taskExecutor-1] o.s.b.c.l.support.SimpleJobLauncher      : Job: [FlowJob: [name=zappJob]] completed with 
+```
+
 
 ## FAQ
 
