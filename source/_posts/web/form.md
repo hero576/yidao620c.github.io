@@ -4,7 +4,7 @@ date: 2016-07-29 09:22:08 +0800
 comments: true
 toc: true
 categories: web
-tags: [重复提交]
+tags: [form]
 ---
 
 在平时开发中，如果网速比较慢的情况下，用户提交表单后，发现服务器半天都没有响应，

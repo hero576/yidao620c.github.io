@@ -4,7 +4,7 @@ date: 2017-09-02 22:10:25 +0800
 comments: true
 toc: true
 categories: 开发工具
-tags: [nexus, maven]
+tags: [nexus]
 ---
 
 私服是指私有服务器，是架设在局域网的一种特殊的远程仓库，目的是代理远程仓库及部署第三方构建。

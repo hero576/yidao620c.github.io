@@ -4,7 +4,7 @@ date: 2017-03-14 15:32:07 +0800
 comments: true
 toc: true
 categories: ceph
-tags: [fgdisk, parted, fdisk]
+tags: [parted]
 ---
 
 最近在做ceph的日志盘分区时候遇到一些问题记录下来。比较古老的分区工具是使用fdisk，后来因为磁盘越来越大，

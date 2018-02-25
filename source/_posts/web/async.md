@@ -4,7 +4,7 @@ date: 2017-05-02 09:07:13 +0800
 comments: true
 toc: true
 categories: web
-tags: [ajax, async]
+tags: [ajax]
 ---
 
 我们经常会遇见许多要运行很长时间的任务，如果还是按照常规的页面请求方式，就会产生卡顿，页面假死现象。
