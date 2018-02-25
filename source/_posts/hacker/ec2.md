@@ -20,8 +20,8 @@ tags: gitbook
 
 先去亚马逊AWS上面注册一个账号：<https://amazonaws-china.com/cn/>
 
-登录后进入EC2的控制台，选择左边的"实例" ——> 启动实例 ——> AWS Marketplace ——> 搜索"centos7"，
-目前最新的版本是CentOS7.4
+登录后进入EC2的控制台，然后在右上角区域里面切换至东京，
+选择左边的"实例" ——> 启动实例 ——> AWS Marketplace ——> 搜索"centos7"，目前最新的版本是CentOS7.4
 
 ![](https://xnstatic-1253397658.file.myqcloud.com/ss01.png)
 
