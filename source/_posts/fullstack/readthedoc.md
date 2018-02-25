@@ -19,8 +19,7 @@ tags: [sphinx, readthedocs]
 * GitHub Wiki，适合做知识整理，但排版一般，不方便查看。
 * GitBook，样式不好看，访问速度慢。
 
-经过比较最后锁定Sphinx + GitHub + ReadtheDocs 作为文档写作工具，
-用 Sphinx 生成文档，GitHub 托管文档，再导入到 ReadtheDocs。
+经过比较最后锁定Sphinx + GitHub + ReadtheDocs 作为文档写作工具，用 Sphinx 生成文档，GitHub 托管文档，再导入到 ReadtheDocs。
 
 ## Sphinx
 Sphinx是一个基于Python的文档生成项目，最早只是用来生成 Python 官方文档，随着工具的完善，

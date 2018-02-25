@@ -2,7 +2,7 @@
 title: Werkzeug简易教程
 date: 2016-12-02 19:52:21
 toc: true
-categories: flask
+categories: python
 tags: werkzeug
 ---
 
