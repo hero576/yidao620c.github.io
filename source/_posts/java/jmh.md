@@ -139,7 +139,7 @@ public static void main(String[] args) throws RunnerException {
 # Timeout: 10 min per iteration
 # Threads: 16 threads, will synchronize iterations
 # Benchmark mode: Throughput, ops/time
-# Benchmark: com.enzhico.benchmark.string.StringBuilderBenchmark.testStringAdd
+# Benchmark: com.xncoding.benchmark.string.StringBuilderBenchmark.testStringAdd
 
 # Run progress: 0.00% complete, ETA 00:03:32
 # Fork: 1 of 2
@@ -174,7 +174,7 @@ Iteration   9: 9145.134 ops/ms
 Iteration  10: 9124.229 ops/ms
 
 
-Result "com.enzhico.benchmark.string.StringBuilderBenchmark.testStringAdd":
+Result "com.xncoding.benchmark.string.StringBuilderBenchmark.testStringAdd":
   9001.776 ±(99.9%) 253.496 ops/ms [Average]
   (min, avg, max) = (8288.588, 9001.776, 9493.148), stdev = 291.926
   CI (99.9%): [8748.280, 9255.272] (assumes normal distribution)
@@ -189,7 +189,7 @@ Result "com.enzhico.benchmark.string.StringBuilderBenchmark.testStringAdd":
 # Timeout: 10 min per iteration
 # Threads: 16 threads, will synchronize iterations
 # Benchmark mode: Throughput, ops/time
-# Benchmark: com.enzhico.benchmark.string.StringBuilderBenchmark.testStringBuilderAdd
+# Benchmark: com.xncoding.benchmark.string.StringBuilderBenchmark.testStringBuilderAdd
 
 # Run progress: 50.00% complete, ETA 00:02:07
 # Fork: 1 of 2
@@ -224,7 +224,7 @@ Iteration   9: 24337.963 ops/ms
 Iteration  10: 24660.626 ops/ms
 
 
-Result "com.enzhico.benchmark.string.StringBuilderBenchmark.testStringBuilderAdd":
+Result "com.xncoding.benchmark.string.StringBuilderBenchmark.testStringBuilderAdd":
   25687.875 ±(99.9%) 1167.955 ops/ms [Average]
   (min, avg, max) = (22934.211, 25687.875, 28704.541), stdev = 1345.019
   CI (99.9%): [24519.920, 26855.830] (assumes normal distribution)

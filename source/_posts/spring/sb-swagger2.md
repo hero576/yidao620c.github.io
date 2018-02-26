@@ -138,7 +138,7 @@ public class Swagger2Config {
                 .useDefaultResponseMessages(false)
                 .select()
                 // 指定controller存放的目录路径
-                .apis(RequestHandlerSelectors.basePackage("com.enzhico.modules.traffic.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.xncoding.modules.traffic.controller"))
 //                .paths(PathSelectors.ant("/api/v1/*"))
                 .paths(PathSelectors.any())
                 .build();

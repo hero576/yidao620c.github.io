@@ -137,7 +137,7 @@ public class AxisHelloWorldImpl implements AxisHelloWorld {
     <description>spring configuration</description>
 
     <!-- 扫描所有标注@Service的服务组件 -->
-    <context:component-scan base-package="com.enzhico.axis2.service"/>
+    <context:component-scan base-package="com.xncoding.axis2.service"/>
 
     <bean id="applicationContext" class="org.apache.axis2.extensions.spring.receivers.ApplicationContextHolder" />
 
@@ -225,7 +225,7 @@ wsdl2java.bat命令可以在<Axis2安装目录>/bin目录中找到。
 然后再任意一个目录执行：
 
 ```
->wsdl2java -uri http://localhost:8080/services/axisHelloWorld?wsdl  -p com.enzhico.axis2.client -s -o stub
+>wsdl2java -uri http://localhost:8080/services/axisHelloWorld?wsdl  -p com.xncoding.axis2.client -s -o stub
 ```
 
 -p指定你生成的客户端Stub的包名

@@ -191,11 +191,11 @@ public class ApplicationTests {
 执行日志如下：
 
 ```
-INFO 4180 --- [           main] com.enzhico.pos.ApplicationTests         : 主线程执行finished
-INFO 4180 --- [  AsyncThread-2] com.enzhico.pos.async.AsyncTask          : asyncInvokeReturnFuture, parementer=5
-INFO 4180 --- [  AsyncThread-1] com.enzhico.pos.async.AsyncTask          : 返回值为void的异步调用开始AsyncThread-1
-INFO 4180 --- [  AsyncThread-1] com.enzhico.pos.async.AsyncTask          : 返回值为void的异步调用结束AsyncThread-1
-INFO 4180 --- [           main] com.enzhico.pos.ApplicationTests         : success:5
+INFO 4180 --- [           main] com.xncoding.pos.ApplicationTests         : 主线程执行finished
+INFO 4180 --- [  AsyncThread-2] com.xncoding.pos.async.AsyncTask          : asyncInvokeReturnFuture, parementer=5
+INFO 4180 --- [  AsyncThread-1] com.xncoding.pos.async.AsyncTask          : 返回值为void的异步调用开始AsyncThread-1
+INFO 4180 --- [  AsyncThread-1] com.xncoding.pos.async.AsyncTask          : 返回值为void的异步调用结束AsyncThread-1
+INFO 4180 --- [           main] com.xncoding.pos.ApplicationTests         : success:5
 INFO 4180 --- [       Thread-4] o.s.w.c.s.GenericWebApplicationContext   : Closing ....
 INFO 4180 --- [       Thread-4] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed
 ```

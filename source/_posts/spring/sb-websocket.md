@@ -163,7 +163,7 @@ public class SocketClient {
         options.reconnectionDelay = 1000;     // 失败重连的时间间隔(ms)
         options.timeout = 20000;              // 连接超时时间(ms)
         options.forceNew = true;
-        options.query = "username=test1&password=test1&appid=com.enzhico.apay2";
+        options.query = "username=test1&password=test1&appid=com.xncoding.apay2";
         socket = IO.socket("http://localhost:9092/", options);
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
@@ -305,7 +305,7 @@ demo地址：[netty-socketio-demo](https://github.com/mrniko/netty-socketio-demo
 
 ``` yml
 ###################  自定义项目配置 ###################
-enzhico:
+xncoding:
   socket-hostname: localhost
   socket-port: 9096
 ```

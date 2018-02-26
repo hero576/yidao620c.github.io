@@ -779,14 +779,14 @@ public void testTwoJobs() throws Exception {
 
 ```
 [ taskExecutor-1] o.s.b.c.l.support.SimpleJobLauncher      : Job: [FlowJob: [name=zappJob]] launched with t
-[ taskExecutor-1] com.enzhico.trans.modules.MyJobListener  : 任务-App处理开始
-[           main] com.enzhico.service.BatchServiceTest     : main线程完成
+[ taskExecutor-1] com.xncoding.trans.modules.MyJobListener  : 任务-App处理开始
+[           main] com.xncoding.service.BatchServiceTest     : main线程完成
 [ taskExecutor-2] o.s.b.c.l.support.SimpleJobLauncher      : Job: [FlowJob: [name=zlogJob]] launched with t
-[ taskExecutor-2] com.enzhico.trans.modules.MyJobListener  : 任务-Log处理开始
+[ taskExecutor-2] com.xncoding.trans.modules.MyJobListener  : 任务-Log处理开始
 [ taskExecutor-1] o.s.batch.core.job.SimpleStepHandler     : Executing step: [zappStep1]
 [ taskExecutor-2] o.s.batch.core.job.SimpleStepHandler     : Executing step: [logStep1]
-[ taskExecutor-2] com.enzhico.trans.modules.MyJobListener  : 任务-Log处理结束，总耗时=495ms
-[ taskExecutor-1] com.enzhico.trans.modules.MyJobListener  : 任务-App处理结束，总耗时=585ms
+[ taskExecutor-2] com.xncoding.trans.modules.MyJobListener  : 任务-Log处理结束，总耗时=495ms
+[ taskExecutor-1] com.xncoding.trans.modules.MyJobListener  : 任务-App处理结束，总耗时=585ms
 [ taskExecutor-2] o.s.b.c.l.support.SimpleJobLauncher      : Job: [FlowJob: [name=zlogJob]] completed with 
 [ taskExecutor-1] o.s.b.c.l.support.SimpleJobLauncher      : Job: [FlowJob: [name=zappJob]] completed with 
 ```
@@ -853,7 +853,7 @@ public void testCommonJobs() throws Exception {
             .addLong("time",System.currentTimeMillis())
             .addString(KEY_JOB_NAME, "App")
             .addString(KEY_FILE_NAME, p.getCsvApp())
-            .addString(KEY_VO_NAME, "com.enzhico.trans.modules.zapp.App")
+            .addString(KEY_VO_NAME, "com.xncoding.trans.modules.zapp.App")
             .addString(KEY_COLUMNS, String.join(",", new String[]{
                     "appid", "zname", "flag"
             }))
@@ -865,7 +865,7 @@ public void testCommonJobs() throws Exception {
             .addLong("time",System.currentTimeMillis())
             .addString(KEY_JOB_NAME, "Log")
             .addString(KEY_FILE_NAME, p.getCsvLog())
-            .addString(KEY_VO_NAME, "com.enzhico.trans.modules.zlog.Log")
+            .addString(KEY_VO_NAME, "com.xncoding.trans.modules.zlog.Log")
             .addString(KEY_COLUMNS, String.join(",", new String[]{
                     "logid", "msg", "logtime"
             }))

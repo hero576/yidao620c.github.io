@@ -137,9 +137,9 @@ spring:
 ``` yml
 ###################  mybatis-plus配置  ###################
 mybatis-plus:
-  mapper-locations: classpath*:com/enzhico/trans/dao/repository/mapping/*.xml
+  mapper-locations: classpath*:com/xncoding/trans/dao/repository/mapping/*.xml
   typeAliasesPackage: >
-    com.enzhico.trans.dao.entity
+    com.xncoding.trans.dao.entity
   global-config:
     id-type: 0  # 0:数据库ID自增   1:用户输入id  2:全局唯一id(IdWorker)  3:全局唯一ID(uuid)
     db-column-underline: false
@@ -201,7 +201,7 @@ public interface UserMapper extends BaseMapper<User> {
 ``` java
 @Configuration
 @EnableTransactionManagement(order = 2)
-@MapperScan(basePackages = {"com.enzhico.trans.dao.repository"})
+@MapperScan(basePackages = {"com.xncoding.trans.dao.repository"})
 public class MybatisPlusConfig {
 
     @Resource
@@ -288,8 +288,8 @@ public class UserController {
 
 ```
 Caused by: java.lang.RuntimeException: runtime
-	at com.enzhico.trans.service.UserService.errMethod(UserService.java:32) ~[classes/:na]
-	at com.enzhico.trans.service.UserService.updateUserError(UserService.java:27) ~[classes/:na]
+	at com.xncoding.trans.service.UserService.errMethod(UserService.java:32) ~[classes/:na]
+	at com.xncoding.trans.service.UserService.updateUserError(UserService.java:27) ~[classes/:na]
 ```
 
 查看数据库中记录：`1|admin|123`，没有变动，说明回滚成功。
@@ -343,9 +343,9 @@ public Object second() {
 控制台仍然报异常：
 
 ``` 
-Caused by: com.enzhico.trans.exception.MyException: runtime
-	at com.enzhico.trans.service.UserService.errMethod2(UserService.java:43) ~[classes/:na]
-	at com.enzhico.trans.service.UserService.updateUserError2(UserService.java:34) ~[classes/:na]
+Caused by: com.xncoding.trans.exception.MyException: runtime
+	at com.xncoding.trans.service.UserService.errMethod2(UserService.java:43) ~[classes/:na]
+	at com.xncoding.trans.service.UserService.updateUserError2(UserService.java:34) ~[classes/:na]
 ```
 
 看看数据库中记录：`1|admin|admin`，更改成功，说明抛出这个MyException异常后并不会回滚。

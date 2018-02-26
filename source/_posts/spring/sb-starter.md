@@ -28,7 +28,7 @@ Spring Boot由众多Starter组成，随着版本的推移Starter家族成员也�
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.enzhico</groupId>
+    <groupId>com.xncoding</groupId>
     <artifactId>simple-spring-boot-starter</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -156,7 +156,7 @@ public class ExampleAutoConfigure {
 
 ```
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.enzhico.starter.ExampleAutoConfigure
+com.xncoding.starter.ExampleAutoConfigure
 ```
 
 如果有多个自动配置类，用逗号分隔换行即可。
@@ -170,7 +170,7 @@ OK，完事，运行 `mvn:install` 打包安装，一个Spring Boot Starter便�
 
 ``` xml
 <dependency>
-    <groupId>com.enzhico</groupId>
+    <groupId>com.xncoding</groupId>
     <artifactId>simple-spring-boot-starter</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>

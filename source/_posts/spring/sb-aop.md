@@ -115,7 +115,7 @@ public class UserController {
 @Aspect
 @Component
 public class LogAspect {
-    @Pointcut("execution(public * com.enzhico.aop.controller.*.*(..))")
+    @Pointcut("execution(public * com.xncoding.aop.controller.*.*(..))")
     public void webLog(){}
 
     @Before("webLog()")
@@ -181,7 +181,7 @@ mvn spring-boot:run
 URL : http://localhost:8092/first
 HTTP_METHOD : GET
 IP : 0:0:0:0:0:0:0:1
-CLASS_METHOD : com.enzhico.aop.controller.UserController.first
+CLASS_METHOD : com.xncoding.aop.controller.UserController.first
 ARGS : []
 方法环绕proceed，结果是 :first controller
 方法最后执行.....
@@ -195,7 +195,7 @@ ARGS : []
 URL : http://localhost:8092/doError
 HTTP_METHOD : GET
 IP : 0:0:0:0:0:0:0:1
-CLASS_METHOD : com.enzhico.aop.controller.UserController.error
+CLASS_METHOD : com.xncoding.aop.controller.UserController.error
 ARGS : []
 java.lang.ArithmeticException: / by zero
 
@@ -304,7 +304,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class UserAccessAspect {
 
-    @Pointcut(value = "@annotation(com.enzhico.aop.aspect.UserAccess)")
+    @Pointcut(value = "@annotation(com.xncoding.aop.aspect.UserAccess)")
     public void access() {
 
     }
@@ -339,7 +339,7 @@ public class UserAccessAspect {
 URL : http://localhost:8092/second
 HTTP_METHOD : GET
 IP : 0:0:0:0:0:0:0:1
-CLASS_METHOD : com.enzhico.aop.controller.UserController.second
+CLASS_METHOD : com.xncoding.aop.controller.UserController.second
 ARGS : []
 second around:second
 second before
