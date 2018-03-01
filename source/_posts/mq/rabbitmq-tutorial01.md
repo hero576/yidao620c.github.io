@@ -10,7 +10,7 @@ tags: rabbitmq
 
 最近又开始捣鼓RabbitMQ了，一个超好用的队列中间件，官网教程更新，自己也将有用的东东记录下来。
 
-测试环境：消息服务器CentOS7.2、客户端Python3.6.1
+测试环境：消息服务器CentOS7.4、客户端Python3.6.1
 
 RabbitMQ是一个出色的消息代理中间件（Message Broker）：接受和转发消息。你可以将它看作是一个邮局，
 你把自己的信件写上收件人地址，然后放到邮筒里面就不用管了，由邮局负责将这个信件送到目的地。<!--more-->
@@ -31,15 +31,15 @@ RabbitMQ是一个出色的消息代理中间件（Message Broker）：接受和�
 
 先安装erlang
 ``` bash
-rpm -Uvh http://download.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
+rpm -Uvh https://mirrors.ustc.edu.cn/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm
 yum install erlang
 ```
 
 安装RabbitMQ
 ``` bash
 rpm --import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
-wget https://www.rabbitmq.com/releases/rabbitmq-server/v3.6.9/rabbitmq-server-3.6.9-1.el7.noarch.rpm
-wget ftp://195.220.108.108/linux/centos/7.3.1611/os/x86_64/Packages/socat-1.7.2.2-5.el7.x86_64.rpm
+wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.15/rabbitmq-server-3.6.15-1.el7.noarch.rpm
+wget ftp://195.220.108.108/linux/centos/7.4.1708/os/x86_64/Packages/socat-1.7.3.2-2.el7.x86_64.rpm
 yum localinstall -C -y --disablerepo=* *.rpm
 ```
 
@@ -54,14 +54,14 @@ systemctl start rabbitmq-server
 rabbitmq-plugins enable rabbitmq_management
 ```
 
-创建配置文件，`vi /etc/rabbitmq/rabbitmq.config`，写入下面内容，我在这里指定了端口号5673，
+创建配置文件，`vi /etc/rabbitmq/rabbitmq.config`，写入下面内容，我在这里指定了端口号5672，
 另外还要注意最后的一个.：
 ```
 [
     {rabbit,
       [
         {loopback_users, []},
-        {tcp_listeners, [5673]}
+        {tcp_listeners, [5672]}
       ]
     }
 ].

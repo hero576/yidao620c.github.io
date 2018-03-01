@@ -156,7 +156,7 @@ public class ExampleAutoConfigure {
 
 ```
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.xncoding.starter.ExampleAutoConfigure
+com.xncoding.starter.config.ExampleAutoConfigure
 ```
 
 如果有多个自动配置类，用逗号分隔换行即可。
