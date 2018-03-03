@@ -234,13 +234,13 @@ say方法上添加的@MessageMapping注解和我们之前使用的@RequestMappin
 </html>
 ```
 
-页面上面点击"连接"按钮后，开始连接到`/simple`节点。输入名字后点击发送，将向"/welcome"的url发送消息。
+页面上面点击"连接"按钮后，开始连接到`/simple`节点。输入名字后点击发送，将向`/welcome`的url发送消息。
 
-同时订阅了两个主题：'/topic/say' 和 '/topic/callback'，会接收到服务器的say方法的返回，以及定时推送消息。
+同时订阅了两个主题：`/topic/say` 和 `/topic/callback`，会接收到服务器的say方法的返回，以及定时推送消息。
 
 演示效果：
 
-![](https://xnstatic-1253397658.file.myqcloud.com/websocket20.png)
+![](https://xnstatic-1253397658.file.myqcloud.com/sb-websocket20.png)
 
 每隔一秒页面都会刷新显示当前时间。同时控制台也会打印定时推送过来的消息。
 
