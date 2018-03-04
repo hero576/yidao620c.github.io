@@ -350,3 +350,7 @@ Caused by: com.xncoding.trans.exception.MyException: runtime
 
 看看数据库中记录：`1|admin|admin`，更改成功，说明抛出这个MyException异常后并不会回滚。
 
+## GitHub源码
+
+[springboot-transaction](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-transaction)
+

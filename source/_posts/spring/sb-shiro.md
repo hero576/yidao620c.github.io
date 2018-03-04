@@ -605,3 +605,7 @@ admin角色登录之后：
 * [Apache Shiro和Spring boot的结合使用](http://weiqingfei.iteye.com/blog/2307860)
 * [Spring Boot Shiro权限控制](https://mrbird.cc/Spring-Boot-Shiro%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6.html)
 
+
+## GitHub源码
+
+[springboot-shiro](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-shiro)

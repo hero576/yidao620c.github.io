@@ -305,4 +305,7 @@ public class ApplicationTests {
 
 更多Hibernate相关文档，请参考 [官网](http://hibernate.org/) 。
 
+## GitHub源码
+
+[springboot-hibernate](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-hibernate)
 

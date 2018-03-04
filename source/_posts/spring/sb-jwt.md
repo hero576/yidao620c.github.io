@@ -882,3 +882,7 @@ public class ShiroConfig {
 * [什么是 JWT -- JSON WEB TOKEN](https://www.jianshu.com/p/576dbf44b2ae)
 * [Shiro+JWT+Spring Boot Restful简易教程](https://juejin.im/post/59f1b2766fb9a0450e755993)
 
+## GitHub源码
+
+[springboot-jwt](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-jwt)
+

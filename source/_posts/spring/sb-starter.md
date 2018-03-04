@@ -217,3 +217,7 @@ ppphellosss
 1. 根据`spring.factories`配置加载AutoConfigure类
 1. 根据 `@Conditional` 注解的条件，进行自动配置并将Bean注入Spring Context
 
+## GitHub源码
+
+[springboot-starter](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-starter)
+

@@ -905,3 +905,7 @@ The default is ISOLATION_SERIALIZABLE, which prevents accidental concurrent exec
 jobRepositoryFactoryBean.setIsolationLevelForCreate("ISOLATION_READ_COMMITTED");
 ```
 
+## GitHub源码
+
+[springboot-batch](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-batch)
+

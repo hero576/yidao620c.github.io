@@ -374,5 +374,7 @@ SpringBoot会为我们自动配置`GuavaCacheManager`这个Bean。
 SpringBoot会为我们自动配置`RedisCacheManager`这个Bean，同时还会配置`RedisTemplate`这个Bean。
 后面这个Bean就是下一篇要讲解的操作Redis数据库用，这个就比单纯注解缓存强大和灵活的多了。
 
+## GitHub源码
 
+[springboot-cache](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-cache)
 

@@ -599,3 +599,7 @@ proxy_set_header Connection $connection_upgrade;
 * [Spring Boot 集成 socket.io 后端实现消息实时通信](http://alexpdh.com/2017/09/03/springboot-socketio/)
 * [Spring Boot实战之netty-socketio实现简单聊天室](http://blog.csdn.net/sun_t89/article/details/52060946)
 
+## GitHub源码
+
+[springboot-socketio](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-socketio)
+

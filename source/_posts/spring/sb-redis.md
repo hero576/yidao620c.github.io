@@ -339,3 +339,7 @@ public class UserServiceTest {
 可以看出第一次取的时候，缓存未命中，会从DB中取数据，而第2次取的时候缓存命中直接从缓存中取出来。
 后面不管是更新和删除，都会从缓存中删除。再去取的时候缓存未命中，从DB中取最新的。
 
+## GitHub源码
+
+[springboot-redis](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-redis)
+

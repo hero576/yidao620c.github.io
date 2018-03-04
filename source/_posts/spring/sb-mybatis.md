@@ -338,3 +338,7 @@ public class ApplicationTests {
 
 运行测试用例，结果是green bar，测试通过。
 
+## GitHub源码
+
+[springboot-mybatis](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-mybatis)
+

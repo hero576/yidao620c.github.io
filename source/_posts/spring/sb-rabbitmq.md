@@ -400,3 +400,7 @@ public class SenderServiceTest {
 
 可以看到，广播消息被两个队列收到了，Direct消息只有一个收到。完美！
 
+## GitHub源码
+
+[springboot-rabbitmq](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-rabbitmq)
+

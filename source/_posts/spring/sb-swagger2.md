@@ -382,3 +382,7 @@ asciidoctor-pdf -r asciidoctor-pdf-cjk-kai_gen_gothic -a pdf-style=KaiGenGothicC
 * [Spring Boot中使用Swagger2构建API文档](https://github.com/Yuicon/blog/issues/1)
 * [Spring Boot 04.构建RESTful API](https://www.jianshu.com/p/79e6f2dca03b)
 
+## GitHub源码
+
+[springboot-swagger2](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-swagger2)
+

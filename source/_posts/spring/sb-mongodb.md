@@ -240,3 +240,7 @@ Customers found with findByLastName('Smith'):
 
 更多关于MongoDB的使用，请移步 [官网](https://www.mongodb.com)
 
+## GitHub源码
+
+[springboot-mongodb](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-mongodb)
+

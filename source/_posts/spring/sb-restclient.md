@@ -289,4 +289,7 @@ if (r.isSuccess()) {
 }
 ```
 
+## GitHub源码
+
+[springboot-resttemplate](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-resttemplate)
 

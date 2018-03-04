@@ -60,8 +60,8 @@ Spring Boot默认提供静态资源目录位置需置于classpath下，目录名
 1. /resources
 1. /META-INF/resources
 
-举例：我们可以在`src/main/resources/`目录下创建static，在该位置放置一个图片文件。
-启动程序后，尝试访问`http://localhost:8080/D.jpg`。如能显示图片，配置成功。
+举例：我们可以在`src/main/resources/`目录下创建static，在该位置放置一个图片文件`pic.jpg`。
+启动程序后，尝试访问`http://localhost:8080/pic.jpg`。如能显示图片，配置成功。
 
 SpringBoot的默认模板路径为：`src/main/resources/templates`
 
@@ -93,9 +93,22 @@ SpringBoot的默认模板路径为：`src/main/resources/templates`
 </html>
 ```
 
-中间显示的是一个key=msg的消息，需要后台传递过来。
+页面中几个地方说明一下：
 
-Thymeleaf 3的语法请参考 [官网教程](http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html)
+```
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+```
+
+加上这个命名空间后就能在页面中使用Thymeleaf自己的标签了，以`th:`开头。
+
+连接语法 `th:href="@{/static/css/bootstrap.min.css}"`
+
+访问Model中的数据语法 `th:text="${msg}"`
+
+这里我在页面里显示的是一个键为`msg`的消息，需要后台传递过来。
+
+Thymeleaf 3的详细语法规则请参考 [官网教程](http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html)
 
 ## 编写Controller
 
@@ -123,4 +136,7 @@ public class IndexController {
 
 接下来启动应用后，打开首页看看效果如何。消息正确显示，成功！。
 
+## GitHub源码
+
+[springboot-thymeleaf](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-thymeleaf)
 

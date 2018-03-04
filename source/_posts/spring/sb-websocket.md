@@ -250,3 +250,7 @@ say方法上添加的@MessageMapping注解和我们之前使用的@RequestMappin
 对于想要使用Android客户端进行WebSocket通信的，
 可参考 [StompProtocolAndroid](https://github.com/NaikSoftware/StompProtocolAndroid)
 
+## GitHub源码
+
+[springboot-websocket](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-websocket)
+

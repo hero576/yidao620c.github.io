@@ -538,3 +538,7 @@ public class ApplicationTests {
 
 运行测试，结果显示为green bar，成功！
 
+## GitHub源码
+
+[springboot-multisource](https://github.com/yidao620c/SpringBootBucket/tree/master/springboot-multisource)
+
