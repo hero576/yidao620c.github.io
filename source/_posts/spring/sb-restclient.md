@@ -133,63 +133,51 @@ public class RestClientConfig {
 }
 ```
 
-## 设置超时时间
+## 配置类
 
-``` java
-@Configuration
-public class RestClientConfig {
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate(clientHttpRequestFactory());
-    }
-
-    private ClientHttpRequestFactory clientHttpRequestFactory() {
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-        factory.setReadTimeout(2000);
-        factory.setConnectTimeout(2000);
-        return factory;
-    }
-}
-```
-
-## 设置连接池
-
-创建`RestClientConfig`类，配置如下：
+创建`RestClientConfig`类，设置连接池大小、超时时间、重试机制等。配置如下：
 
 ``` java
 @Configuration
 public class RestClientConfig {
     @Bean
-    public ClientHttpRequestFactory httpRequestFactory() {
-        return new HttpComponentsClientHttpRequestFactory(httpClient());
-    }
-
-    @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate(httpRequestFactory());
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setRequestFactory(clientHttpRequestFactory());
+        restTemplate.setErrorHandler(new DefaultResponseErrorHandler());
+        return restTemplate;
     }
-
     @Bean
-    public HttpClient httpClient() {
-        Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                .register("https", SSLConnectionSocketFactory.getSocketFactory())
-                .build();
-        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(registry);
-        connectionManager.setMaxTotal(5);
-        connectionManager.setDefaultMaxPerRoute(5);
-
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setSocketTimeout(8000)
-                .setConnectTimeout(8000)
-                .setConnectionRequestTimeout(8000)
-                .build();
-
-        return HttpClientBuilder.create()
-                .setDefaultRequestConfig(requestConfig)
-                .setConnectionManager(connectionManager)
-                .build();
+    public HttpComponentsClientHttpRequestFactory clientHttpRequestFactory() {
+        try {
+            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+            SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+                public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                    return true;
+                }
+            }).build();
+            httpClientBuilder.setSSLContext(sslContext);
+            HostnameVerifier hostnameVerifier = NoopHostnameVerifier.INSTANCE;
+            SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
+            Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                    .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                    .register("https", sslConnectionSocketFactory).build();// 注册http和https请求
+            // 开始设置连接池
+            PoolingHttpClientConnectionManager poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+            poolingHttpClientConnectionManager.setMaxTotal(500); // 最大连接数500
+            poolingHttpClientConnectionManager.setDefaultMaxPerRoute(100); // 同路由并发数100
+            httpClientBuilder.setConnectionManager(poolingHttpClientConnectionManager);
+            httpClientBuilder.setRetryHandler(new DefaultHttpRequestRetryHandler(3, true)); // 重试次数
+            HttpClient httpClient = httpClientBuilder.build();
+            HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient); // httpClient连接配置
+            clientHttpRequestFactory.setConnectTimeout(20000);              // 连接超时
+            clientHttpRequestFactory.setReadTimeout(30000);                 // 数据读取超时时间
+            clientHttpRequestFactory.setConnectionRequestTimeout(20000);    // 连接不够用的等待时间
+            return clientHttpRequestFactory;
+        } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+            log.error("初始化HTTP连接池出错", e);
+        }
+        return null;
     }
 }
 ```
@@ -200,7 +188,7 @@ public class RestClientConfig {
 <dependency>
     <groupId>org.apache.httpcomponents</groupId>
     <artifactId>httpclient</artifactId>
-    <version>4.3.6</version>
+    <version>4.5.3</version>
 </dependency>
 ```
 
