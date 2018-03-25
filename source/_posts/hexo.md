@@ -450,9 +450,6 @@ $ git branch -a
 $ git checkout -b source origin/source
 $ cnpm install hexo
 $ cnpm install
-$ cnpm install hexo-deployer-git --save
-$ cnpm install hexo-renderer-jade --save
-$ cnpm install hexo-renderer-sass --save
 ```
 
 **重要记录**
