@@ -148,12 +148,13 @@ onUnload     | Function   | 生命周期函数--监听页面卸载
 
 基本思路是：
 
-1. 全局维护一个SocketTask对象，用来维护websocket连接，判断是否断线，作为重连的依据。
-2. 同时定义一个全局callback回调函数，用来接收到消息回调。每个页面初始化的时候更新这个回调函数，那么在每个页面中就会执行当前页面逻辑。
-3. 维护一个消息队列，所有消息请求会首先判断连接是否可用，如果可用直接发消息，否则将消息push到这个队列中。
-4. 消息接收事件`onMessage()`负责消费消息队列，调用每个页面自己定义的回调函数
-5. 在`app.js`的`onShow()`函数中判断连接是否连上，如果没有连上就会触发连接
-6. 同时在`onClose()`监听中，也会触发连接
+1. 全局维护一个SocketTask对象，用来表示websocket连接，判断是否断线，作为重连的依据。
+1. 同时定义一个全局callback回调函数，每个页面初始化的时候更新这个回调函数，那么在每个页面中收到返回消息就会执行当前页面逻辑。
+1. 维护一个消息队列，所有消息请求会首先判断连接是否可用，如果可用直接发消息，否则将消息push到这个队列中。
+1. 在`app.js`的`onShow()`函数中判断连接是否连上，如果没有连上就会触发websocket连接
+1. SocketTask对象的`onOpen()`负责从消息队列中取出请求消息，并发送这个请求消息
+1. SocketTask对象的`onMessage()`负责接收返回消息，并调用每个页面自己定义的回调函数
+1. SocketTask对象的`onClose()`监听函数中，触发websocket连接
 
 下面是app.js代码：
 
@@ -165,7 +166,7 @@ App({
   globalData: {
     userInfo: null,
     localSocket: {},
-    callback: function () { }
+    callback: function () {}
   },
   onLaunch: function (options) {
     // 展示本地存储能力
@@ -194,7 +195,7 @@ App({
               // 可以将 res 发送给后台解码出 unionId
               this.globalData.userInfo = res.userInfo
               // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-              // 所以此处加入 callback 以防止这种情况
+              // 所以此处加入回调以防止这种情况
               if (this.userInfoReadyCallback) {
                 this.userInfoReadyCallback(res)
               }
@@ -255,7 +256,7 @@ App({
     }
   },
   onShow: function(options) {
-    if (this.globalData.localSocket.readyState !== 1) {
+    if (this.globalData.localSocket.readyState !== 0 && this.globalData.localSocket.readyState !== 1) {
       console.log('开始尝试连接WebSocket！readyState=' + this.globalData.localSocket.readyState)
       this.initSocket()
     }
