@@ -8,7 +8,7 @@ categories: linux
 tags: [license]
 ---
 
-作为一个码农对于那些NO.1的开发工具爱不释手，它们对框架的支持、界面、插件都是那么的优秀，
+作为一个码农对于那些优秀的开发工具爱不释手，它们对框架的支持、界面、插件都是那么的优秀，
 大大加快了开发的速度以及开发的乐趣，酷炫的界面也能大大的装一个逼。写到这里大家应该能猜到我说的是啥了，
 没错，就是JetBrains出品的全系列IDE开发工具，比如IntelliJ IDEA、PyCharm等等。
 
@@ -22,7 +22,7 @@ tags: [license]
 ## 服务器
 
 在上面的博客页面有下载地址，支持很多的操作系统平台，这里我选的是linux64位的。
-更新这篇文章的时候最新版是v1.5版。
+更新这篇文章的时候最新版是v1.6版。
 
 接下来，介绍如何部署到Linux服务器上，首先将xxxServer_linux_amd64上传到任意目录，
 我这里是 `/root/work/` 目录，先将名字改了，太长了
@@ -38,7 +38,7 @@ chmod +x xnServer
 
 运行
 ``` bash
-/root/work/xnServer -p 1027 -u love122 -prolongationPeriod 999999999 -l 127.0.0.1
+/root/work/xnServer -p 1027 -u yidao -prolongationPeriod 999999999 -l 127.0.0.1
 ```
 
 默认运行会出现以下信息，则为成功(省略)。如果要后台运行，请使用nohup命令。
@@ -52,21 +52,7 @@ chmod +x xnServer
 
 ## 守护进程
 
-也可以通过supervisor实现守护进程自启动。关于supervisor前面有专门的一篇讲解，有兴趣可以去看看。
-
-编辑`/etc/supervisord.conf`，添加一个应用程序：
-```
-[program:xn-server]
-user=root
-command=/root/work/xnServer -p 1027 -u love122 -prolongationPeriod 999999999 -l 127.0.0.1
-stdout_logfile=/var/log/supervisor/xnserver_out.log
-stderr_logfile=/var/log/supervisor/xnserver_err.log
-autostart=true
-autorestart=true
-startsecs=6
-```
-
-如果你使用的是CentOS7，那就不需要使用supervisor了，直接用systemd方式更简单方便。
+如果你使用的是CentOS7，直接用systemd方式。
 
 新建一个服务配置`/etc/systemd/system/xnserver.service`，内容如下：
 
@@ -78,7 +64,7 @@ After=syslog.target network.target
 [Service]
 Type=simple
 
-ExecStart=/opt/xnServer -u love122 -prolongationPeriod 999999999 -l 127.0.0.1 &
+ExecStart=/root/work/xnServer -u yidao -prolongationPeriod 999999999 -l 127.0.0.1 &
 ExecStop=/bin/kill -HUP $MAINPID
 
 User=root
@@ -117,7 +103,7 @@ server {
 
 重启nginx `service nginx restart`
 
-然后激活服务器地址就填`active.xncoding.com`即可。
+然后激活服务器地址就填`http://active.xncoding.com`即可。
 
 如果嫌nginx麻烦，也不需要配置，直接用ip地址加端口号也是一样：`http://xx.xx.xx.xx:1027/`
 
