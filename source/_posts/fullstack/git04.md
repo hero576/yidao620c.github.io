@@ -167,7 +167,7 @@ git checkout HEAD~2 foo.py
 
 撤销                     | HEAD   | Index  | WorkDir   | Safe
 -------------------------|--------|--------|-----------|--------
-**Commit Level**         | d      |        |           |
+**Commit Level**         |        |        |           |
 reset --soft [commit]    | REF    | NO     | NO        | YES
 reset [commit]           | REF    | YES    | NO        | YES
 reset --hard [commit]    | REF    | YES    | YES       | NO
