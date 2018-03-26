@@ -95,9 +95,6 @@ deploy:
     branch: master
 ```
 
-我刚开始是部署到github上面，现在我部署到自己的腾讯云主机上面去了，
-原理都一样，在腾讯云主机上面创建一个git服务即可。然后上面的`repository`改成自己的git服务器地址。
-
 如果你是第一次使用Github或者是已经使用过，但没有配置过SSH，则可能需要配置一下SSH。
 在Git Bash输入以下指令（任意位置点击鼠标右键），检查是否已经存在了SSH keys。
 ``` bash
@@ -138,6 +135,131 @@ hexo g
 hexo d
 ```
 提示输入gitHub的账号密码，就能访问你得博客网站了。我的是: yidao620c.github.io
+
+## 发布到自己的VPS
+
+如果你觉得github不是你想要的，你有一个自己的云主机，那么还可以将hexo博客自动发布到自己的服务器上去。
+
+比如我自己有一条腾讯云主机，操作系统是CentOS7.4，我将博客迁移到这台虚拟机上去。步骤如下：
+
+
+### 安装 git2
+
+1,检测系统中git的版本，并卸载低版本
+
+    yum info git
+    yum reomve git
+
+2,下载最新的git
+
+    wget -P /opt/ https://www.kernel.org/pub/software/scm/git/git-2.14.1.tar.gz
+
+3,解压
+
+    tar xzvf git-2.14.1.tar.gz
+
+5,安装依赖lib
+
+    yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel
+    yum install  gcc perl-ExtUtils-MakeMaker
+
+4,指定安装目录
+
+    ./configure --prefix=/usr/local/git
+
+6,编译安装
+
+    make && make install
+
+7,配置环境变量，编辑/etc/profile
+
+    #git settings
+    GIT_HOME=/usr/local/git
+    export PATH=$GIT_HOME/bin:$PATH
+
+8,配置生效
+
+    source /etc/profile
+
+9,检查git是否安装成功
+
+     git --version
+
+10,创建git账户, 并设置密码
+
+    useradd git
+    passwd git
+
+11,使用git登录并进入git目录
+
+     su - git
+     cd ~
+
+12,在/home/git目录下创建.ssh目录,并进入
+
+    mkdir .ssh && cd .ssh
+
+13,创建一个存储所有登录用户的公钥(id_rsa.pub),一行一个用户
+
+    touch authorized_keys
+
+14,初始化git仓库
+
+    mkdir /var/repo && cd /var/repo
+    git init --bare hexo.git
+    chown -R git:git hexo.git
+
+15,禁用shell
+
+    vi /etc/passwd
+    git:x:1000:1000::/home/git:/usr/bin/git-shell
+
+### 安装nginx
+
+参考 <https://blog.csdn.net/oldguncm/article/details/78855000>
+
+```
+su - root
+mkdir -p /opt/www/hexo
+chown -R nginx:nginx /opt/www
+chown -R git:git /opt/www/hexo
+```
+
+nginx.conf配置网站文件目录
+
+```
+root /opt/www/hexo;
+```
+
+### 配置git hooks
+
+这步非常重要，将代码push到git仓库后会自动执行钩子脚本，将网站文件推送到nginx的root目录，就能自动更新网站了。
+
+```
+su - git
+$ cd /var/repo/hexo.git/hooks
+$ vim post-receive
+```
+
+写入如下内容：
+
+```
+#!/bin/bash
+git --work-tree=/opt/www/hexo --git-dir=/var/repo/hexo.git checkout -f
+```
+
+至此服务器配置完成。
+
+然后你的hexo的`_config.yml`配置文件修改如下：
+
+``` yml
+# Deployment
+## Docs: https://hexo.io/docs/deployment.html
+deploy:
+  type: git
+  repository: git@xx.xx.xx.xx:/var/repo/hexo.git
+  branch: master
+```
 
 ## 发表一篇文章
 在你的D:\hexo目录下面，控制台执行命令：
@@ -456,8 +578,6 @@ $ cnpm install
 
 千万别执行`hexo init`这个命令啊，同时`Next`主题的安装步骤还是需要的。
 
-另外hexo3.4.3版本好像生成toc的时候有点问题，我退回到3.3.9就正常。
-
 首先`package.json`改成绝对版本号：
 ``` json
 {
@@ -465,7 +585,7 @@ $ cnpm install
   "version": "0.0.0",
   "private": true,
   "hexo": {
-    "version": "3.3.9"
+    "version": "3.6.0"
   },
   "dependencies": {
     "hexo": "3.3.9",

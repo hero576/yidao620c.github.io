@@ -159,14 +159,15 @@ git checkout HEAD~2 foo.py
 
 ## 总结
 
-希望你现在熟悉并理解了 reset、checkout 和 revert 命令，你可能还是会有点困惑，毕竟不太可能记住不同调用的所有规则。
+希望你现在熟悉并理解了 `reset`、`checkout` 和 `revert` 命令，你可能还是会有点困惑，毕竟不太可能记住不同调用的所有规则。
 
 下面的速查表列出了命令对树的影响。 `HEAD` 一列中的 `REF` 表示该命令移动了 HEAD 指向的分支引用，而`HEAD` 则表示只移动了 HEAD 自身。
 特别注意 `Safe?` 一列 - 如果它标记为 NO，那么运行该命令之前请考虑一下。
 
-                         | HEAD   | Index  | WorkDir   | Safe?
--------------------------|--------|--------|-----------|-------------
-**Commit Level**         |        |        |           |
+
+撤销                     | HEAD   | Index  | WorkDir   | Safe
+-------------------------|--------|--------|-----------|--------
+**Commit Level**         | d      |        |           |
 reset --soft [commit]    | REF    | NO     | NO        | YES
 reset [commit]           | REF    | YES    | NO        | YES
 reset --hard [commit]    | REF    | YES    | YES       | NO

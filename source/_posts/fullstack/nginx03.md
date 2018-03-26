@@ -209,33 +209,14 @@ server {
 
 启动nginx服务，然后访问`http://api.enzhico.net`，没有错误的话nginx站点配置完成。
 
-### 安装certbot工具
-
-```
-yum install -y epel-release
-yum install -y certbot
-```
-
-### 使用certbot命令初次申请证书
-```
-# 使用方法：certbot certonly --webroot -w [Web站点目录] -d [站点域名] -m [联系人email地址] --agree-tos
-certbot certonly --webroot -w /opt/www/api.enzhico.net -d api.enzhico.net -m xn@gmail.com --agree-tos
-```
-
-如果上面执行过程中出现下列异常：
-
-```
-ImportError: 'pyOpenSSL' module missing required functionality. Try upgrading to v0.14 or newer.
-```
-
-那么就不要使用这种方式安装了，先卸载掉`yum remove -y certbot`，然后使用下面的方法安装。
-
 ### 使用certbot-auto脚本安装Certbot
 
 `certbot-auto`脚本会安装Certbot，并且能够自己解决RPM包和Python包依赖问题，同样非常方便。
 同时`certbot-auto`是对certbot的封装，即`certbot-auto`提供certbot的所有功能。
 
 执行完成后就自动获得了HTTPS配置，并且还能设置成HTTP自动转HTTPS，非常方便，好喜欢哦。
+
+现在Lets Encrypt 退出通配符证书，简直爽到不要不要的。接下来我将演示申请通配符证书方法，以我自己的域名`xncoding.com`为例子
 
 1）获取certbot-auto脚本
 
@@ -252,40 +233,40 @@ chmod a+x ./certbot-auto
 3）运行`certbot-auto`，安装Certbot
 
 ```
-./certbot-auto --email your@email.address --domains api.enzhico.net
+./certbot-auto --server https://acme-v02.api.letsencrypt.org/directory -d "*.xncoding.com" -d "xncoding.com" --manual --preferred-challenges dns-01 certonly
 ```
 
-如果你想同时为多个domain申请证书，上面的`--domains` 参数后面接逗号隔开的域名，比如`--domains api.enzhico.net,dev.enzhico.net`
+联系人email地址要填写真实有效的，`let's encrypt`会在证书在过期以前发送预告的通知邮件。
 
-联系人email地址要填写真实有效的，`let's encrypt`会在证书在过期以前发送预告的通知邮件。申请成功后，会显示以下Congratulations信息
+注意，申请通配符证书是要经过DNS认证的，按照提示，前往域名后台添加对应的DNS TXT记录。
+
+这里我把主域名也添加上了，所以需要增加两个DNS TXT记录，注意，是增加不是修改。DNS后台就有两条TXT记录了。
+
+添加之后，不要心急着按回车，先执行`dig _acme-challenge.xncoding.com txt`确认解析记录是否生效，生效之后再回去按回车确认。
+
+申请成功后，会显示以下Congratulations信息
 ```
 IMPORTANT NOTES:
  - Congratulations! Your certificate and chain have been saved at:
-   /etc/letsencrypt/live/admtest.enzhico.cn/fullchain.pem
+   /etc/letsencrypt/live/xncoding.com/fullchain.pem
    Your key file has been saved at:
-   /etc/letsencrypt/live/admtest.enzhico.cn/privkey.pem
-   Your cert will expire on 2018-03-28. To obtain a new or tweaked
-   version of this certificate in the future, simply run certbot
+   /etc/letsencrypt/live/xncoding.com/privkey.pem
+   Your cert will expire on 2018-06-24. To obtain a new or tweaked
+   version of this certificate in the future, simply run certbot-auto
    again. To non-interactively renew *all* of your certificates, run
-   "certbot renew"
- - Your account credentials have been saved in your Certbot
-   configuration directory at /etc/letsencrypt. You should make a
-   secure backup of this folder now. This configuration directory will
-   also contain certificates and private keys obtained by Certbot so
-   making regular backups of this folder is ideal.
+   "certbot-auto renew"
  - If you like Certbot, please consider supporting our work by:
 
    Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
    Donating to EFF:                    https://eff.org/donate-le
-
 ```
 
-证书的保存位置在：`/etc/letsencrypt/live/api.enzhico.net/`
+证书的保存位置在：`/etc/letsencrypt/live/xncoding.com/`
 
 ### 查看证书有效期的命令
 
 ````
-openssl x509 -noout -dates -in /etc/letsencrypt/live/api.enzhico.net/cert.pem
+openssl x509 -noout -dates -in /etc/letsencrypt/live/xncoding.com/cert.pem
 ````
 
 ### 设置定时任务自动更新证书
@@ -293,14 +274,14 @@ openssl x509 -noout -dates -in /etc/letsencrypt/live/api.enzhico.net/cert.pem
 letsencrypt证书的有效期是90天，但是可以用脚本去更新。
 ```
 # 更新证书
-certbot renew --dry-run 
+certbot renew --dry-run
 # 如果不需要返回的信息，可以用静默方式：
 certbot renew --quiet
 ```
 
 注意：更新证书时候网站必须是能访问到的
 
-也可以通过crontab定期更新证书。先查看crond服务是否开启：
+也可以通过crontab定期更新证书，先查看crond服务是否开启：
 
 ```
 systemctl status crond

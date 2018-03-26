@@ -115,5 +115,5 @@ marked:
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repository: xn@115.159.151.14:/var/repo/hexo.git
+  repository: git@115.159.151.14:/var/repo/hexo.git
   branch: master
