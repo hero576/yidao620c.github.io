@@ -191,9 +191,19 @@ Nexus提供了一系列可配置的调度任务来方便用户管理系统。用
           </releases>
           <snapshots>
             <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
           </snapshots>
         </repository>
       </repositories>
+      <activation>
+        <activeByDefault>true</activeByDefault>      
+        <jdk>1.8</jdk>
+      </activation>
+      <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+      </properties>
     </profile>
 </profiles>
 <activeProfiles>
@@ -249,6 +259,102 @@ mvn deploy:deploy-file \
 ```
 
 `-DrepositoryId`的值即为在`setttings.xml`里面配置的server id。
+
+## 上次不同JDK版本
+
+pom.xml里面配置多个profile，其中一个默认的：
+
+``` xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.6.1</version>
+            <configuration>
+                <source>${jar.source}</source>
+                <target>${jar.target}</target>
+                <encoding>UTF-8</encoding>
+            </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>2.8.2</version>
+            <executions>
+                <execution>
+                    <id>deploy</id>
+                    <phase>deploy</phase>
+                    <goals>
+                        <goal>deploy</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+
+<profiles>
+    <profile>
+        <id>default</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <properties>
+            <jar.source>1.8</jar.source>
+            <jar.target>1.8</jar.target>
+        </properties>
+    </profile>
+    <profile>
+        <id>jdk16</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                            <configuration>
+                                <classifier>jdk16</classifier>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+        <properties>
+            <jar.source>1.6</jar.source>
+            <jar.target>1.6</jar.target>
+        </properties>
+    </profile>
+</profiles>
+```
+
+上面我定义了两个profile，那么打包或者发布的时候可指定不同的JDK版本：
+
+```
+# 默认版本JDK1.8
+mvn clean && mvn deploy
+# JDK1.6版本
+mvn clean && mvn deploy -P jdk16
+```
+
+第一条命令打包使用默认的profile，编译的版本是1.8，生成的文件是xxx-SNAPSHOT.jar；
+而第二条命令打包指定使用jdk16这个profile，编译版本是1.6，生成的文件是xxx-SNAPSHOT-jdk16.jar。
+
+项目中引用的时候可通过指定classifier：
+
+``` xml
+<dependency>
+    <groupId>com.enzhico</groupId>
+    <artifactId>adm-traffic-common-model</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <classifier>jdk16</classifier>
+</dependency>
+```
 
 ## 发布源码和文档
 
