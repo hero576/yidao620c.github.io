@@ -193,12 +193,6 @@ server {
 但是！这里就有一个很烦躁的地方了，ngrokd 里面有一层自己的 Host 处理，于是 `proxy_set_header Host` 必须带上 ngrokd 所监听的端口，
 否则就算请求被转发到对应端口上， ngrokd 也不会正确的处理。
 
-带上端口号又会导致了另一个操蛋的问题：你请求的时候是`demo.ngrok.xncoding.com`， 
-你在 web 应用中获取到的 Host 是 `demo.ngrok.xncoding.com:2222`，
-如果你的程序里面有基于 Request Host 的重定向，就会被重定向到 `demo.ngrok.xncoding.com:2222` 下面去。
-
-要完美的解决这个端口的问题，就需要让 ngrokd 直接监听 80 端口。
-
 ### 启用客户端
 
 在刚刚复制过来的ngrok.exe客户端文件夹中，新建一个客户端配置`ngrok.cfg`：
@@ -222,6 +216,132 @@ ngrok.exe -subdomain demo -config=ngrok.cfg -log=log.txt 8092
 
 ![](https://xnstatic-1253397658.file.myqcloud.com/ngrok02.png)
 
+## 烦恼的事情
+
+带上端口号又会导致了另一个操蛋的问题：你请求的时候是`demo.ngrok.xncoding.com`， 
+你在 web 应用中获取到的 Host 是 `demo.ngrok.xncoding.com:2222`，
+如果你的程序里面有基于 Request Host 的重定向，就会被重定向到 `demo.ngrok.xncoding.com:2222` 下面去。
+
+要完美的解决这个端口的问题，就需要让 ngrokd 直接监听 80 端口，或者使用Docker容器的端口映射来解决。
+
+## 使用Docker
+
+上面我讲到自己手动搭建的时候出现的端口映射问题，没办法解决。
+一般80端口早就被占用了，不可能就给你ngrok使用，最完美的方式是使用Docker + Nginx的方式。
+
+### 安装docker
+
+参考我的这篇[Docker入门](https://www.xncoding.com/2017/04/01/docker/docker01.html)来安装docker。
+
+### 构建镜象
+
+这里使用的是[hteen/docker-ngrok](https://github.com/hteen/docker-ngrok)
+
+```
+git clone https://github.com/hteen/docker-ngrok.git
+cd docker-ngrok
+docker build -t hteen/ngrok .
+```
+
+这里需要等待一段时间下载
+
+### 运行镜象
+
+先申请`ngrok.xncoding.com`这个域名的通配符CA证书，免费的lets encrypted证书，然后修改脚本`server.sh`
+
+```
+-tlsKey=/etc/letsencrypt/live/ngrok.xncoding.com/privkey.pem -tlsCrt=/etc/letsencrypt/live/ngrok.xncoding.com/fullchain.pem
+```
+也就是将之前的证书变量改成你实际的证书路径即可。
+
+然后运行：
+
+```
+docker run -idt --name ngrok-server \
+-p 2222:80 -p 3333:443 -p 7777:7777 \
+-v /data/ngrok:/myfiles \
+-e DOMAIN='ngrok.xncoding.com' -e HTTP_ADDR=':2222' -e HTTPS_ADDR=':3333' hteen/ngrok /bin/sh /server.sh
+```
+
+这里会把主机的2222端口映射到Docker容器中的80端口，3333端口映射到443端口，同时将本机的/data/ngrok文件夹映射到docker容器的/myfiles目录。
+
+运行后，会要等一段时间，因为要编译客户端。
+
+### Docker容器的https
+
+关于 https 的支持
+
+由于 ngrok 工作是通过分配 subdomain 的方式，所以我们实际使用到的域名都是 `ngrok.xncoding.com` 的子域名，
+如 `demo.ngrok.xncoding.com` 如果要对这个子域名启用 https 服务，那么至少需要三点支持：
+
+1. ngrok 支持 https， 这个默认就是开启的
+1. `demo.ngrok.xncoding.com` 也需要有证书或包含在一个泛域名证书中
+1. 浏览器（或其他终端）信任 `demo.ngrok.xncoding.com` 的根证书
+
+好消息是现在lets encrypt支持通配符域名了，所以很简单。具体怎么申请，请参考我博客中的nginx相关文章。
+
+### 配置Nginx
+
+启动之后需要在nginx.conf 添加两条反向代理配置：
+```
+server {
+    listen       80;
+    server_name  ngrok.xncoding.com *.ngrok.xncoding.com;
+    location / {
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://10.122.22.2:2222;
+    }
+}
+server {
+    listen       443;
+    server_name  ngrok.xncoding.com *.ngrok.xncoding.com;
+    ssl_certificate /etc/letsencrypt/live/ngrok.xncoding.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/ngrok.xncoding.com/privkey.pem;
+    ssl_dhparam /etc/ssl/private/dhparam.pem;
+    location / {
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://10.122.22.2:3333;
+    }
+}
+```
+
+其中`10.122.22.2`是我的内网IP地址。
+
+### 注意事项
+
+因为ngrok有心跳机制，每次心跳均会产生日志，所以以docker方式运行，会产生很多日志。实测试中，大概每个星期会产生100M的日志文件。
+
+查年docker日志文件位置`sudo docker inspect <id> | grep LogPath`
+
+查看大小`sudo ls -lh /var/lib/docker/containers/<id>/<id>-json.log`
+
+### 运行客户端
+
+在`/data/ngrok/bin/`目录下会生成客户端程序，每个平台的版本都有。以windows64位来说，
+在windows_amd64目录下，拷贝到自己的windows电脑上。
+
+新建配置文件ngrok.cfg，跟ngrok.exe同级目录，里面的内容跟之前讲的一样：
+```
+server_addr: "ngrok.xncoding.com:7777"
+trust_host_root_certs: false
+```
+
+然后打开windows的命令行，cd到ngrok.exe所在的目录中，到这个运行：
+```
+ngrok -config=ngrok.cfg -subdomain=demo -log=log.txt 8092
+```
+
+看到下面的结果表示成功了：
+
+![](https://xnstatic-1253397658.file.myqcloud.com/ngrok04.png)
+
+然后再打开`http://demo.ngrok.xncoding.com`看看，发现不会像之前那样出现端口了。
 
 ## 国内免费的ngrok
 
