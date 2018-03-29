@@ -267,9 +267,7 @@ map $scheme $proxy_port {
 
 server {
     listen      80;
-    listen      [::]:80;
     listen      443;
-    listen      [::]:443;
     server_name ngrok.xncoding.com *.ngrok.xncoding.com;
 
     location / {
