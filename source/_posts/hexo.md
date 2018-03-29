@@ -143,7 +143,7 @@ hexo d
 比如我自己有一条腾讯云主机，操作系统是CentOS7.4，我将博客迁移到这台虚拟机上去。步骤如下：
 
 
-### 安装 git2
+### 源码安装 git2
 
 1,检测系统中git的版本，并卸载低版本
 
@@ -213,6 +213,16 @@ hexo d
 
     vi /etc/passwd
     git:x:1000:1000::/home/git:/usr/bin/git-shell
+
+### yum安装git2
+还有一种更方便的方法安装git2：
+
+```
+sudo yum remove git
+sudo yum install epel-release
+sudo yum install https://centos7.iuscommunity.org/ius-release.rpm
+sudo yum install git2u
+```
 
 ### 安装nginx
 

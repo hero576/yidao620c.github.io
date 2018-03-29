@@ -188,7 +188,7 @@ return 301 https://$host$request_uri/;
 
 ```
 mkdir /opt/www/api.enzhico.net -p
-chown nginx:nginx /opt/www/api.enzhico.net/ -R
+chown -R nginx:nginx /opt/www/api.enzhico.net/
 vi /etc/nginx/conf.d/api.enzhico.net.conf
 ```
 
@@ -216,7 +216,56 @@ server {
 
 执行完成后就自动获得了HTTPS配置，并且还能设置成HTTP自动转HTTPS，非常方便，好喜欢哦。
 
-现在Lets Encrypt 退出通配符证书，简直爽到不要不要的。接下来我将演示申请通配符证书方法，以我自己的域名`xncoding.com`为例子
+### 单独申请证书
+
+1）获取certbot-auto脚本
+
+```
+wget https://dl.eff.org/certbot-auto
+```
+
+2）使`certbot-auto`脚本可执行
+
+```
+chmod a+x ./certbot-auto
+```
+
+3）运行`certbot-auto`，安装Certbot
+
+```
+./certbot-auto --email your@email.address --domains api.enzhico.net
+```
+
+如果你想同时为多个domain申请证书，上面的`--domains` 参数后面接逗号隔开的域名，比如`--domains api.enzhico.net,dev.enzhico.net`
+
+联系人email地址要填写真实有效的，`let's encrypt`会在证书在过期以前发送预告的通知邮件。申请成功后，会显示以下Congratulations信息
+```
+IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/admtest.enzhico.cn/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/admtest.enzhico.cn/privkey.pem
+   Your cert will expire on 2018-03-28. To obtain a new or tweaked
+   version of this certificate in the future, simply run certbot
+   again. To non-interactively renew *all* of your certificates, run
+   "certbot renew"
+ - Your account credentials have been saved in your Certbot
+   configuration directory at /etc/letsencrypt. You should make a
+   secure backup of this folder now. This configuration directory will
+   also contain certificates and private keys obtained by Certbot so
+   making regular backups of this folder is ideal.
+ - If you like Certbot, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le
+
+```
+
+证书的保存位置在：`/etc/letsencrypt/live/api.enzhico.net/`
+
+### 通配符证书
+
+现在Lets Encrypt 推出通配符证书，简直爽到不要不要的。接下来我将演示申请通配符证书方法，以我自己的域名`xncoding.com`为例子
 
 1）获取certbot-auto脚本
 
