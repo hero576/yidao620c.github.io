@@ -141,15 +141,15 @@ $ GOOS=linux GOARCH=arm make release-client
 
 请将 bin/ngrokd 放入PATH环境变量中，启动命令：
 ```
-nohup ngrokd -domain=ngrok.xncoding.com -httpAddr=:2222 -httpsAddr=:3333 -tunnelAddr=":7777" &
+nohup ngrokd -domain=ngrok.xncoding.com -httpAddr=:5442 -httpsAddr=:5443 -tunnelAddr=":4443" &
 ```
 
-`-domain`为你的服务域名，`-httpAddr`为http服务端口地址，访问形式为`xxx.ngrok.xncoding.com:2222`，也可设置为80默认端口，`-httpsAddr`为https服务，同上。
+`-domain`为你的服务域名，`-httpAddr`为http服务端口地址，访问形式为`xxx.ngrok.xncoding.com:5442`，也可设置为80默认端口，`-httpsAddr`为https服务，同上。
 
-ngrokd还会开一个端口用来跟客户端通讯（可通过`-tunnelAddr=":xxx"` 指定），如果你配置了 iptables 规则，需要放行这个通讯端口(7777)上的 TCP 协议。
+ngrokd还会开一个端口用来跟客户端通讯（可通过`-tunnelAddr=":xxx"` 指定），如果你配置了 iptables 规则，需要放行这个通讯端口(4443)上的 TCP 协议。
 
 ```
-firewall-cmd --zone=public --add-port=7777/tcp --permanent
+firewall-cmd --zone=public --add-port=4443/tcp --permanent
 firewall-cmd --reload
 ```
 
@@ -159,6 +159,11 @@ firewall-cmd --reload
 ```
 server {
     listen       80;
+    server_name  demo.ngrok.xncoding.com;
+    return       301 https://demo.ngrok.xncoding.com$request_uri;
+}
+
+server {
     listen       443 ssl http2;
     server_name  demo.ngrok.xncoding.com;
 
@@ -172,20 +177,11 @@ server {
     error_log /var/log/nginx/ngrok_error.log error;
 
     location / {
-        proxy_pass http://127.0.0.1:2222;
+        proxy_pass http://127.0.0.1:5442;
         proxy_redirect off;
-        proxy_set_header Host       $http_host:2222;
+        proxy_set_header Host       $http_host:5442;
         proxy_set_header X-Real-IP  $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        
-        client_max_body_size 10m;
-        client_body_buffer_size 128k;
-        proxy_connect_timeout 90;
-        proxy_read_timeout 90;
-        proxy_buffer_size 4k;
-        proxy_buffers 6 128k;
-        proxy_busy_buffers_size 256k;
-        proxy_temp_file_write_size 256k;
     }
 }
 ```
@@ -197,7 +193,7 @@ server {
 
 在刚刚复制过来的ngrok.exe客户端文件夹中，新建一个客户端配置`ngrok.cfg`：
 ```
-server_addr: "ngrok.xncoding.com:7777"
+server_addr: "ngrok.xncoding.com:4443"
 trust_host_root_certs: false
 ```
 
@@ -219,14 +215,14 @@ ngrok.exe -subdomain demo -config=ngrok.cfg -log=log.txt 8092
 ## 烦恼的事情
 
 带上端口号又会导致了另一个操蛋的问题：你请求的时候是`demo.ngrok.xncoding.com`， 
-你在 web 应用中获取到的 Host 是 `demo.ngrok.xncoding.com:2222`，
-如果你的程序里面有基于 Request Host 的重定向，就会被重定向到 `demo.ngrok.xncoding.com:2222` 下面去。
+你在 web 应用中获取到的 Host 是 `demo.ngrok.xncoding.com:5442`，
+如果你的程序里面有基于 Request Host 的重定向，就会被重定向到 `demo.ngrok.xncoding.com:5442` 下面去。
 
 要完美的解决这个端口的问题，就需要让 ngrokd 直接监听 80 端口，或者使用Docker容器的端口映射来解决。
 
 ## 使用Docker
 
-上面我讲到自己手动搭建的时候出现的端口映射问题，没办法解决。
+上面我讲到自己手动搭建的时候出现的端口问题，没办法解决。
 一般80端口早就被占用了，不可能就给你ngrok使用，最完美的方式是使用Docker + Nginx的方式。
 
 ### 安装docker
@@ -245,28 +241,6 @@ docker build -t hteen/ngrok .
 
 这里需要等待一段时间下载
 
-### 运行镜象
-
-先申请`ngrok.xncoding.com`这个域名的通配符CA证书，免费的lets encrypted证书，然后修改脚本`server.sh`
-
-```
--tlsKey=/etc/letsencrypt/live/ngrok.xncoding.com/privkey.pem -tlsCrt=/etc/letsencrypt/live/ngrok.xncoding.com/fullchain.pem
-```
-也就是将之前的证书变量改成你实际的证书路径即可。
-
-然后运行：
-
-```
-docker run -idt --name ngrok-server \
--p 2222:80 -p 3333:443 -p 7777:7777 \
--v /data/ngrok:/myfiles \
--e DOMAIN='ngrok.xncoding.com' -e HTTP_ADDR=':2222' -e HTTPS_ADDR=':3333' hteen/ngrok /bin/sh /server.sh
-```
-
-这里会把主机的2222端口映射到Docker容器中的80端口，3333端口映射到443端口，同时将本机的/data/ngrok文件夹映射到docker容器的/myfiles目录。
-
-运行后，会要等一段时间，因为要编译客户端。
-
 ### Docker容器的https
 
 关于 https 的支持
@@ -278,40 +252,64 @@ docker run -idt --name ngrok-server \
 1. `demo.ngrok.xncoding.com` 也需要有证书或包含在一个泛域名证书中
 1. 浏览器（或其他终端）信任 `demo.ngrok.xncoding.com` 的根证书
 
-好消息是现在lets encrypt支持通配符域名了，所以很简单。具体怎么申请，请参考我博客中的nginx相关文章。
+好消息是现在lets encrypt支持通配符域名了，所以很简单，具体怎么申请，请参考我博客中的nginx相关文章。
 
-### 配置Nginx
+这里请先申请`ngrok.xncoding.com`的通配符证书。
 
-启动之后需要在nginx.conf 添加两条反向代理配置：
+申请好之后，增加配置`/etc/nginx/conf.d/ngrok.conf` 添加反向代理配置：
+
 ```
-server {
-    listen       80;
-    server_name  ngrok.xncoding.com *.ngrok.xncoding.com;
-    location / {
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_pass http://10.122.22.2:2222;
-    }
+map $scheme $proxy_port {
+    "http"  "5442";
+    "https" "5443";
+    default "5442";
 }
+
 server {
-    listen       443;
-    server_name  ngrok.xncoding.com *.ngrok.xncoding.com;
+    listen      80;
+    listen      [::]:80;
+    listen      443;
+    listen      [::]:443;
+    server_name ngrok.xncoding.com *.ngrok.xncoding.com;
+
+    location / {
+        proxy_pass  $scheme://127.0.0.1:$proxy_port;
+    }
+
+    ssl on;
     ssl_certificate /etc/letsencrypt/live/ngrok.xncoding.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/ngrok.xncoding.com/privkey.pem;
-    ssl_dhparam /etc/ssl/private/dhparam.pem;
-    location / {
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_pass http://10.122.22.2:3333;
-    }
+
+    proxy_set_header    X-Real-IP $remote_addr;
+    proxy_set_header    Host $http_host;
+    proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+
+    access_log off;
+    log_not_found off;
 }
 ```
 
-其中`10.122.22.2`是我的内网IP地址。
+### 运行镜象
+
+上一步已经申请`ngrok.xncoding.com`这个域名的通配符lets encrypt证书，然后修改脚本`server.sh`
+
+```
+-tlsKey=/etc/letsencrypt/live/ngrok.xncoding.com/privkey.pem -tlsCrt=/etc/letsencrypt/live/ngrok.xncoding.com/fullchain.pem
+```
+也就是将之前的证书变量改成你实际的证书路径即可。
+
+然后运行：
+
+```
+docker run -idt --name ngrok-server \
+-p 5442:80 -p 5443:443 -p 4443:4443 \
+-v /data/ngrok:/myfiles \
+-e DOMAIN='ngrok.xncoding.com' -e HTTP_ADDR=':80' -e HTTPS_ADDR=':443' hteen/ngrok /bin/sh /server.sh
+```
+
+这里会把主机的5442端口映射到Docker容器中的80端口，讲5443端口映射到443端口，同时将本机的/data/ngrok文件夹映射到docker容器的/myfiles目录。
+
+运行后，会要等一段时间，因为要编译客户端。一直等到/data/ngrok/目录里面有/bin目录就OK了。
 
 ### 注意事项
 
@@ -328,7 +326,7 @@ server {
 
 新建配置文件ngrok.cfg，跟ngrok.exe同级目录，里面的内容跟之前讲的一样：
 ```
-server_addr: "ngrok.xncoding.com:7777"
+server_addr: "ngrok.xncoding.com:4443"
 trust_host_root_certs: false
 ```
 

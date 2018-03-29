@@ -182,7 +182,31 @@ return 301 https://$host$request_uri/;
 * 在域名服务器创建一条A记录，指向云主机的公网IP地址。例如`api.enzhico.net`指向`xxx.xxx.xxx.xxx`的IP地址
 * 要等到新创建的域名解析能在公网上被解析到。
 
-### 配置好80端口的ngnix站点
+### 使用certbot-auto脚本安装Certbot
+
+`certbot-auto`脚本会安装Certbot，并且能够自己解决RPM包和Python包依赖问题，同样非常方便。
+同时`certbot-auto`是对certbot的封装，即`certbot-auto`提供certbot的所有功能。
+
+执行完成后就自动获得了HTTPS配置，并且还能设置成HTTP自动转HTTPS，非常方便，好喜欢哦。
+
+
+1）获取certbot-auto脚本
+
+```
+wget https://dl.eff.org/certbot-auto
+```
+
+2）使`certbot-auto`脚本可执行
+
+```
+chmod a+x ./certbot-auto
+```
+
+接下来有两种方法申请证书，一个是申请单个域名证书，一个适合申请通配符域名证书。
+
+### 单个域名证书
+
+先配置好80端口的ngnix站点
 
 例如，假设为`api.enzhico.net`快速配置一个最简单的nginx站点
 
@@ -209,28 +233,7 @@ server {
 
 启动nginx服务，然后访问`http://api.enzhico.net`，没有错误的话nginx站点配置完成。
 
-### 使用certbot-auto脚本安装Certbot
-
-`certbot-auto`脚本会安装Certbot，并且能够自己解决RPM包和Python包依赖问题，同样非常方便。
-同时`certbot-auto`是对certbot的封装，即`certbot-auto`提供certbot的所有功能。
-
-执行完成后就自动获得了HTTPS配置，并且还能设置成HTTP自动转HTTPS，非常方便，好喜欢哦。
-
-### 单独申请证书
-
-1）获取certbot-auto脚本
-
-```
-wget https://dl.eff.org/certbot-auto
-```
-
-2）使`certbot-auto`脚本可执行
-
-```
-chmod a+x ./certbot-auto
-```
-
-3）运行`certbot-auto`，安装Certbot
+运行`certbot-auto`，安装Certbot
 
 ```
 ./certbot-auto --email your@email.address --domains api.enzhico.net
@@ -267,19 +270,7 @@ IMPORTANT NOTES:
 
 现在Lets Encrypt 推出通配符证书，简直爽到不要不要的。接下来我将演示申请通配符证书方法，以我自己的域名`xncoding.com`为例子
 
-1）获取certbot-auto脚本
-
-```
-wget https://dl.eff.org/certbot-auto
-```
-
-2）使`certbot-auto`脚本可执行
-
-```
-chmod a+x ./certbot-auto
-```
-
-3）运行`certbot-auto`，安装Certbot
+运行`certbot-auto`，安装Certbot
 
 ```
 ./certbot-auto --server https://acme-v02.api.letsencrypt.org/directory -d "*.xncoding.com" -d "xncoding.com" --manual --preferred-challenges dns-01 certonly
