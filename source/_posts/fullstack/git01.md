@@ -22,9 +22,13 @@ BitKeeper授权Linux社区免费使用，但是某一天开发Samba的Andrew这�
 另外分布式不需要联网就可以工作，没有中央服务器。
 
 ## 安装git
-在linux上面基本就是一条命令:
+
+默认的yum源中都是旧的1.8版本，使用下面方法安装最新的git2版本:
 ``` bash
-yum install git
+sudo yum remove git
+sudo yum install epel-release
+sudo yum install https://centos7.iuscommunity.org/ius-release.rpm
+sudo yum install git2u
 ```
 
 如果在windows上面，就去官网下载安装文件，点击安装即可。

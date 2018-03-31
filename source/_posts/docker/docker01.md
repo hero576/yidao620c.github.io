@@ -17,22 +17,15 @@ Docker 可以将任何应用及其依赖打包成一个轻量级、可移植、�
 
 第一篇我先搭建实验环境，尽快让一个容器运行起来，我使用的操作系统是CentOS7.2，安装的是免费的社区版CE。<!--more-->
 
-## 配置Repository
+## 安装Docker
 ```
+# step 1: 安装必要的一些系统工具
 sudo yum install -y yum-utils device-mapper-persistent-data lvm2
-sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-
-# 开启edge仓库
-sudo yum-config-manager --enable docker-ce-edge
-# 禁用edge仓库
-# sudo yum-config-manager --disable docker-ce-edge
-```
-
-## 开始安装
-
-```
+# Step 2: 添加软件源信息
+sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+# Step 3: 更新并安装 Docker-CE
 sudo yum makecache fast
-sudo yum install docker-ce
+sudo yum -y install docker-ce
 ```
 
 ## 配置文件
