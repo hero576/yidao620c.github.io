@@ -353,7 +353,7 @@ git stash apply stash@{0}
 
 master合并merge解决好的bug后，不要先把dev解印，先合并master，获取里面的bug方案后，在解印。解印时会有提示冲突，需手动改一次文件。
 
-1. 在  dev 下正常开发中，说有1个bug要解决，首先我需要把dev分支封存stash
+1. 在dev下正常开发中，说有1个bug要解决，首先我需要把dev分支封存stash
 2. 在master下新建一个issue-101分支，解决bug，成功后
 3. 在master下合并issue-101
 4. 在 dev  下合并master，  这样才同步了里面的bug解决方案

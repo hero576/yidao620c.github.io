@@ -201,6 +201,22 @@ just for gitdemo test
 5. 如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，
 用命令`git branch --set-upstream branch-name origin/branch-name`
 
+另外，如果执行命令`git pull` 报错信息为：
+
+```
+error: Your local changes to the following files would be overwritten by merge:
+```
+
+那么可以如下处理：
+
+```
+git stash  
+git pull origin master  
+git stash pop
+```
+
+然后再手动去解决冲突文件即可。
+
 这就是多人协作的工作模式，一旦熟悉了，就非常简单。
 
 再总结一下远程分支使用：
