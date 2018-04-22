@@ -112,8 +112,83 @@ Connection: upgrade
 > 说明 这个指定设置了发送请求给upstream服务器的超时时间。超时设置不是为了整个发送期间，而是在两次write操作期间。
 > 如果超时后，upstream没有收到新的数据，nginx会关闭连接
 
+## 多次代理转发
+
+工作中遇见过一种情况，就是某个域名在移动网络下面访问不了，这样的话我需要通过一个前段代理服务器做转发，这样就涉及到两次代理。
+
+比如访问的websocket服务URL为：
+
+```
+wss://test.enzhico.net
+```
+
+这个在腾讯云公网IP上面，所有网络都能访问。另外一个域名`board.xncoding.com`解析到电信网络，部署在网关中心，这个域名腾讯云可以访问到。
+
+在腾讯云主机上面：
+
+```
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    '' close;
+}
+
+server {
+     server_name test.enzhico.net;
+     location / {
+         proxy_pass http://board.xncoding.com;
+         proxy_read_timeout 300s;
+         proxy_send_timeout 300s;
+         #proxy_set_header Host $host;
+         proxy_set_header X-Real-IP $remote_addr;
+         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+         proxy_http_version 1.1;
+         proxy_set_header Upgrade $http_upgrade;
+         proxy_set_header Connection $connection_upgrade;
+    }
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/test.enzhico.net/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/test.enzhico.net/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+
+```
+
+上面唯一要注意的是忙，把`proxy_set_header Host $host;`这一行注释掉了。
+
+而在网关中心主机上面：
+
+```
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    '' close;
+}
+
+upstream websocket {
+    server localhost:8282; # appserver_ip:ws_port
+}
+
+server {
+    listen 80;
+    server_name board.xncoding.com;
+    location / {
+        proxy_pass http://websocket;
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+    }
+}
+```
+
+只需要最外层使用wss协议，里面的交互都使用ws协议，所以监听80端口即可。
 
 ## 参考
 
 * [Websockets SSL/TLS Termination Using NGINX Proxy](http://pankajmalhotra.com/Websockets-SSL-TLS-Termination-Using-NGINX-Proxy)
 * [配置Nginx反向代理WebSocket](https://www.hi-linux.com/posts/42176.html)
+
