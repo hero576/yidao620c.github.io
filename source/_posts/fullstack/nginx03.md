@@ -319,10 +319,8 @@ openssl x509 -noout -dates -in /etc/letsencrypt/live/xncoding.com/cert.pem
 
 letsencrypt证书的有效期是90天，但是可以用脚本去更新。
 ```
-# 更新证书
-certbot renew --dry-run
 # 如果不需要返回的信息，可以用静默方式：
-certbot renew --quiet
+./certbot-auto renew --no-self-upgrade --quiet
 ```
 
 注意：更新证书时候网站必须是能访问到的
@@ -333,11 +331,11 @@ certbot renew --quiet
 systemctl status crond
 ```
 
-开启后，编辑`/etc/crontab`，后面添加如下内容：
+开启后，将`certbot-auto`复制到`/usr/bin/`目录中，然后编辑`/etc/crontab`，后面添加如下内容：
 
 ```
 # 每月1号5时执行执行一次更新，并重启nginx服务器
-00 05 01 * * /usr/bin/certbot renew --quiet && /bin/systemctl restart nginx
+00 05 01 * * /usr/bin/certbot-auto renew --no-self-upgrade --quiet && /bin/systemctl restart nginx
 ```
 
 ### 配置nginx使用证书开通https站点
