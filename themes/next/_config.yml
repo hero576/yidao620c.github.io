@@ -360,21 +360,21 @@ han: false
 #hypercomments_id:
 
 # changyan
-changyan:
-  enable: false
-  appid: cytmsByHa
-  appkey: 4ac23d4624531cd1605c8a00857e76e4
+#changyan:
+#  enable: false
+#  appid: cytmsByHa
+#  appkey: 4ac23d4624531cd1605c8a00857e76e4
 
 # Valine.
 # You can get your appid and appkey from https://leancloud.cn
 # more info please open https://github.com/xCss/Valine
-valine:
-  enable: false
-  appid:  # your leancloud application appid
-  appkey:  # your leancloud application appkey
-  notify: false # mail notifier , https://github.com/xCss/Valine/wiki
-  verify: false # Verification code
-  placeholder: Comment input placeholder
+#valine:
+#  enable: false
+#  appid:  # your leancloud application appid
+#  appkey:  # your leancloud application appkey
+#  notify: false # mail notifier , https://github.com/xCss/Valine/wiki
+#  verify: false # Verification code
+#  placeholder: Comment input placeholder
 
 # Support for youyan comments system.
 # You can get your uid from http://www.uyan.cc
