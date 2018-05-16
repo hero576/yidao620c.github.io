@@ -236,12 +236,6 @@ server {
 运行`certbot-auto`，安装Certbot
 
 ```
-./certbot-auto --email your@email.address --domains api.enzhico.net
-```
-
-或者
-
-```
 ./certbot-auto certonly --email yidao620@gmail.com --domains api.enzhico.net
 ```
 

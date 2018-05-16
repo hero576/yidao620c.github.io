@@ -361,10 +361,9 @@ han: false
 
 # changyan
 changyan:
-  enable: true
+  enable: false
   appid: cytmsByHa
   appkey: 4ac23d4624531cd1605c8a00857e76e4
-
 
 # Valine.
 # You can get your appid and appkey from https://leancloud.cn
