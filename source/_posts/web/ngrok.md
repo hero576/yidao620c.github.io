@@ -305,6 +305,17 @@ docker run -idt --name ngrok-server \
 -e DOMAIN='ngrok.xncoding.com' -e HTTP_ADDR=':80' -e HTTPS_ADDR=':443' hteen/ngrok /bin/sh /server.sh
 ```
 
+如果在腾讯云主机上面，还需要本级防火墙放行4443端口，以及在腾讯云安全组中也要放开4443端口。
+
+```
+1.查看已开放的端口(默认不开放任何端口)
+firewall-cmd --list-ports
+2.开启4443端口
+firewall-cmd --zone=public --add-port=4443/tcp --permanent
+3.重启防火墙
+systemctl restart firewalld
+```
+
 这里会把主机的5442端口映射到Docker容器中的80端口，讲5443端口映射到443端口，同时将本机的/data/ngrok文件夹映射到docker容器的/myfiles目录。
 
 运行后，会要等一段时间，因为要编译客户端。一直等到/data/ngrok/目录里面有/bin目录就OK了。
@@ -328,10 +339,19 @@ server_addr: "ngrok.xncoding.com:4443"
 trust_host_root_certs: false
 ```
 
-然后打开windows的命令行，cd到ngrok.exe所在的目录中，到这个运行：
+然后打开windows的命令行，cd到`ngrok.exe`所在的目录中，到这个运行：
 ```
 ngrok -config=ngrok.cfg -subdomain=demo -log=log.txt 8092
 ```
+
+或者为了方便，在`ngrok.exe`所在的目录中新建一个`run.bat`文件，内容如下：
+
+```
+@echo off
+ngrok.exe -config=ngrok.cfg -subdomain=demo -log=log.txt 8092
+```
+
+上面的subdomain是你想去访问域名前缀，后面的端口是你本机应用启动端口。
 
 看到下面的结果表示成功了：
 
