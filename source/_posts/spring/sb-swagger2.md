@@ -255,7 +255,7 @@ filterChainDefinitionMap.put("/swagger-ui.html", "anon");
 
 ## 生成PDF文档
 
-参考我的另一篇文章 [使用Swagger生成RESTful API文档](https://www.xncoding.com/2017/06/09/restful/swagger.html)
+参考我的另一篇文章 [使用Swagger生成RESTful API文档](https://www.xncoding.com/2017/06/09/web/swagger.html)
 
 这里我通过SpringBoot + Swagger2方式来生成AsciiDoc，然后剩下的步骤和上面博客一样。
 
