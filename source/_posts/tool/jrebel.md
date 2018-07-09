@@ -13,7 +13,7 @@ tags: [jrebel]
 JRebel的使用方式最常见还是通过插件方式使用，这里我介绍下在IntelliJ IDEA中怎样集成JRebel，
 另外还顺便介绍一下IDEA如何进行远程调试。<!--more-->
 
-## 安装和配置JRebel插件
+## 安装
 
 IDEA里面安装插件比较简单，File --> setttings --> Plugins,找到`Browe Repositories`按钮，
 查找需要的JRebel插件，点击Install即可。
@@ -21,6 +21,10 @@ IDEA里面安装插件比较简单，File --> setttings --> Plugins,找到`Browe
 ![](https://xnstatic-1253397658.file.myqcloud.com/jrebel01.png)
 
 安装完插件后重启IDEA即可看到JRebel的图标了，绿色的小火箭。
+
+## 激活
+
+### 通过myjrebel
 
 下一步就是激活JRebel了，现在 JRebel 对个人非商业用途的用户永久免费，只需要分享一下使用统计。
 访问：https://my.jrebel.com/ 使用 Facebook 或者 Twitter 帐号登录获取永久激活码。
@@ -35,6 +39,41 @@ IDEA里面安装插件比较简单，File --> setttings --> Plugins,找到`Browe
 输入激活码即可：
 
 ![](https://xnstatic-1253397658.file.myqcloud.com/jrebel04.png)
+
+### 通过LicenseServer
+
+在2018/07/05这天IDEA突然提示JRebel的激活码不能用了，然后打开`https://zeroturnaround.com/software/jrebel/myjrebel-discontinued/`一看，
+
+```
+We’ve made a difficult decision. As of July 5, myJRebel is no longer available.
+But don’t worry! All myJRebel users active within the last 12 months are eligible to continue using all JRebel’s wonderful 
+features by moving to JRebel commercial license at a massively discounted price: $99 (over 80% off the regular price).
+```
+
+通过开源社区找到一个很好用的LicenseServer，通过这个可以，gitee地址：
+
+```
+https://gitee.com/gsls200808/JrebelLicenseServerforJava
+```
+
+Packing a runnable jar:
+
+```
+mvn package
+java -jar JrebelBrainsLicenseServerforJava-1.0-SNAPSHOT-jar-with-dependencies.jar -p 8082
+```
+
+default port is 8081.
+
+然后在IDEA里面的JRebel激活中输入通过licensing service：
+
+```
+http://ip:8082/fdf12095-3e08-49a0-92ee-5b459d5431dd
+```
+
+email也随便填一个，激活即可。
+
+## 配置JRebel插件
 
 安装完成后，简单的配置就可以使用Jrebel的强大功能，在IntelliJ左下角，选择JRebel选项卡，将第一个勾上即可
 
