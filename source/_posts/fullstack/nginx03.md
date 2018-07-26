@@ -396,6 +396,8 @@ server {
 
 ## FAQ
 
+### ssl_certificate没有配置
+
 今天为线上Nginx更换SSL证书的过程中遇到了一个诡异的错误，折腾了挺长时间，事后回想起来还是挺容易跳坑的，
 所以想记录下来，一是留作以后查看，二来也许可以帮助一帮跳坑的小伙伴。
 
@@ -412,8 +414,31 @@ nginx错误日志如下：
 
 最后在网上搜了一通，终于在StackOverflow一个问题找到了答案（问题地址懒得找了，就不贴了哈），
 大概意思是说ssl_certificate必须在http段中先定义， 在server段才配置ssl_certificate已经来不及了，
-检查我的nginx配置，ssl_certificate确实只在server段定义，而在http段未定义，加到http段即可:
+检查我的nginx配置，ssl_certificate确实只在server段定义，而在http段未定义，加到http段即可。
 
+### 找不到libpython2.7.so.1.0
+
+```
+locate libpython2.7.so.1.0
+```
+
+In my case, it show out put:
+
+```
+/opt/rh/python27/root/usr/lib64/libpython2.7.so.1.0
+```
+
+vi编辑/etc/ld.so.conf，最后面加一行：
+
+```
+/opt/rh/python27/root/usr/lib64
+```
+
+然后运行：
+
+```
+/sbin/ldconfig
+```
 
 ## 参考
 
