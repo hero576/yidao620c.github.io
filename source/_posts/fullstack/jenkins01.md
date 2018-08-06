@@ -14,9 +14,10 @@ Jenkins提供了软件开发的持续集成服务。它运行在Servlet容器中
 以及任意的Shell脚本和Windows批处理命令。Jenkins的主要开发者是川口耕介，MIT许可证。<!--more-->
 
 ## 安装
-环境：CentOS7.2、JDK8、Nginx、Tomcat8、Jenkins2
 
-Jenkins有很多中安装方式，这里我选择war包的形式，将其部署至tomcat中，然后使用nginx做反向代理。
+环境：CentOS7.2、JDK8、Git2、Maven3、Nginx、Jenkins2
+
+Jenkins有很多中安装方式，这里在CentOS7.2系统上面，我选择通过yum的方式安装，然后使用nginx做反向代理。
 
 ### 安装JDK8
 先查查看系统上面是否有其他的旧版本，有的话就卸载掉：
@@ -69,142 +70,77 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
 ```
 
 配置JAVA_HOME环境变量，编辑`/etc/profile`文件，最后加入
+
 ```
 export JAVA_HOME=/opt/jdk1.8.0_121
 export JRE_HOME=/opt/jdk1.8.0_121/jre
 export PATH=$PATH:$JAVA_HOME/bin
 ```
+
 `source /etc/profile` 搞定！
 
-### 安装Tomcat8
-创建tomcat家目录和用户：
-``` bash
-sudo groupadd tomcat
-sudo mkdir /opt/tomcat
-sudo useradd -s /bin/nologin -g tomcat -d /opt/tomcat tomcat
+还需要安装git、maven，保证最后有git和mvn命令，这里省略。
+
+### 安装Jenkins2
+
+<https://pkg.jenkins.io/redhat-stable/>
+
+```
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+sudo yum install jenkins
 ```
 
-下载最新的tomcat压缩包并解压至`/opt/tomcat`目录：
-``` bash
-cd ~
-wget http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-8/v8.5.13/bin/apache-tomcat-8.5.13.tar.gz
-sudo tar -zxvf apache-tomcat-8.5.13.tar.gz -C /opt/tomcat --strip-components=1
+安装后产生下面3个目录文件
+
+```
+/etc/init.d/jenkins  ==>启动脚本
+/usr/lib/jenkins/jenkins.war  ==>jenkins主程序包
+/var/lib/jenkis/  ==>jenkins运行时环境配置，以及数据文件。刚安装好时为空。
 ```
 
-配置权限
-``` bash
-chown -R tomcat:tomcat /opt/tomcat
+### 迁移 Jenkins
+
+复制老机器上的 `/var/lib/jenkins/` 的内容到新机器对应目录。
+
+如果`/var/lib/jenkins/`目录实在太大，可以将各个项目的历史构建任务先删除了再copy:
+
+```
+rm -f /var/lib/jenkins/jobs/{projectname}/builds/*
+rm -f /var/lib/jenkins/jobs/{projectname}/modules/*
 ```
 
-配置Systemd服务脚本，`sudo vi /etc/systemd/system/tomcat.service`，写入下面内容：
+### 更改Jenkins目录
+
+有时候磁盘满了，需要将jenkins的目录迁移至新的磁盘中，比如新的磁盘挂载点为/data目录，
+我想将`/var/lib/jenkins`目录迁移至`/data/jenkins`中，最简单的办法如下：
+
 ```
-[Unit]
-Description=Apache Tomcat Web Application Container
-After=syslog.target network.target
-
-[Service]
-Type=forking
-
-Environment=JAVA_HOME=/opt/jdk1.8.0_121
-Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid
-Environment=CATALINA_HOME=/opt/tomcat
-Environment=CATALINA_BASE=/opt/tomcat
-Environment='CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC'
-Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
-
-ExecStart=/opt/tomcat/bin/startup.sh
-ExecStop=/bin/kill -15 $MAINPID
-
-User=tomcat
-Group=tomcat
-
-[Install]
-WantedBy=multi-user.target
+sudo service jenkins stop
+sudo mv /var/lib/jenkins /data
+sudo ln -s /data/jenkins /var/lib/jenkins
+sudo service jenkins start
 ```
-
-安装`haveged`，这个主要是用来保证安全性：
-``` bash
-sudo yum install haveged
-sudo systemctl start haveged.service
-sudo systemctl enable haveged.service
-```
-
-重启tomcat服务:
-``` bash
-sudo systemctl start tomcat.service
-sudo systemctl enable tomcat.service
-```
-
-防火墙配置：
-``` bash
-sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp
-sudo firewall-cmd --reload
-```
-
-然后你就可以打开浏览器看看效果：<http://[your-server-ip]:8080>
-
-配置管理员，`sudo vi /opt/tomcat/conf/tomcat-users.xml`
-```
-<user username="yourusername" password="yourpassword" roles="manager-gui,admin-gui"/>
-```
-重启：`sudo systemctl restart tomcat.service`
-
-### 安装配置nginx
-关于nginx的安装和配置我这里再不多讲，可以去参考下我前面写的几篇。这里我用它来作为tomcat的反向代理。
-
-`vi /usr/local/nginx/conf/conf.d/jenkins.conf`
-
-内容如下：
-```nginx
-upstream jenkins{
-  #server localhost down;
-  server localhost:8080 weight=10 max_fails=2 fail_timeout=30s;
-  #server 10.122.22.2 backup;
-}
-server {
-  listen 8080;
-  server_name _;
-
-  access_log /var/log/nginx/jenkins.log main;
-  error_log /var/log/nginx/jenkins_error.log error;
-
-  location / {
-      proxy_pass http://jenkins;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header Host $host;
-      proxy_set_header X-NginX-Proxy true;
-  }
-}
-```
-然后重启nginx：`systemctl restart nginx.service`
-
-最后访问：<http://server-ip:8080> 看到效果
 
 ### 安装GitLab
 我专门写过一篇文章怎样安装和使用Gitlab，请查阅 [centos7安装gitlab8.8](https://www.xncoding.com/2016/09/09/fullstack/gitlab.html)
 
-### 安装jenkins
-下载最新的war包：
-``` bash
-wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
-```
-
-将其解压至tomcat的webapps/ROOT目录下面
-```
-mv jenkins.war /opt/tomcat/webapps/ROOT/
-cd /opt/tomcat/webapps/ROOT/
-unzip jenkins.war
-rm -f jenkins.war
-cd ~
-chown -R tomcat:tomcat /opt/tomcat
-```
-
-重启tomcat：`systemctl restart tomcat.service`
-
-打开 <http://server-ip:8080> 即可看到jenkins欢迎页面！
-
 ## 配置
+
+配置文件在`/etc/sysconfig/jenkins`中，可配置端口，默认的端口为8080
+
+```
+JENKINS_PORT="8086"
+```
+
+同时可将运行jenkins的用户改为root，默认为jenkins用户
+
+```
+JENKINS_USER="root"
+```
+
+重启服务：`/etc/init.d/jenkins restart`
+
 第一次进入jenkins需要你输入root密码，你安装引导把那个文件打开输入就是。
 然后设置root密码，安装推荐插件，耐心等待片刻即可。
 
@@ -213,6 +149,7 @@ chown -R tomcat:tomcat /opt/tomcat
 ![](https://xnstatic-1253397658.file.myqcloud.com/jenkins02.png)
 
 ### Gitlab插件
+
 我这里要使用Gitlab来做演示，所以先安装相应的插件
 
 * GitLab Plugin
@@ -220,6 +157,7 @@ chown -R tomcat:tomcat /opt/tomcat
 * AnsiColor（可选）这个插件可以让Jenkins的控制台输出的log带有颜色（就和linux控制台那样）
 
 ### Jenkins系统设置
+
 操作： `Manage Jenkins -> Configure System`
 
 Jenkins内部shell UTF-8 编码设置，如下图所示，LANG=zh_CN.UTF-8
