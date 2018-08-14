@@ -239,6 +239,18 @@ server {
 ./certbot-auto certonly --email yidao620@gmail.com --domains api.enzhico.net
 ```
 
+执行过程中可能会告警：
+
+```
+Failed to find executable apachectl in PATH...
+```
+
+这种告警信息意识是没有按照apache软件，可以忽略，不过你要是不像看到这种告警，也可以按照以下相应的依赖：
+
+```
+sudo yum install httpd mod_ssl
+```
+
 如果你想同时为多个domain申请证书，上面的`--domains` 参数后面接逗号隔开的域名，比如`--domains api.enzhico.net,dev.enzhico.net`
 
 联系人email地址要填写真实有效的，`let's encrypt`会在证书在过期以前发送预告的通知邮件。申请成功后，会显示以下Congratulations信息
@@ -317,7 +329,7 @@ letsencrypt证书的有效期是90天，但是可以用脚本去更新。
 ./certbot-auto renew --no-self-upgrade --quiet
 ```
 
-注意：更新证书时候网站必须是能访问到的
+注意：更新证书时候网站必须是能访问到的，也就是说http的80端口的root目录必须配置好。
 
 也可以通过crontab定期更新证书，先查看crond服务是否开启：
 
@@ -325,11 +337,17 @@ letsencrypt证书的有效期是90天，但是可以用脚本去更新。
 systemctl status crond
 ```
 
-开启后，将`certbot-auto`复制到`/usr/bin/`目录中，然后编辑`/etc/crontab`，后面添加如下内容：
+续期命令检测到续期时间小于30天时，会重新请求生成新证书，官方建议每天凌晨执行一次。
+
+将`certbot-auto`复制到`/usr/bin/`目录中，然后编辑`/etc/crontab`，后面添加如下内容：
 
 ```
-# 每月1号5时执行执行一次更新，并重启nginx服务器
-00 05 01 * * /usr/bin/certbot-auto renew --no-self-upgrade --quiet && /bin/systemctl restart nginx
+# 每天凌晨3点执行执行一次更新，并重启nginx服务器
+00 03 * * * root /usr/bin/certbot-auto renew --no-self-upgrade --quiet --renew-hook "/bin/systemctl restart nginx"
+# 每天凌晨3点执行执行一次更新，并重启nginx服务器
+00 03 * * * root /usr/bin/certbot-auto renew --no-self-upgrade --quiet --renew-hook "/etc/init.d/nginx restart"
+# 每天凌晨3点执行执行一次更新，并重启nginx服务器
+00 03 * * * root /usr/bin/certbot-auto renew --no-self-upgrade --quiet --renew-hook "/usr/local/nginx/sbin/nginx -s reload"
 ```
 
 ### 配置nginx使用证书开通https站点
