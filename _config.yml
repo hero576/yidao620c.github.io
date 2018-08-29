@@ -104,6 +104,13 @@ algolia:
   indexName: 'blogindex'
   chunkSize: 5000
 
+leancloud_counter_security:
+  enable_sync: true
+  app_id: AXBtbvjnaMP2cE34U1CAjLqF-gzGzoHsz
+  app_key: 6CKwM1armacelKCp8mh4StM4
+  username: xn
+  password: lv960122
+
 stylus:
   compress: true
 
@@ -114,6 +121,7 @@ marked:
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type: git
-  repository: git@115.159.151.14:/var/repo/hexo.git
-  branch: master
+  - type: git
+    repository: git@115.159.151.14:/var/repo/hexo.git
+    branch: master
+#  - type: leancloud_counter_security_sync

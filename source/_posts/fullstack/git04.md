@@ -155,7 +155,7 @@ git checkout HEAD~2 foo.py
 
 和提交层面相同的是，它可以用来检查项目的旧版本，但作用域被限制到了特定文件。
 
-和 `git reset` 一样，这个命令通常和 HEAD 一起使用。比如 `git checkout HEAD foo.py` 等同于舍弃 foo.py 没有提交的更改。
+这个命令通常和 HEAD 一起使用。比如 `git checkout HEAD foo.py` 等同于舍弃 foo.py 没有提交的更改。
 
 ## 总结
 

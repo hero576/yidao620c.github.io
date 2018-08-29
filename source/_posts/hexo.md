@@ -545,7 +545,10 @@ algolia_search:
 
 ## 阅读次数统计
 
-使用LeanCloud为文章添加阅读次数统计，请参考文章[为NexT主题添加文章阅读量统计功能](https://notes.wanghao.work/2015-10-21-%E4%B8%BANexT%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%8A%9F%E8%83%BD.html#%E9%85%8D%E7%BD%AELeanCloud)
+使用LeanCloud为文章添加阅读次数统计，
+请参考文章[第三方服务集成](https://theme-next.iissnan.com/third-party-services.html) 中的阅读次数统计（LeanCloud)部分。
+
+另外有个安全补丁需要打上，参考<https://github.com/theme-next/hexo-leancloud-counter-security>
 
 ## 多台电脑同时维护博客
 
@@ -595,10 +598,10 @@ $ cnpm install
   "version": "0.0.0",
   "private": true,
   "hexo": {
-    "version": "3.6.0"
+    "version": "3.7.1"
   },
   "dependencies": {
-    "hexo": "3.3.9",
+    "hexo": "^3.7.1",
     "hexo-algolia": "^1.2.3",
     "hexo-deployer-git": "^0.3.1",
     "hexo-generator-archive": "^0.1.5",
@@ -607,6 +610,7 @@ $ cnpm install
     "hexo-generator-index": "^0.2.0",
     "hexo-generator-searchdb": "^1.0.8",
     "hexo-generator-tag": "^0.2.0",
+    "hexo-leancloud-counter-security": "^1.3.2",
     "hexo-renderer-ejs": "^0.3.0",
     "hexo-renderer-jade": "^0.4.1",
     "hexo-renderer-marked": "^0.3.0",
@@ -615,17 +619,6 @@ $ cnpm install
     "hexo-server": "^0.2.0"
   }
 }
-```
-
-然后把hexo卸载了，重新安装指定版本，在另外一个目录执行：
-```
-cnpm uninstall hexo -g
-cnpm install hexo@3.3.9 -g
-```
-
-然后再回到hexo目录执行：
-```
-cnpm install
 ```
 
 ### 使用方法
